@@ -1,0 +1,125 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+  .vt-wrap { padding: 2rem 1rem 3rem; text-align: center; font-family: 'Playfair Display', serif; }
+  .vt-eyebrow { font-style: italic; font-size: 13px; color: #9B2335; letter-spacing: 0.2em; margin-bottom: 6px; display: block; }
+  .vt-titulo { font-size: 1.6rem; font-weight: 700; color: var(--color-text-primary); margin-bottom: 2.5rem; }
+
+  .estante { display: flex; align-items: flex-end; justify-content: center; gap: 32px; flex-wrap: wrap; padding: 0 20px; }
+
+  .botella-col {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    cursor: pointer; position: relative;
+  }
+  .botella-col:hover .botella-svg { transform: translateY(-10px); filter: drop-shadow(0 10px 18px rgba(109,45,60,0.28)); }
+  .botella-col:hover .bot-nombre { color: #9B2335; }
+
+  .botella-svg { transition: transform 0.3s ease, filter 0.3s ease; display: block; }
+
+  .tabla { width: 100%; height: 10px; background: #5c2a1a; border-radius: 2px; margin: 0 0 8px; box-shadow: 0 3px 8px rgba(0,0,0,0.18); }
+
+  .bot-nombre { font-size: 12px; font-style: italic; color: #5c1a25; text-align: center; line-height: 1.3; transition: color 0.2s; max-width: 80px; }
+  .bot-pct    { font-size: 11px; color: #9B2335; font-weight: 600; }
+
+  @media (prefers-color-scheme: dark) {
+    .bot-nombre { color: #e8ccd2; }
+    .tabla { background: #3a1a0e; }
+  }
+
+  .tip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 16px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border: 1px solid #e5d7d7;
+    border-radius: 10px;
+    padding: 12px 16px;
+    min-width: 190px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #333;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    z-index: 10;
+    text-align: left;
+    pointer-events: none;
+  }
+  .tip::after {
+    content: '';
+    position: absolute;
+    top: 100%; left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: white;
+  }
+  .botella-col:hover .tip { display: block; }
+
+  .tip-nombre { font-weight: 700; font-size: 13px; color: #6d2d3c; margin-bottom: 4px; font-style: italic; }
+  .tip-pct    { font-size: 18px; font-weight: 700; color: #9B2335; margin-bottom: 6px; }
+  .tip-desc   { font-size: 11px; color: #888; font-style: italic; line-height: 1.5; }
+
+  @media (prefers-color-scheme: dark) {
+    .tip { background: #1e0f13; border-color: #3a2028; color: #e8ccd2; }
+    .tip::after { border-top-color: #1e0f13; }
+    .tip-desc { color: #b09099; }
+  }
+</style>
+
+<div class="vt-wrap">
+  <h2 class="sr-only">Varietales más consumidos en Argentina</h2>
+  <span class="vt-eyebrow">los preferidos de los argentinos</span>
+  <p class="vt-titulo">La vinoteca argentina</p>
+  <div id="estante" class="estante"></div>
+  <div class="tabla"></div>
+</div>
+
+<script>
+const vinos = [
+  { nombre: "Malbec",             pct: "47%", h: 160, cuerpo: "#4A235A", brillo: "#9B59B6", desc: "El rey indiscutido. Tintos profundos con notas de ciruela, mora y especias." },
+  { nombre: "Cabernet Sauvignon", pct: "18%", h: 128, cuerpo: "#6d2d3c", brillo: "#c0556a", desc: "Estructura firme, cassis y pimiento verde. El segundo tinto más elegido." },
+  { nombre: "Torrontés",          pct: "12%", h: 108, cuerpo: "#7B5B0A", brillo: "#C9960A", desc: "El blanco autóctono por excelencia. Floral, aromático, con jazmín y durazno." },
+  { nombre: "Bonarda",            pct: "11%", h: 102, cuerpo: "#7B1A2A", brillo: "#C0392B", desc: "Frutos rojos frescos, cuerpo suave. La favorita del vino cotidiano." },
+  { nombre: "Chardonnay",         pct: "8%",  h: 88,  cuerpo: "#5D6B0A", brillo: "#9AAF12", desc: "El blanco más pedido en restaurantes. Manzana, manteca y vainilla." },
+  { nombre: "Syrah",              pct: "4%",  h: 68,  cuerpo: "#1A1040", brillo: "#4A235A", desc: "Pimienta negra, mora y violetas. En pleno ascenso en Mendoza y San Juan." },
+];
+
+function botellaSVG(h, cuerpo, brillo) {
+  const w = 42;
+  const cuello = Math.round(h * 0.28);
+  const cx = w / 2;
+  return `<svg class="botella-svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="none">
+    <rect x="${cx-4}" y="2" width="8" height="${cuello-4}" rx="3" fill="${cuerpo}"/>
+    <path d="M${cx-4} ${cuello-2}
+             Q${cx-10} ${cuello+10} ${cx-14} ${cuello+20}
+             L${cx-14} ${h-4}
+             Q${cx-14} ${h} ${cx-10} ${h}
+             L${cx+10} ${h}
+             Q${cx+14} ${h} ${cx+14} ${h-4}
+             L${cx+14} ${cuello+20}
+             Q${cx+10} ${cuello+10} ${cx+4} ${cuello-2} Z"
+          fill="${cuerpo}"/>
+    <ellipse cx="${cx}" cy="${cuello+8}" rx="8" ry="3" fill="${brillo}" opacity="0.22"/>
+    <rect x="${cx-11}" y="${cuello+16}" width="22" height="${Math.round((h-cuello)*0.38)}" rx="2" fill="white" opacity="0.07"/>
+  </svg>`;
+}
+
+const estante = document.getElementById('estante');
+
+vinos.forEach(v => {
+  const col = document.createElement('div');
+  col.className = 'botella-col';
+  col.innerHTML = `
+    <div class="tip">
+      <div class="tip-nombre">${v.nombre}</div>
+      <div class="tip-pct">${v.pct}</div>
+      <div class="tip-desc">${v.desc}</div>
+    </div>
+    ${botellaSVG(v.h, v.cuerpo, v.brillo)}
+    <span class="bot-nombre">${v.nombre}</span>
+    <span class="bot-pct">${v.pct}</span>
+  `;
+  estante.appendChild(col);
+});
+</script>
