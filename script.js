@@ -1,6 +1,9 @@
 ﻿const root = document.documentElement;
 const progress = document.querySelector(".scroll-progress");
 const opener = document.querySelector(".opener");
+const posterBottle = document.querySelector(".poster-bottle");
+const posterCork = document.querySelector(".poster-cork");
+const bottleIllustration = document.querySelector(".bottle-illustration");
 const wineBuilder = document.querySelector(".wine-builder");
 const worldSection = document.querySelector(".world-consumption");
 const argentinaSection = document.querySelector(".argentina-zoom");
@@ -205,6 +208,39 @@ function svgPointToClient(svg, x, y) {
     x: ctm.a * x + ctm.c * y + ctm.e,
     y: ctm.b * x + ctm.d * y + ctm.f,
   };
+}
+
+function updatePosterCorkPosition() {
+  if (!posterBottle || !posterCork || !bottleIllustration) return;
+
+  const viewBox = bottleIllustration.viewBox?.baseVal;
+  const bottleWidth = posterBottle.offsetWidth;
+  const bottleHeight = posterBottle.offsetHeight;
+  if (!viewBox?.width || !viewBox?.height || !bottleWidth || !bottleHeight) return;
+
+  const scale = Math.min(bottleWidth / viewBox.width, bottleHeight / viewBox.height);
+  const renderedWidth = viewBox.width * scale;
+  const renderedHeight = viewBox.height * scale;
+  const offsetX = (bottleWidth - renderedWidth) / 2;
+  const offsetY = (bottleHeight - renderedHeight) / 2;
+
+  const neckOpening = {
+    x: 18,
+    top: 92,
+    bottom: 144,
+  };
+  const corkAspectRatio = 62 / 52;
+  const mouthX = offsetX + (neckOpening.x - viewBox.x) * scale;
+  const mouthTop = offsetY + (neckOpening.top - viewBox.y) * scale;
+  const mouthHeight = (neckOpening.bottom - neckOpening.top) * scale;
+  const corkWidth = mouthHeight * corkAspectRatio;
+
+  posterBottle.style.setProperty("--poster-mouth-x", `${mouthX.toFixed(2)}px`);
+  posterBottle.style.setProperty("--poster-mouth-y", `${(mouthTop + mouthHeight / 2).toFixed(2)}px`);
+  posterBottle.style.setProperty("--poster-cork-left", `${(mouthX - corkWidth / 2).toFixed(2)}px`);
+  posterBottle.style.setProperty("--poster-cork-top", `${mouthTop.toFixed(2)}px`);
+  posterBottle.style.setProperty("--poster-cork-width", `${corkWidth.toFixed(2)}px`);
+  posterBottle.style.setProperty("--poster-cork-height", `${mouthHeight.toFixed(2)}px`);
 }
 
 function updateCalculatedPour() {
@@ -722,6 +758,7 @@ function updateScrollState() {
   }
 
   updateIntroState();
+  updatePosterCorkPosition();
   updateWorldState();
   updateArgentinaState();
   updateCalendarState();
