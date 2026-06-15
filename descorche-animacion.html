@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Animacion descorche</title>
+    <style>
+      :root {
+        --cream: #f4ecdc;
+        --green: #00613e;
+        --wine: #8b1232;
+        --cork-progress: 0;
+        --intro-progress: 0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--cream);
+        color: #2a0f09;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .descorche-archive {
+        min-height: 220vh;
+      }
+
+      .descorche-stage {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow: hidden;
+        background: var(--cream);
+      }
+
+      .poster-bottle {
+        position: absolute;
+        top: clamp(7.6rem, 18vh, 10rem);
+        right: clamp(-23rem, -20vw, -14rem);
+        z-index: 2;
+        width: clamp(600px, 56vw, 810px);
+        height: clamp(205px, 20vw, 278px);
+        transform:
+          translate3d(calc(var(--intro-progress) * -3.5vw), calc(var(--intro-progress) * -1.2vh), 0)
+          rotate(-10deg);
+        transform-origin: 72% 48%;
+      }
+
+      .poster-cork {
+        position: absolute;
+        top: var(--poster-cork-top, 92px);
+        left: var(--poster-cork-left, 12px);
+        z-index: 7;
+        width: var(--poster-cork-width, 62px);
+        height: var(--poster-cork-height, 52px);
+        border: 0;
+        border-radius: 14px;
+        background:
+          radial-gradient(circle at 18% 28%, rgba(93, 50, 22, 0.28) 0 2px, transparent 3px),
+          radial-gradient(circle at 66% 38%, rgba(93, 50, 22, 0.22) 0 2px, transparent 3px),
+          radial-gradient(circle at 42% 72%, rgba(93, 50, 22, 0.18) 0 2px, transparent 3px),
+          linear-gradient(90deg, #c9864f, #e0aa6a 52%, #bd7842);
+        transform:
+          translate3d(
+            calc(var(--cork-progress) * var(--poster-cork-pop-x, -52px)),
+            calc(var(--cork-progress) * var(--poster-cork-pop-y, -205px)),
+            0
+          )
+          rotate(calc(var(--cork-progress) * -430deg));
+        box-shadow: inset 0 -6px 0 rgba(100, 54, 24, 0.14);
+      }
+
+      .bottle-illustration {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+
+      .bottle-silhouette {
+        fill: var(--green);
+      }
+
+      .bottle-shadow {
+        fill: rgba(0, 63, 42, 0.36);
+      }
+
+      .bottle-highlight {
+        fill: none;
+        stroke: rgba(244, 236, 216, 0.44);
+        stroke-width: 9;
+        stroke-linecap: round;
+      }
+
+      .bottle-punt {
+        fill: rgba(0, 63, 42, 0.42);
+      }
+
+      .spray-burst {
+        position: absolute;
+        top: var(--spray-top, 118px);
+        left: var(--spray-left, 18px);
+        z-index: 5;
+        width: 1px;
+        height: 1px;
+      }
+
+      .spray-burst span {
+        position: absolute;
+        width: 8px;
+        height: 46px;
+        border-radius: 999px;
+        background: var(--wine);
+        opacity: 0;
+        transform-origin: 50% 100%;
+      }
+
+      .has-uncorked .spray-burst span {
+        animation: spray 760ms ease-out both;
+      }
+
+      .spray-burst span:nth-child(1) {
+        transform: rotate(-42deg);
+      }
+
+      .spray-burst span:nth-child(2) {
+        height: 32px;
+        animation-delay: 50ms;
+        transform: rotate(-10deg);
+      }
+
+      .spray-burst span:nth-child(3) {
+        width: 6px;
+        height: 54px;
+        animation-delay: 90ms;
+        transform: rotate(28deg);
+      }
+
+      .spray-burst span:nth-child(4) {
+        width: 6px;
+        height: 28px;
+        animation-delay: 130ms;
+        transform: rotate(58deg);
+      }
+
+      @keyframes spray {
+        0% {
+          opacity: 0;
+          translate: 0 0;
+          scale: 0.5 0.2;
+        }
+
+        20% {
+          opacity: 1;
+        }
+
+        100% {
+          opacity: 0;
+          translate: -76px -105px;
+          scale: 0.75 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="descorche-archive">
+      <div class="descorche-stage">
+        <div class="poster-bottle">
+          <div class="poster-cork"></div>
+          <div class="spray-burst" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <svg class="bottle-illustration" viewBox="0 0 760 260" aria-hidden="true">
+            <path
+              class="bottle-silhouette"
+              d="M18 92h82c35 0 57-10 80-34 30-36 77-50 139-50h349c45 0 82 37 82 82v56c0 45-37 82-82 82H319c-62 0-109-14-139-50-23-24-45-34-80-34H18Z"
+            />
+            <path
+              class="bottle-shadow"
+              d="M238 190c31 13 72 19 120 19h298c34 0 63-23 72-55-28 18-64 27-108 27H332c-51 0-92-8-121-25 8 11 17 22 27 34Z"
+            />
+            <path
+              class="bottle-highlight"
+              d="M224 69c31-24 72-36 120-36h281"
+            />
+            <ellipse class="bottle-punt" cx="668" cy="132" rx="35" ry="45" />
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      const root = document.documentElement;
+      const section = document.querySelector(".descorche-archive");
+      const posterBottle = document.querySelector(".poster-bottle");
+      const posterCork = document.querySelector(".poster-cork");
+      const posterBottleArt = document.querySelector(".bottle-illustration");
+      const sprayBurst = document.querySelector(".spray-burst");
+
+      let corkPopped = false;
+
+      function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+      }
+
+      function updatePosterCorkPosition() {
+        if (!posterBottle || !posterCork || !posterBottleArt) return;
+
+        const viewBox = posterBottleArt.viewBox?.baseVal;
+        const bottleWidth = posterBottle.offsetWidth;
+        const bottleHeight = posterBottle.offsetHeight;
+        if (!viewBox?.width || !viewBox?.height || !bottleWidth || !bottleHeight) return;
+
+        const neckTop = 92;
+        const neckBottom = 144;
+        const neckCenter = (neckTop + neckBottom) / 2;
+        const mouthX = 18;
+        const scaleX = bottleWidth / viewBox.width;
+        const scaleY = bottleHeight / viewBox.height;
+        const corkHeight = (neckBottom - neckTop) * scaleY;
+        const corkWidth = corkHeight * 1.2;
+        const insertedWidth = corkHeight * 0.5;
+        const mouthLeft = (mouthX - viewBox.x) * scaleX;
+        const mouthCenterY = (neckCenter - viewBox.y) * scaleY;
+        const corkLeft = mouthLeft + insertedWidth - corkWidth;
+        const corkTop = mouthCenterY - corkHeight / 2;
+
+        posterCork.style.setProperty("--poster-cork-left", `${corkLeft.toFixed(2)}px`);
+        posterCork.style.setProperty("--poster-cork-top", `${corkTop.toFixed(2)}px`);
+        posterCork.style.setProperty("--poster-cork-width", `${corkWidth.toFixed(2)}px`);
+        posterCork.style.setProperty("--poster-cork-height", `${corkHeight.toFixed(2)}px`);
+        posterCork.style.setProperty("--poster-cork-pop-x", `${(-corkWidth * 0.84).toFixed(2)}px`);
+        posterCork.style.setProperty("--poster-cork-pop-y", `${(-corkHeight * 3.94).toFixed(2)}px`);
+
+        if (sprayBurst) {
+          sprayBurst.style.setProperty("--spray-left", `${(mouthLeft + insertedWidth * 0.3).toFixed(2)}px`);
+          sprayBurst.style.setProperty("--spray-top", `${mouthCenterY.toFixed(2)}px`);
+        }
+      }
+
+      function updateScrollState() {
+        if (!section) return;
+
+        const travel = Math.max(section.offsetHeight - window.innerHeight, 1);
+        const rect = section.getBoundingClientRect();
+        const introProgress = clamp(-rect.top / travel, 0, 1);
+        const corkProgress = clamp((introProgress - 0.09) / 0.3, 0, 1);
+
+        root.style.setProperty("--intro-progress", introProgress.toFixed(3));
+        root.style.setProperty("--cork-progress", corkProgress.toFixed(3));
+        updatePosterCorkPosition();
+
+        if (introProgress < 0.035) {
+          corkPopped = false;
+          root.classList.remove("has-uncorked");
+        }
+
+        if (!corkPopped && corkProgress > 0.18) {
+          corkPopped = true;
+          root.classList.add("has-uncorked");
+        }
+      }
+
+      updateScrollState();
+      window.addEventListener("scroll", updateScrollState, { passive: true });
+      window.addEventListener("resize", updateScrollState);
+    </script>
+  </body>
+</html>

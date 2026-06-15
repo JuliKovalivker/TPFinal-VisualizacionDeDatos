@@ -16,8 +16,10 @@
   --title-progress: 0;
   --title-line-1: 0;
   --title-line-2: 0;
+  --title-line-3: 0;
   --title-line-1-clip: 100%;
   --title-line-2-clip: 100%;
+  --title-line-3-clip: 100%;
   --scene-progress: 0;
   --thread-progress: 0;
   --pour-progress: 0;
@@ -174,7 +176,7 @@ p {
 
 .opener {
   position: relative;
-  min-height: 168vh;
+  min-height: 156vh;
 }
 
 .opener-pin {
@@ -182,7 +184,7 @@ p {
   top: 0;
   min-height: 100vh;
   overflow: hidden;
-  padding: 8.2rem clamp(1.4rem, 7vw, 7rem) 4rem;
+  padding: 7.8rem clamp(1.4rem, 7vw, 7rem) 4rem;
 }
 
 .opener-pin::before {
@@ -192,9 +194,10 @@ p {
 .opener-copy {
   position: relative;
   z-index: 6;
-  width: min(54vw, 820px);
-  margin-left: clamp(-2.2rem, -2.4vw, -1.1rem);
-  margin-top: clamp(3.6rem, 8vh, 6rem);
+  width: min(43vw, 680px);
+  margin-left: auto;
+  margin-right: clamp(0rem, 2vw, 2.6rem);
+  margin-top: clamp(3.2rem, 10vh, 6.2rem);
 }
 
 .opener-copy::after {
@@ -202,12 +205,12 @@ p {
 }
 
 .written-title {
-  max-width: 850px;
+  max-width: 680px;
   color: rgba(139, 18, 50, 0);
   font-family: Fraunces, Georgia, serif;
   font-weight: 900;
-  font-size: clamp(4.8rem, 8vw, 8.85rem);
-  line-height: 0.82;
+  font-size: 6.35rem;
+  line-height: 0.86;
 }
 
 .written-title span {
@@ -238,6 +241,23 @@ p {
   --line-clip: var(--title-line-2-clip);
 }
 
+.written-title span:nth-child(3) {
+  --line-progress: var(--title-line-3);
+  --line-clip: var(--title-line-3-clip);
+}
+
+.intro-question span::after {
+  color: var(--ink);
+}
+
+.intro-question span:nth-child(2) {
+  margin-left: clamp(1.4rem, 4vw, 4.5rem);
+}
+
+.intro-question span:nth-child(3) {
+  margin-left: clamp(3rem, 8vw, 8.2rem);
+}
+
 .opener-copy p {
   color: rgba(42, 16, 9, 0.78);
   font-size: clamp(1.1rem, 1.5vw, 1.35rem);
@@ -248,6 +268,161 @@ p {
   inset: 0;
   z-index: 3;
   pointer-events: none;
+}
+
+.intro-glass-scene {
+  position: absolute;
+  left: clamp(1rem, 5vw, 5.2rem);
+  bottom: clamp(7rem, 14vh, 10rem);
+  z-index: 4;
+  width: clamp(320px, 38vw, 560px);
+  opacity: calc(0.16 + var(--title-line-1) * 0.84);
+  transform:
+    translate3d(
+      calc(var(--intro-progress) * -1.5vw),
+      calc((1 - var(--title-line-1)) * 18px),
+      0
+    );
+}
+
+.intro-glass-illustration {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.intro-table-top {
+  fill: #bf7a49;
+}
+
+.intro-table-highlight {
+  fill: rgba(255, 232, 197, 0.18);
+}
+
+.intro-table-base {
+  fill: #4f2b20;
+  opacity: 1;
+}
+
+.intro-table-base-front {
+  fill: #3f241b;
+  opacity: 0.96;
+}
+
+.intro-glass {
+  opacity: calc(0.5 + var(--title-line-1) * 0.5);
+}
+
+.intro-glass-shadow {
+  fill: rgba(42, 16, 9, 0.07);
+}
+
+.intro-glass-stem-fill {
+  fill: rgba(224, 214, 188, 0.54);
+  stroke: rgba(42, 16, 9, 0.04);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+
+.intro-glass-base-fill {
+  fill: rgba(224, 214, 188, 0.5);
+  stroke: rgba(42, 16, 9, 0.04);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+
+.intro-glass-bowl-fill {
+  fill: rgba(224, 214, 188, 0.36);
+  stroke: rgba(42, 16, 9, 0.045);
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+}
+
+.intro-glass-highlight {
+  fill: rgba(255, 250, 237, 0.58);
+  opacity: calc(var(--title-line-2) * 0.86);
+}
+
+.intro-rim-inner {
+  fill: rgba(224, 214, 188, 0.42);
+}
+
+.intro-rim-ring {
+  fill: rgba(224, 214, 188, 0.28);
+}
+
+.intro-rim-front-shadow {
+  fill: rgba(42, 16, 9, 0.025);
+}
+
+.intro-wine-fill {
+  fill: #9f1238;
+  opacity: calc(0.38 + var(--title-line-2) * 0.62);
+  transform: scaleY(calc(0.72 + var(--title-line-2) * 0.28));
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.intro-wine-top {
+  fill: rgba(87, 5, 28, 0.18);
+  opacity: calc(var(--title-line-2) * 0.88);
+}
+
+.intro-wine-shine {
+  fill: rgba(255, 239, 234, 0.22);
+  opacity: calc(var(--title-line-2) * 0.72);
+}
+
+@media (max-width: 1100px) {
+  .opener-copy {
+    width: min(48vw, 600px);
+  }
+
+  .written-title {
+    font-size: 5.35rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .opener {
+    min-height: 152vh;
+  }
+
+  .opener-pin {
+    padding: 5.6rem 1.2rem 3rem;
+  }
+
+  .opener-copy {
+    width: min(92vw, 520px);
+    margin: 43vh auto 0;
+  }
+
+  .written-title {
+    font-size: 4.15rem;
+    line-height: 0.88;
+  }
+
+  .intro-question span:nth-child(2) {
+    margin-left: 1.2rem;
+  }
+
+  .intro-question span:nth-child(3) {
+    margin-left: 2.4rem;
+  }
+
+  .intro-glass-scene {
+    top: 12vh;
+    bottom: auto;
+    left: 50%;
+    width: min(92vw, 430px);
+    transform:
+      translate3d(
+        -50%,
+        calc((1 - var(--title-line-1)) * 18px),
+        0
+      );
+  }
 }
 
 .texture-defs {
@@ -295,120 +470,20 @@ p {
   width: var(--poster-cork-width, 62px);
   height: var(--poster-cork-height, 52px);
   border: 0;
-  border-radius: calc(var(--poster-cork-height, 52px) * 0.27);
+  border-radius: 14px;
   background:
     radial-gradient(circle at 18% 28%, rgba(93, 50, 22, 0.28) 0 2px, transparent 3px),
     radial-gradient(circle at 66% 38%, rgba(93, 50, 22, 0.22) 0 2px, transparent 3px),
     radial-gradient(circle at 42% 72%, rgba(93, 50, 22, 0.18) 0 2px, transparent 3px),
     linear-gradient(90deg, #c9864f, #e0aa6a 52%, #bd7842);
   transform:
-    translate3d(calc(var(--cork-progress) * -52px), calc(var(--cork-progress) * -205px), 0)
+    translate3d(
+      calc(var(--cork-progress) * var(--poster-cork-pop-x, -52px)),
+      calc(var(--cork-progress) * var(--poster-cork-pop-y, -205px)),
+      0
+    )
     rotate(calc(var(--cork-progress) * -430deg));
   box-shadow: inset 0 -6px 0 rgba(100, 54, 24, 0.14);
-}
-
-.wine-droplets {
-  position: absolute;
-  left: var(--poster-mouth-x, 18px);
-  top: var(--poster-mouth-y, 118px);
-  z-index: 8;
-  width: 1px;
-  height: 1px;
-  pointer-events: none;
-}
-
-.wine-droplets span {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: var(--drop-size, 5px);
-  height: calc(var(--drop-size, 5px) * 1.24);
-  border-radius: 58% 42% 62% 38% / 54% 48% 52% 46%;
-  background:
-    radial-gradient(circle at 34% 28%, rgba(255, 201, 174, 0.72) 0 18%, transparent 19%),
-    linear-gradient(160deg, rgba(172, 28, 66, 0.96), rgba(92, 13, 20, 0.88));
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.42);
-  filter: drop-shadow(0 3px 4px rgba(58, 13, 16, 0.14));
-}
-
-.has-uncorked .wine-droplets span {
-  animation: wineDropletBurst 920ms cubic-bezier(0.16, 0.78, 0.32, 1) both;
-}
-
-.wine-droplets span:nth-child(1) {
-  --drop-size: 5px;
-  --drop-x: -48px;
-  --drop-y: -31px;
-  animation-delay: 20ms;
-}
-
-.wine-droplets span:nth-child(2) {
-  --drop-size: 3px;
-  --drop-x: -22px;
-  --drop-y: -52px;
-  animation-delay: 55ms;
-}
-
-.wine-droplets span:nth-child(3) {
-  --drop-size: 4px;
-  --drop-x: -68px;
-  --drop-y: -10px;
-  animation-delay: 85ms;
-}
-
-.wine-droplets span:nth-child(4) {
-  --drop-size: 6px;
-  --drop-x: -82px;
-  --drop-y: -43px;
-  animation-delay: 115ms;
-}
-
-.wine-droplets span:nth-child(5) {
-  --drop-size: 3px;
-  --drop-x: -35px;
-  --drop-y: 16px;
-  animation-delay: 145ms;
-}
-
-.wine-droplets span:nth-child(6) {
-  --drop-size: 4px;
-  --drop-x: -7px;
-  --drop-y: -34px;
-  animation-delay: 170ms;
-}
-
-.wine-droplets span:nth-child(7) {
-  --drop-size: 5px;
-  --drop-x: -58px;
-  --drop-y: 4px;
-  animation-delay: 205ms;
-}
-
-.wine-droplets span:nth-child(8) {
-  --drop-size: 3px;
-  --drop-x: -96px;
-  --drop-y: -18px;
-  animation-delay: 240ms;
-}
-
-@keyframes wineDropletBurst {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.38) rotate(-8deg);
-  }
-
-  16% {
-    opacity: 0.9;
-  }
-
-  100% {
-    opacity: 0;
-    transform:
-      translate(calc(-50% + var(--drop-x)), calc(-50% + var(--drop-y)))
-      scale(0.82)
-      rotate(28deg);
-  }
 }
 
 .bottle-illustration {
@@ -1317,8 +1392,8 @@ p {
   position: absolute;
   left: 38vw;
   right: 3.2vw;
-  top: 17vh;
-  bottom: 0.3vh;
+  top: 13.5vh;
+  bottom: 3.8vh;
   z-index: 3;
   display: grid;
   grid-template-columns: repeat(4, minmax(150px, 1fr));
@@ -1331,8 +1406,16 @@ p {
 }
 
 .calendar-stain-field::before {
-  display: none;
-  content: "";
+  grid-column: 1 / -1;
+  margin-bottom: 0.7rem;
+  color: var(--ink);
+  content: "Temporadas de mayor consumo en Argentina";
+  font-family: Fraunces, Georgia, serif;
+  font-size: clamp(1.35rem, 1.8vw, 2.35rem);
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 1;
+  text-align: center;
 }
 
 .calendar-stain {
@@ -1452,12 +1535,12 @@ p {
   position: relative;
   z-index: 2;
   max-width: 92%;
-  color: rgba(42, 16, 9, 0.7);
-  font-family: Inter, system-ui, sans-serif;
-  font-size: clamp(0.9rem, 1vw, 1.2rem);
-  font-weight: 700;
+  color: #080403;
+  font-family: Fraunces, Georgia, serif;
+  font-size: clamp(1.28rem, 1.72vw, 2.35rem);
+  font-weight: 900;
   letter-spacing: 0;
-  line-height: 1;
+  line-height: 0.95;
   text-align: center;
   text-shadow: none;
   text-transform: none;

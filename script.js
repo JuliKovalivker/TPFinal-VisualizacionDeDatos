@@ -3,7 +3,7 @@ const progress = document.querySelector(".scroll-progress");
 const opener = document.querySelector(".opener");
 const posterBottle = document.querySelector(".poster-bottle");
 const posterCork = document.querySelector(".poster-cork");
-const bottleIllustration = document.querySelector(".bottle-illustration");
+const posterBottleArt = document.querySelector(".bottle-illustration");
 const wineBuilder = document.querySelector(".wine-builder");
 const worldSection = document.querySelector(".world-consumption");
 const argentinaSection = document.querySelector(".argentina-zoom");
@@ -211,36 +211,31 @@ function svgPointToClient(svg, x, y) {
 }
 
 function updatePosterCorkPosition() {
-  if (!posterBottle || !posterCork || !bottleIllustration) return;
+  if (!posterBottle || !posterCork || !posterBottleArt) return;
 
-  const viewBox = bottleIllustration.viewBox?.baseVal;
+  const viewBox = posterBottleArt.viewBox?.baseVal;
   const bottleWidth = posterBottle.offsetWidth;
   const bottleHeight = posterBottle.offsetHeight;
   if (!viewBox?.width || !viewBox?.height || !bottleWidth || !bottleHeight) return;
 
-  const scale = Math.min(bottleWidth / viewBox.width, bottleHeight / viewBox.height);
-  const renderedWidth = viewBox.width * scale;
-  const renderedHeight = viewBox.height * scale;
-  const offsetX = (bottleWidth - renderedWidth) / 2;
-  const offsetY = (bottleHeight - renderedHeight) / 2;
+  const neckTop = 92;
+  const neckBottom = 144;
+  const neckCenter = (neckTop + neckBottom) / 2;
+  const mouthX = 18;
+  const scaleX = bottleWidth / viewBox.width;
+  const scaleY = bottleHeight / viewBox.height;
+  const corkHeight = (neckBottom - neckTop) * scaleY;
+  const corkWidth = corkHeight * 1.2;
+  const insertedWidth = corkHeight * 0.5;
+  const corkLeft = (mouthX - viewBox.x) * scaleX + insertedWidth - corkWidth;
+  const corkTop = (neckCenter - viewBox.y) * scaleY - corkHeight / 2;
 
-  const neckOpening = {
-    x: 18,
-    top: 92,
-    bottom: 144,
-  };
-  const corkAspectRatio = 62 / 52;
-  const mouthX = offsetX + (neckOpening.x - viewBox.x) * scale;
-  const mouthTop = offsetY + (neckOpening.top - viewBox.y) * scale;
-  const mouthHeight = (neckOpening.bottom - neckOpening.top) * scale;
-  const corkWidth = mouthHeight * corkAspectRatio;
-
-  posterBottle.style.setProperty("--poster-mouth-x", `${mouthX.toFixed(2)}px`);
-  posterBottle.style.setProperty("--poster-mouth-y", `${(mouthTop + mouthHeight / 2).toFixed(2)}px`);
-  posterBottle.style.setProperty("--poster-cork-left", `${(mouthX - corkWidth / 2).toFixed(2)}px`);
-  posterBottle.style.setProperty("--poster-cork-top", `${mouthTop.toFixed(2)}px`);
-  posterBottle.style.setProperty("--poster-cork-width", `${corkWidth.toFixed(2)}px`);
-  posterBottle.style.setProperty("--poster-cork-height", `${mouthHeight.toFixed(2)}px`);
+  posterCork.style.setProperty("--poster-cork-left", `${corkLeft.toFixed(2)}px`);
+  posterCork.style.setProperty("--poster-cork-top", `${corkTop.toFixed(2)}px`);
+  posterCork.style.setProperty("--poster-cork-width", `${corkWidth.toFixed(2)}px`);
+  posterCork.style.setProperty("--poster-cork-height", `${corkHeight.toFixed(2)}px`);
+  posterCork.style.setProperty("--poster-cork-pop-x", `${(-corkWidth * 0.84).toFixed(2)}px`);
+  posterCork.style.setProperty("--poster-cork-pop-y", `${(-corkHeight * 3.94).toFixed(2)}px`);
 }
 
 function updateCalculatedPour() {
@@ -403,29 +398,19 @@ function updateIntroState() {
   const travel = Math.max(opener.offsetHeight - window.innerHeight, 1);
   const rect = opener.getBoundingClientRect();
   const introProgress = clamp(-rect.top / travel, 0, 1);
-  const corkProgress = clamp((introProgress - 0.09) / 0.3, 0, 1);
-  const titleProgress = clamp((introProgress - 0.24) / 0.68, 0, 1);
-  const titleLine1 = clamp(titleProgress / 0.58, 0, 1);
-  const titleLine2 = clamp((titleProgress - 0.34) / 0.66, 0, 1);
+  const titleProgress = 1;
+  const titleLine1 = 1;
+  const titleLine2 = 1;
+  const titleLine3 = 1;
 
   root.style.setProperty("--intro-progress", introProgress.toFixed(3));
-  root.style.setProperty("--cork-progress", corkProgress.toFixed(3));
   root.style.setProperty("--title-progress", titleProgress.toFixed(3));
   root.style.setProperty("--title-line-1", titleLine1.toFixed(3));
   root.style.setProperty("--title-line-2", titleLine2.toFixed(3));
+  root.style.setProperty("--title-line-3", titleLine3.toFixed(3));
   root.style.setProperty("--title-line-1-clip", `${((1 - titleLine1) * 100).toFixed(2)}%`);
   root.style.setProperty("--title-line-2-clip", `${((1 - titleLine2) * 100).toFixed(2)}%`);
-
-  if (introProgress < 0.035) {
-    corkPopped = false;
-    root.classList.remove("has-uncorked");
-  }
-
-  if (!corkPopped && corkProgress > 0.18) {
-    corkPopped = true;
-    root.classList.add("has-uncorked");
-    playCorkPop();
-  }
+  root.style.setProperty("--title-line-3-clip", `${((1 - titleLine3) * 100).toFixed(2)}%`);
 }
 
 function updateTasteRecommendation() {
@@ -757,8 +742,8 @@ function updateScrollState() {
     progress.style.width = `${scrollPercent}%`;
   }
 
-  updateIntroState();
   updatePosterCorkPosition();
+  updateIntroState();
   updateWorldState();
   updateArgentinaState();
   updateCalendarState();
@@ -819,6 +804,9 @@ renderWineMap();
 renderTastingStep();
 updateScrollState();
 updateTasteRecommendation();
-document.fonts?.ready.then(updateCalculatedPour).catch(() => {});
+document.fonts?.ready.then(() => {
+  updatePosterCorkPosition();
+  updateCalculatedPour();
+}).catch(() => {});
 window.addEventListener("scroll", updateScrollState, { passive: true });
 window.addEventListener("resize", updateScrollState);
