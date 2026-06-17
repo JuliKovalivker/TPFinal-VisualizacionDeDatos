@@ -123,7 +123,7 @@ const tastingSteps = [
   {
     label: "Cata guiada",
     title: "Aprendamos a catar vino.",
-    text: "Una copa, cinco gestos y un perfil final para mirar el vino con más atención.",
+    text: "Una copa y cuatro gestos para mirar el vino con más atención.",
     button: "Comenzar",
   },
   {
@@ -149,12 +149,6 @@ const tastingSteps = [
     title: "Probar",
     text: "Ahora entra la textura: acidez, alcohol, taninos, dulzor y persistencia aparecen juntos.",
     button: "Siguiente",
-  },
-  {
-    label: "Paso 5 · Descubrir",
-    title: "Descubrir",
-    text: "Según tu perfil de consumo, este radar imagina qué atributos podrían llamarte más la atención en una copa.",
-    button: "Reiniciar",
   },
 ];
 
@@ -610,12 +604,17 @@ function updateTasteDetailState() {
   const rect = wineBuilder.getBoundingClientRect();
   const sectionProgress = clamp(-rect.top / travel, 0, 1);
   const isResultResetting = Date.now() < tasteResultResetUntil;
+  const chartPeekProgress = isComplete
+    && !isResultResetting
+    ? smoothStep((sectionProgress - 0.12) / 0.14)
+    : 0;
   const slideProgress = isComplete
     && !isResultResetting
-    ? smoothStep((sectionProgress - 0.38) / 0.42)
+    ? smoothStep((sectionProgress - 0.3) / 0.38)
     : 0;
   const profileShift = -118 * slideProgress;
-  const chartShift = 118 * (1 - slideProgress);
+  const chartShift = clamp(118 - chartPeekProgress * 36 - slideProgress * 82, 0, 118);
+  const chartOpacity = Math.max(chartPeekProgress, slideProgress);
   const profileScale = 1;
   const detailTextProgress = isComplete ? 1 : 0;
   const detailTextY = 10 * (1 - detailTextProgress);
@@ -626,7 +625,7 @@ function updateTasteDetailState() {
   root.style.setProperty("--profile-detail-opacity", detailTextProgress.toFixed(3));
   root.style.setProperty("--profile-detail-y", `${detailTextY.toFixed(1)}px`);
   root.style.setProperty("--chart-slide-x", `${chartShift.toFixed(2)}vw`);
-  root.style.setProperty("--chart-opacity", slideProgress.toFixed(3));
+  root.style.setProperty("--chart-opacity", chartOpacity.toFixed(3));
 }
 
 function updateTasteRecommendation() {
@@ -1193,7 +1192,8 @@ function updateCompositionState() {
   const copyOut = smoothStep((compositionProgress - 0.84) / 0.08);
   const copyVisible = copyIn * (1 - copyOut);
   const copyY = 0;
-  const glassShift = isCompositionNear ? 22 : 0;
+  const glassCentering = smoothStep((compositionProgress - 0.62) / 0.3);
+  const glassShift = 22 * (1 - glassCentering);
   const focusStart = 0.25;
   const focusEnd = 0.79;
   const focusProgress = clamp(
@@ -1264,13 +1264,15 @@ function updateFermentationState() {
   const isFermentationNear = rect.top <= window.innerHeight * 1.08 && rect.bottom >= 0;
   const copyIn = smoothStep((fermentationProgress - 0.1) / 0.14);
   const copyOut = smoothStep((fermentationProgress - 0.78) / 0.1);
-  const chartIn = smoothStep((fermentationProgress - 0.2) / 0.2);
-  const chartOut = smoothStep((fermentationProgress - 0.82) / 0.12);
+  const chartIn = smoothStep((fermentationProgress - 0.14) / 0.3);
+  const chartOut = smoothStep((fermentationProgress - 0.76) / 0.2);
   const chartVisible = chartIn * (1 - chartOut);
   const chartX = -52 * (1 - chartIn) - 52 * chartOut;
+  const chartAfterX = 52 * (1 - chartIn) + 52 * chartOut;
   const chartY = -1.5 * chartIn - 2 * chartOut;
   const chartScale = 0.98 + chartIn * 0.02 - chartOut * 0.02;
-  const glassShift = 22;
+  const glassShift = 0;
+  const glassScale = 1;
 
   root.classList.toggle("is-fermentation-active", isFermentationActive);
   root.classList.toggle("is-fermentation-near", isFermentationNear);
@@ -1279,13 +1281,15 @@ function updateFermentationState() {
   root.style.setProperty("--fermentation-copy-x", `${(-12 * (1 - copyIn) - 12 * copyOut).toFixed(2)}vw`);
   root.style.setProperty("--fermentation-chart-opacity", chartVisible.toFixed(3));
   root.style.setProperty("--fermentation-chart-x", `${chartX.toFixed(2)}vw`);
+  root.style.setProperty("--fermentation-chart-after-x", `${chartAfterX.toFixed(2)}vw`);
   root.style.setProperty("--fermentation-chart-y", `${chartY.toFixed(2)}vh`);
   root.style.setProperty("--fermentation-chart-scale", chartScale.toFixed(3));
 
   if (isFermentationNear) {
+    root.style.setProperty("--bridge-glass-opacity", "1");
     root.style.setProperty("--bridge-glass-extra-x", `${glassShift.toFixed(2)}vw`);
     root.style.setProperty("--bridge-glass-y", "0vh");
-    root.style.setProperty("--bridge-glass-scale", "1");
+    root.style.setProperty("--bridge-glass-scale", glassScale.toFixed(3));
     root.style.setProperty("--bridge-glass-rotate", "0deg");
     root.style.setProperty("--shared-glass-opacity", "1");
   }
@@ -1298,10 +1302,12 @@ function updateTastingScrollState() {
   const rect = tastingSection.getBoundingClientRect();
   const tastingProgress = clamp(-rect.top / travel, 0, 1);
   const isTastingActive = rect.top <= window.innerHeight && rect.bottom >= 0;
+  const isTastingNear = rect.top <= window.innerHeight * 1.08 && rect.bottom >= 0;
   const entryProgress = 1;
   const copyY = 12 - tastingProgress * 24;
   const copyOpacity = smoothStep((tastingProgress - 0.025) / 0.11);
-  const glassShift = isTastingActive ? 22 : 0;
+  const tastingGlassEntry = smoothStep(tastingProgress / 0.28);
+  const glassShift = isTastingActive ? 22 * tastingGlassEntry : 0;
   const discoverGlassFade = smoothStep((tastingProgress - 0.8) / 0.1);
   const sharedGlassOpacity =
     isTastingActive ? 1 - discoverGlassFade : rect.top > window.innerHeight ? 1 : 0;
@@ -1323,8 +1329,10 @@ function updateTastingScrollState() {
   root.style.setProperty("--tasting-copy-y", `${copyY.toFixed(2)}vh`);
   root.style.setProperty("--tasting-copy-opacity", copyOpacity.toFixed(3));
   root.style.setProperty("--tasting-glass-drop-y", "0vh");
-  root.style.setProperty("--bridge-glass-extra-x", `${glassShift.toFixed(2)}vw`);
-  root.style.setProperty("--shared-glass-opacity", sharedGlassOpacity.toFixed(3));
+  if (isTastingNear) {
+    root.style.setProperty("--bridge-glass-extra-x", `${glassShift.toFixed(2)}vw`);
+    root.style.setProperty("--shared-glass-opacity", sharedGlassOpacity.toFixed(3));
+  }
   tastingCopyPanels.forEach((panel, index) => {
     let panelOpacity = 0;
     let panelY = 68;
