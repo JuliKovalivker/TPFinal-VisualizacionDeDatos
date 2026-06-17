@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,700;6..96,900&family=Cormorant+Garamond:wght@500;700&family=Fraunces:opsz,wght,SOFT@9..144,700..900,35&family=IBM+Plex+Mono:wght@500;700&family=Inter:wght@400;600;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=stable-liquid-pour" />
   </head>
   <body>
     <div class="scroll-progress" aria-hidden="true"></div>
@@ -24,9 +24,8 @@
         <div class="opener-pin">
           <div class="opener-copy">
             <h1 class="written-title intro-question" aria-label="¿Qué hay detrás de una copa?">
-              <span data-text="¿Qué hay">¿Qué hay</span>
-              <span data-text="detrás de">detrás de</span>
-              <span data-text="una copa?">una copa?</span>
+              <span data-text="¿Qué hay detrás">¿Qué hay detrás</span>
+              <span data-text="de una copa?">de una copa?</span>
             </h1>
           </div>
 
@@ -39,8 +38,10 @@
                   </clipPath>
                 </defs>
 
-                <ellipse class="intro-table-base" cx="258" cy="486" rx="230" ry="30" fill="#4f2b20" />
-                <path class="intro-table-base-front" fill="#3f241b" d="M28 486 C62 510 454 510 488 486 C456 518 60 518 28 486Z" />
+                <g class="intro-arm">
+                  <path class="intro-forearm" d="M-250 352 C-158 326 -54 318 46 326 C91 330 126 336 146 348 C162 358 158 378 140 385 C62 374 -58 382 -254 420Z" />
+                  <path class="intro-hand-back" d="M118 316 C147 304 185 313 207 338 C226 359 221 389 197 402 C171 416 142 397 131 371 C124 354 109 350 91 354 C76 358 64 349 66 334 C68 318 95 313 118 316Z" />
+                </g>
                 <g class="intro-glass">
                   <path class="intro-glass-base-fill" d="M156 478 C184 456 332 456 360 478 C332 501 184 501 156 478Z" />
                   <path class="intro-glass-stem-fill" d="M238 346 C253 369 254 424 242 458 C238 468 226 474 216 480 C241 489 275 489 300 480 C290 474 278 468 274 458 C262 424 263 369 278 346Z" />
@@ -58,6 +59,15 @@
                     d="M156 96 C156 78 202 64 258 64 C314 64 360 78 360 96 C360 114 314 128 258 128 C202 128 156 114 156 96Z M166 96 C166 108 207 118 258 118 C309 118 350 108 350 96 C350 84 309 74 258 74 C207 74 166 84 166 96Z"
                   />
                   <path class="intro-rim-front-shadow" d="M166 102 C206 117 310 117 350 102 C335 119 302 128 258 128 C214 128 181 119 166 102Z" />
+                </g>
+                <g class="intro-hand-front">
+                  <path class="intro-palm" d="M100 337 C129 321 166 329 190 353 C208 371 205 401 181 415 C155 429 126 410 112 383 C104 369 91 364 77 364 C65 364 59 354 65 342 C72 329 88 328 100 337Z" />
+                  <path class="intro-thumb" d="M177 335 C203 336 229 352 242 376 C250 391 242 405 226 405 C214 405 207 392 201 382 C191 366 178 357 160 354Z" />
+                  <path class="intro-index-finger" d="M117 345 C143 343 168 356 183 377 C191 389 184 405 169 405 C157 405 150 393 142 383 C132 369 119 362 100 361 C88 360 83 349 91 341 C98 335 108 338 117 345Z" />
+                  <path class="intro-middle-finger" d="M100 366 C124 365 147 378 160 397 C168 409 160 424 145 424 C134 424 127 412 120 402 C111 389 98 383 82 382 C70 381 65 370 73 363 C80 356 91 359 100 366Z" />
+                  <path class="intro-hand-crease" d="M108 345 C132 341 158 350 178 371" />
+                  <path class="intro-finger-crease" d="M110 365 C124 366 136 373 146 385" />
+                  <path class="intro-finger-crease" d="M94 388 C107 390 118 397 126 408" />
                 </g>
               </svg>
             </div>
@@ -78,8 +88,10 @@
 
           <div class="taste-board">
             <div class="taste-questions">
-              <fieldset class="taste-question">
-                <legend>¿Cada cuánto aparece una copa?</legend>
+              <div class="taste-question" role="group" aria-labelledby="taste-question-frequency">
+                <h3 id="taste-question-frequency" class="taste-question-title">
+                  ¿Cada cuánto aparece una copa?
+                </h3>
                 <div class="taste-options">
                   <button type="button" data-trait="body" data-value="poco">
                     Casi nunca
@@ -88,10 +100,12 @@
                     Varias veces
                   </button>
                 </div>
-              </fieldset>
+              </div>
 
-              <fieldset class="taste-question">
-                <legend>¿En qué momentos lo elegís?</legend>
+              <div class="taste-question" role="group" aria-labelledby="taste-question-moments">
+                <h3 id="taste-question-moments" class="taste-question-title">
+                  ¿En qué momentos lo elegís?
+                </h3>
                 <div class="taste-options">
                   <button type="button" data-trait="flavor" data-value="ocasiones">
                     Solo ocasiones
@@ -100,10 +114,12 @@
                     Comidas y juntadas
                   </button>
                 </div>
-              </fieldset>
+              </div>
 
-              <fieldset class="taste-question">
-                <legend>¿Cuánto te importa elegir la botella?</legend>
+              <div class="taste-question" role="group" aria-labelledby="taste-question-choice">
+                <h3 id="taste-question-choice" class="taste-question-title">
+                  ¿Cuánto te importa elegir la botella?
+                </h3>
                 <div class="taste-options">
                   <button type="button" data-trait="age" data-value="simple">
                     Me da igual
@@ -112,7 +128,7 @@
                     Me fijo bastante
                   </button>
                 </div>
-              </fieldset>
+              </div>
             </div>
 
             <aside class="recommendation" aria-live="polite">
@@ -131,6 +147,59 @@
                 <span id="tagBody">frecuencia</span>
                 <span id="tagFlavor">momento</span>
                 <span id="tagAge">atención</span>
+              </div>
+            </aside>
+
+            <aside class="profile-chart-panel" aria-label="Gráfico del perfil de consumo">
+              <p class="profile-chart-question">¿Cuán común es tu consumo?</p>
+              <div class="profile-chart-frame">
+                <div class="profile-chart" data-profile-chart="poco-ocasiones-simple">
+                  <div class="flourish-embed flourish-chart" data-src="visualisation/29382994">
+                    <noscript><img src="https://public.flourish.studio/visualisation/29382994/thumbnail" width="100%" alt="chart visualization" /></noscript>
+                  </div>
+                </div>
+
+                <div class="profile-chart" data-profile-chart="poco-ocasiones-atento">
+                  <div class="flourish-embed flourish-chart" data-src="visualisation/29382956">
+                    <noscript><img src="https://public.flourish.studio/visualisation/29382956/thumbnail" width="100%" alt="chart visualization" /></noscript>
+                  </div>
+                </div>
+
+                <div class="profile-chart" data-profile-chart="poco-mesa-simple">
+                  <div class="flourish-embed flourish-chart" data-src="visualisation/29383018">
+                    <noscript><img src="https://public.flourish.studio/visualisation/29383018/thumbnail" width="100%" alt="chart visualization" /></noscript>
+                  </div>
+                </div>
+
+                <div class="profile-chart" data-profile-chart="poco-mesa-atento">
+                  <div class="flourish-embed flourish-chart" data-src="visualisation/29382918">
+                    <noscript><img src="https://public.flourish.studio/visualisation/29382918/thumbnail" width="100%" alt="chart visualization" /></noscript>
+                  </div>
+                </div>
+
+                <div class="profile-chart" data-profile-chart="seguido-ocasiones-simple">
+                  <div class="flourish-embed flourish-chart" data-src="visualisation/29382969">
+                    <noscript><img src="https://public.flourish.studio/visualisation/29382969/thumbnail" width="100%" alt="chart visualization" /></noscript>
+                  </div>
+                </div>
+
+                <div class="profile-chart" data-profile-chart="seguido-ocasiones-atento">
+                  <div class="flourish-embed flourish-chart" data-src="visualisation/29382880">
+                    <noscript><img src="https://public.flourish.studio/visualisation/29382880/thumbnail" width="100%" alt="chart visualization" /></noscript>
+                  </div>
+                </div>
+
+                <div class="profile-chart" data-profile-chart="seguido-mesa-simple">
+                  <div class="flourish-embed flourish-chart" data-src="visualisation/29382934">
+                    <noscript><img src="https://public.flourish.studio/visualisation/29382934/thumbnail" width="100%" alt="chart visualization" /></noscript>
+                  </div>
+                </div>
+
+                <div class="profile-chart" data-profile-chart="seguido-mesa-atento">
+                  <div class="flourish-embed flourish-chart" data-src="visualisation/29382555">
+                    <noscript><img src="https://public.flourish.studio/visualisation/29382555/thumbnail" width="100%" alt="chart visualization" /></noscript>
+                  </div>
+                </div>
               </div>
             </aside>
           </div>
@@ -198,104 +267,212 @@
         </div>
       </section>
 
-      <section id="calendario-vino" class="wine-calendar" aria-label="Calendario visual del vino en Argentina">
-        <div class="calendar-pin">
-          <div class="calendar-copy">
-            <p class="section-kicker">Temporadas de consumo</p>
-            <h2>La presencia del vino también cambia con el calendario</h2>
-            <p>
-              Si el vino acompaña celebraciones, entonces no aparece siempre con la
-              misma intensidad. Las marcas más cargadas señalan los meses donde la
-              copa pesa más en reuniones, comidas y despedidas de año.
-            </p>
-          </div>
+      <section id="calendario-vino" class="wine-calendar figma-calendar-section" aria-label="Calendario visual del vino en Argentina">
+        <div class="figma-calendar-copy">
+          <p class="section-kicker">Botellas de siempre</p>
+          <h2>Después del calendario, aparecen los vinos que más se repiten en la mesa argentina</h2>
+          <p>
+            La escena baja de escala: de los meses y las costumbres pasamos a
+            las botellas. Algunas uvas se volvieron casi un idioma propio para
+            hablar del vino argentino.
+          </p>
+        </div>
 
-          <div class="calendar-stain-field" aria-hidden="true">
-            <div class="calendar-stain stain-a" style="--level: 0.82; --delay: 0.02; --spin: -5deg;"><span></span><strong>Enero</strong></div>
-            <div class="calendar-stain stain-c" style="--level: 0.28; --delay: 0.08; --spin: 4deg;"><span></span><strong>Febrero</strong></div>
-            <div class="calendar-stain stain-b" style="--level: 0.38; --delay: 0.13; --spin: -7deg;"><span></span><strong>Marzo</strong></div>
-            <div class="calendar-stain stain-d" style="--level: 0.52; --delay: 0.19; --spin: 6deg;"><span></span><strong>Abril</strong></div>
-            <div class="calendar-stain stain-c" style="--level: 0.62; --delay: 0.24; --spin: -6deg;"><span></span><strong>Mayo</strong></div>
-            <div class="calendar-stain stain-a" style="--level: 0.72; --delay: 0.3; --spin: 8deg;"><span></span><strong>Junio</strong></div>
-            <div class="calendar-stain stain-d" style="--level: 0.84; --delay: 0.36; --spin: -4deg;"><span></span><strong>Julio</strong></div>
-            <div class="calendar-stain stain-b" style="--level: 0.56; --delay: 0.42; --spin: 5deg;"><span></span><strong>Agosto</strong></div>
-            <div class="calendar-stain stain-a" style="--level: 0.48; --delay: 0.48; --spin: -8deg;"><span></span><strong>Septiembre</strong></div>
-            <div class="calendar-stain stain-c" style="--level: 0.68; --delay: 0.54; --spin: 3deg;"><span></span><strong>Octubre</strong></div>
-            <div class="calendar-stain stain-d" style="--level: 0.94; --delay: 0.6; --spin: -3deg;"><span></span><strong>Noviembre</strong></div>
-            <div class="calendar-stain stain-b stain-december" style="--level: 1; --delay: 0.66; --spin: 7deg;"><span></span><strong>Diciembre</strong></div>
-          </div>
+        <div class="figma-calendar-wrap">
+          <img
+            class="figma-calendar-image"
+            src="assets/calendario-figma-static.png"
+            alt="Calendario visual del consumo de vino por mes en Argentina">
+        </div>
+      </section>
 
+      <section id="produccion-provincia" class="province-production" aria-label="Producción de vino por provincia en Argentina">
+        <div class="province-production-copy">
+          <p class="section-kicker">Producción por provincia</p>
+          <h2>La copa también tiene un mapa adentro</h2>
+          <p>
+            Después de mirar cuándo aparece el vino, la historia baja al territorio:
+            no todas las provincias producen igual, y esa diferencia también explica
+            qué botellas llegan con más fuerza a la mesa argentina.
+          </p>
+        </div>
+
+        <figure class="province-production-figure">
+          <div class="flourish-embed flourish-chart" data-src="visualisation/29383358"><script src="https://public.flourish.studio/resources/embed.js"></script><noscript><img src="https://public.flourish.studio/visualisation/29383358/thumbnail" width="100%" alt="chart visualization" /></noscript></div>
+        </figure>
+      </section>
+
+      <section id="uvas-provincia-story" class="flourish-story-section" data-slide-count="3" aria-label="Storytelling de variedades y producción por provincia">
+        <div class="flourish-story-stage" data-height="86vh">
+          <div class="flourish-embed flourish-chart" data-src="story/3707183"><script src="https://public.flourish.studio/resources/embed.js"></script><noscript><img src="https://public.flourish.studio/story/3707183/thumbnail" width="100%" alt="visualization" /></noscript></div>
         </div>
       </section>
 
       <section id="vinos-argentinos" class="argentine-varietals" aria-label="Varietales clásicos argentinos">
         <div class="varietal-pin">
-          <div class="varietal-copy">
-            <p class="section-kicker">Botellas de siempre</p>
-            <h2>Después del calendario, aparecen los vinos que más se repiten en la mesa argentina</h2>
-            <p>
-              La escena baja de escala: de los meses y las costumbres pasamos a
-              las botellas. Algunas uvas se volvieron casi un idioma propio para
-              hablar del vino argentino.
-            </p>
+          <div class="bottle-transition-bg" aria-hidden="true"></div>
+          <div class="bottle-transition-title" aria-hidden="true">
+            <p>¿Cómo se llega a esta botella?</p>
           </div>
 
-          <div class="bottle-flight" aria-hidden="true">
-            <div class="varietal-bottle traveling-bottle bottle-malbec">
-              <span class="bottle-shine"></span>
-              <span class="bottle-label">
-                <em>Malbec</em>
-                <small>Mendoza</small>
-                <span class="label-note">Tinto profundo, fruta madura, violetas y taninos amables.</span>
-              </span>
-            </div>
+          <svg class="bridge-pour-stream" id="bridgePour" preserveAspectRatio="none" aria-hidden="true">
+            <path class="bridge-pour-shadow" id="bridgePourShadow"></path>
+            <path class="bridge-pour-main" id="bridgePourPath"></path>
+            <path class="bridge-pour-highlight" id="bridgePourHighlight"></path>
+          </svg>
+
+          <div class="bridge-receiving-glass" aria-hidden="true">
+            <svg class="bridge-glass-illustration" viewBox="100 40 320 460">
+              <defs>
+                <clipPath id="bridgeBowlClip">
+                  <path d="M154 96 C145 139 137 183 137 227 C137 283 185 327 232 347 C247 354 269 354 284 347 C331 327 379 283 379 227 C379 183 371 139 362 96 C322 113 194 113 154 96Z" />
+                </clipPath>
+              </defs>
+
+              <g class="bridge-glass-shape">
+                <path class="bridge-glass-base-fill" d="M156 478 C184 456 332 456 360 478 C332 501 184 501 156 478Z" />
+                <path class="bridge-glass-stem-fill" d="M238 346 C253 369 254 424 242 458 C238 468 226 474 216 480 C241 489 275 489 300 480 C290 474 278 468 274 458 C262 424 263 369 278 346Z" />
+                <path class="bridge-glass-bowl-fill" d="M154 96 C145 139 137 183 137 227 C137 283 185 327 232 347 C247 354 269 354 284 347 C331 327 379 283 379 227 C379 183 371 139 362 96 C322 113 194 113 154 96Z" />
+                <g clip-path="url(#bridgeBowlClip)">
+                  <path class="bridge-wine-fill" d="M134 216 C187 198 329 198 382 216 C378 276 327 327 284 347 C269 354 247 354 232 347 C189 327 138 276 134 216Z" />
+                  <path class="bridge-wine-top" d="M134 216 C187 198 329 198 382 216 C329 236 187 236 134 216Z" />
+                  <path class="bridge-wine-shine" d="M330 252 C347 231 358 224 366 233 C374 244 348 288 318 306 C315 287 319 266 330 252Z" />
+                </g>
+                <path class="bridge-glass-highlight" d="M190 120 C177 151 166 197 166 232 C166 244 181 248 187 236 C193 200 201 156 213 129 C219 116 197 105 190 120Z" />
+                <ellipse class="bridge-glass-surface-anchor" cx="258" cy="216" rx="118" ry="16" />
+                <path class="bridge-rim-inner" d="M166 96 C166 84 207 74 258 74 C309 74 350 84 350 96 C350 108 309 118 258 118 C207 118 166 108 166 96Z" />
+                <path
+                  class="bridge-rim-ring"
+                  fill-rule="evenodd"
+                  d="M156 96 C156 78 202 64 258 64 C314 64 360 78 360 96 C360 114 314 128 258 128 C202 128 156 114 156 96Z M166 96 C166 108 207 118 258 118 C309 118 350 108 350 96 C350 84 309 74 258 74 C207 74 166 84 166 96Z"
+                />
+                <path class="bridge-rim-front-shadow" d="M166 102 C206 117 310 117 350 102 C335 119 302 128 258 128 C214 128 181 119 166 102Z" />
+              </g>
+            </svg>
           </div>
 
           <div class="bottle-lineup">
-            <article class="varietal-slot target-slot">
-              <div class="landing-mark" aria-hidden="true"></div>
-            </article>
-
             <article class="varietal-slot">
-              <div class="varietal-bottle bottle-cabernet">
+              <div class="varietal-bottle bottle-malbec" style="--bottle-index: 0;">
                 <span class="bottle-shine"></span>
+                <span class="bottle-mouth-anchor" aria-hidden="true"></span>
+                <span class="bottle-mouth-direction" aria-hidden="true"></span>
+                <span class="bridge-cork" aria-hidden="true"></span>
+                <span class="bridge-spray-burst" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </span>
                 <span class="bottle-label">
-                  <em>Cabernet Sauvignon</em>
-                  <small>Cuyo</small>
-                  <span class="label-note">Más estructura, notas de cassis, pimienta y un final seco.</span>
+                  <span class="label-face label-front">
+                    <em>Malbec</em>
+                  </span>
+                  <span class="label-face label-back">
+                    <em>Malbec</em>
+                    <small>Mendoza</small>
+                    <span class="label-note">Tinto profundo, fruta madura, violetas y taninos amables.</span>
+                  </span>
                 </span>
               </div>
             </article>
 
             <article class="varietal-slot">
-              <div class="varietal-bottle bottle-bonarda">
+              <div class="varietal-bottle bottle-cabernet" style="--bottle-index: 1;">
                 <span class="bottle-shine"></span>
+                <span class="bottle-mouth-anchor" aria-hidden="true"></span>
+                <span class="bottle-mouth-direction" aria-hidden="true"></span>
+                <span class="bridge-cork" aria-hidden="true"></span>
+                <span class="bridge-spray-burst" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </span>
                 <span class="bottle-label">
-                  <em>Bonarda</em>
-                  <small>San Juan</small>
-                  <span class="label-note">Frutal, jugoso y directo: cereza, ciruela y especias suaves.</span>
+                  <span class="label-face label-front">
+                    <em>Cabernet Sauvignon</em>
+                  </span>
+                  <span class="label-face label-back">
+                    <em>Cabernet Sauvignon</em>
+                    <small>Cuyo</small>
+                    <span class="label-note">Más estructura, notas de cassis, pimienta y un final seco.</span>
+                  </span>
                 </span>
               </div>
             </article>
 
             <article class="varietal-slot">
-              <div class="varietal-bottle bottle-torrontes">
+              <div class="varietal-bottle bottle-bonarda" style="--bottle-index: 2;">
                 <span class="bottle-shine"></span>
+                <span class="bottle-mouth-anchor" aria-hidden="true"></span>
+                <span class="bottle-mouth-direction" aria-hidden="true"></span>
+                <span class="bridge-cork" aria-hidden="true"></span>
+                <span class="bridge-spray-burst" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </span>
                 <span class="bottle-label">
-                  <em>Torrontés</em>
-                  <small>Salta</small>
-                  <span class="label-note">Blanco aromático, floral y cítrico, muy asociado al norte argentino.</span>
+                  <span class="label-face label-front">
+                    <em>Bonarda</em>
+                  </span>
+                  <span class="label-face label-back">
+                    <em>Bonarda</em>
+                    <small>San Juan</small>
+                    <span class="label-note">Frutal, jugoso y directo: cereza, ciruela y especias suaves.</span>
+                  </span>
                 </span>
               </div>
             </article>
 
             <article class="varietal-slot">
-              <div class="varietal-bottle bottle-chardonnay">
+              <div class="varietal-bottle bottle-torrontes" style="--bottle-index: 3;">
                 <span class="bottle-shine"></span>
+                <span class="bottle-mouth-anchor" aria-hidden="true"></span>
+                <span class="bottle-mouth-direction" aria-hidden="true"></span>
+                <span class="bridge-cork" aria-hidden="true"></span>
+                <span class="bridge-spray-burst" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </span>
                 <span class="bottle-label">
-                  <em>Chardonnay</em>
-                  <small>Patagonia</small>
-                  <span class="label-note">Blanco versátil: puede ser fresco, cremoso o pasar por madera.</span>
+                  <span class="label-face label-front">
+                    <em>Torrontés</em>
+                  </span>
+                  <span class="label-face label-back">
+                    <em>Torrontés</em>
+                    <small>Salta</small>
+                    <span class="label-note">Blanco aromático, floral y cítrico, muy asociado al norte argentino.</span>
+                  </span>
+                </span>
+              </div>
+            </article>
+
+            <article class="varietal-slot">
+              <div class="varietal-bottle bottle-chardonnay" style="--bottle-index: 4;">
+                <span class="bottle-shine"></span>
+                <span class="bottle-mouth-anchor" aria-hidden="true"></span>
+                <span class="bottle-mouth-direction" aria-hidden="true"></span>
+                <span class="bridge-cork" aria-hidden="true"></span>
+                <span class="bridge-spray-burst" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </span>
+                <span class="bottle-label">
+                  <span class="label-face label-front">
+                    <em>Chardonnay</em>
+                  </span>
+                  <span class="label-face label-back">
+                    <em>Chardonnay</em>
+                    <small>Patagonia</small>
+                    <span class="label-note">Blanco versátil: puede ser fresco, cremoso o pasar por madera.</span>
+                  </span>
                 </span>
               </div>
             </article>
@@ -303,116 +480,151 @@
         </div>
       </section>
 
-      <section id="de-botella-a-copa" class="pour-story" aria-label="De la botella a la copa">
-        <div class="pour-pin">
-          <div class="pour-copy pour-copy-left">
-            <p class="section-kicker">De la botella</p>
-            <h2>Todo empieza inclinado.</h2>
-            <p>
-              El vino deja de ser etiqueta y empieza a moverse: color, peso y
-              brillo aparecen antes de llegar a la copa.
-            </p>
-          </div>
-
-          <div class="pour-copy pour-copy-right">
-            <p class="section-kicker">Al chorro</p>
-            <h2>La caída cuenta una historia.</h2>
-            <p>
-              En ese hilo se ve la densidad, la transparencia y la primera pista
-              de lo que vamos a observar después.
-            </p>
-          </div>
-
-          <div class="pour-copy pour-copy-bottom">
-            <p class="section-kicker">A la copa</p>
-            <h2>Ahora sí: mirar de cerca.</h2>
-            <p>
-              Cuando cae en la copa, la botella deja paso a la cata: mirar,
-              girar, oler, probar y descubrir.
-            </p>
-          </div>
-
-          <div class="pour-scene">
-            <div class="pour-bottle" aria-hidden="true">
-              <svg class="pour-bottle-art" viewBox="0 0 760 260">
-                <path
-                  class="bottle-silhouette"
-                  d="M18 92h82c35 0 57-10 80-34 30-36 77-50 139-50h349c45 0 82 37 82 82v56c0 45-37 82-82 82H319c-62 0-109-14-139-50-23-24-45-34-80-34H18Z"
-                />
-                <path
-                  class="bottle-shadow"
-                  d="M238 190c31 13 72 19 120 19h298c34 0 63-23 72-55-28 18-64 27-108 27H332c-51 0-92-8-121-25 8 11 17 22 27 34Z"
-                />
-                <path
-                  class="bottle-highlight"
-                  d="M224 69c31-24 72-36 120-36h281"
-                />
-                <ellipse class="bottle-punt" cx="668" cy="132" rx="35" ry="45" />
+      <section id="composicion-vino" class="wine-composition-section" aria-label="Composición química del vino">
+        <div class="composition-pin">
+          <div class="composition-layout">
+            <div class="composition-visual" aria-hidden="true">
+              <svg class="composition-pie" viewBox="-132 -132 264 264" role="img">
+                <g class="composition-slices">
+                  <path
+                    class="composition-slice composition-water"
+                    data-composition-slice
+                    data-percent="86"
+                    data-title="Agua"
+                    data-detail="La base del vino: sostiene volumen, frescura y textura."
+                  ></path>
+                  <path
+                    class="composition-slice composition-alcohol"
+                    data-composition-slice
+                    data-percent="12"
+                    data-title="Alcohol"
+                    data-detail="Aporta cuerpo, calidez y parte de la sensación en boca."
+                  ></path>
+                  <path
+                    class="composition-slice composition-acids"
+                    data-composition-slice
+                    data-percent="1"
+                    data-title="Ácidos"
+                    data-detail="Dan frescura, tensión y equilibrio al sabor."
+                  ></path>
+                  <path
+                    class="composition-slice composition-minors"
+                    data-composition-slice
+                    data-percent="1"
+                    data-title="Taninos, azúcares y aromas"
+                    data-detail="Son pocos en cantidad, pero definen color, perfume y carácter."
+                  ></path>
+                </g>
+                <circle class="composition-pie-ring" cx="0" cy="0" r="102"></circle>
               </svg>
             </div>
 
-            <svg class="calculated-pour" id="calculatedPour" preserveAspectRatio="none" aria-hidden="true">
-              <path class="calculated-pour-shadow" id="calculatedPourShadow" />
-              <path class="calculated-pour-main" id="calculatedPourPath" />
-            </svg>
-
-            <div class="pour-glass">
-              <div class="pour-glass-bowl">
-                <div class="pour-glass-wine" aria-hidden="true"></div>
-                <div class="pour-glass-surface"></div>
-              </div>
-              <div class="composition-pie" aria-hidden="true"></div>
-              <div class="pour-glass-stem" aria-hidden="true"></div>
-              <div class="pour-glass-foot" aria-hidden="true"></div>
-              <div class="composition-callouts" aria-label="Composición química aproximada del vino">
-                <div class="composition-callout water">
-                  <strong>Agua</strong>
-                  <small>84-86% · base del volumen</small>
-                </div>
-                <div class="composition-callout alcohol">
-                  <strong>Alcohol</strong>
-                  <small>12-14% · cuerpo y calor</small>
-                </div>
-                <div class="composition-callout glycerol">
-                  <strong>Glicerol</strong>
-                  <small>0.5-1.5% · textura</small>
-                </div>
-                <div class="composition-callout acids">
-                  <strong>Ácidos</strong>
-                  <small>0.4-1% · frescura</small>
-                </div>
-                <div class="composition-callout phenolics">
-                  <strong>Fenólicos</strong>
-                  <small>&lt;1% · color, taninos y aromas</small>
-                </div>
+            <div class="composition-copy">
+              <p class="section-kicker">Composición química</p>
+              <h2>Dentro de la copa.</h2>
+              <div class="composition-details" aria-live="polite">
+                <article class="composition-detail is-active" data-composition-detail="0">
+                  <strong>86%</strong>
+                  <h3>Agua</h3>
+                  <p>La base del vino: sostiene volumen, frescura y textura.</p>
+                </article>
+                <article class="composition-detail" data-composition-detail="1">
+                  <strong>12%</strong>
+                  <h3>Alcohol</h3>
+                  <p>Aporta cuerpo, calidez y parte de la sensación en boca.</p>
+                </article>
+                <article class="composition-detail" data-composition-detail="2">
+                  <strong>1%</strong>
+                  <h3>Ácidos</h3>
+                  <p>Dan frescura, tensión y equilibrio al sabor.</p>
+                </article>
+                <article class="composition-detail" data-composition-detail="3">
+                  <strong>1%</strong>
+                  <h3>Taninos, azúcares y aromas</h3>
+                  <p>Son pocos en cantidad, pero definen color, perfume y carácter.</p>
+                </article>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="fermentacion" class="fermentation-section" aria-label="Alcohol y azúcar antes y después de la fermentación">
+        <div class="fermentation-pin">
+          <div class="fermentation-copy" aria-hidden="true">
+            <p class="section-kicker">Fermentación</p>
+            <h2>Alcohol y azúcar antes y después.</h2>
+          </div>
+
+          <div class="fermentation-chart-panel">
+            <div class="flourish-embed flourish-chart" data-src="visualisation/29383599"><script src="https://public.flourish.studio/resources/embed.js"></script><noscript><img src="https://public.flourish.studio/visualisation/29383599/thumbnail" width="100%" alt="chart visualization" /></noscript></div>
           </div>
         </div>
       </section>
 
       <section id="cata" class="tasting-section" aria-label="Cata paso a paso">
         <div class="tasting-panel">
-          <div class="tasting-copy">
-            <p class="section-kicker" id="tastingStepLabel">Cata guiada</p>
-            <h2 id="tastingTitle">Aprendamos a catar vino.</h2>
-            <p id="tastingText">
-              Una copa, cinco gestos y un perfil final para mirar el vino con
-              más atención.
-            </p>
+          <div class="tasting-copy-track">
+            <article class="tasting-copy-panel" data-step="0">
+              <p class="section-kicker">Cata guiada</p>
+              <h2>Aprendamos a catar vino.</h2>
+              <p>
+                Una copa, cinco gestos y un perfil final para mirar el vino con
+                más atención.
+              </p>
+            </article>
 
-            <div class="aroma-chips" aria-label="Aromas posibles">
-              <span>cereza</span>
-              <span>flores</span>
-              <span>frutas</span>
-              <span>hierbas</span>
-              <span>especias</span>
-            </div>
+            <article class="tasting-copy-panel" data-step="1">
+              <p class="section-kicker">Paso 1 · Mirar</p>
+              <h2>Mirar</h2>
+              <p>
+                Observá el color y la intensidad: antes de oler o probar, la copa
+                ya empieza a contar cuerpo, edad y concentración.
+              </p>
+            </article>
 
-            <div class="tasting-actions">
-              <button type="button" class="step-button" id="prevStep">Anterior</button>
-              <button type="button" class="step-button primary" id="nextStep">Comenzar</button>
-            </div>
+            <article class="tasting-copy-panel" data-step="2">
+              <p class="section-kicker">Paso 2 · Girar</p>
+              <h2>Girar</h2>
+              <p>
+                La copa gira para liberar aromas y dejar ver cómo el vino se mueve
+                contra el vidrio.
+              </p>
+            </article>
+
+            <article class="tasting-copy-panel" data-step="3">
+              <p class="section-kicker">Paso 3 · Oler</p>
+              <h2>Oler</h2>
+              <p>
+                Acercá la nariz e identificá familias: fruta, flores, hierbas,
+                especias o madera.
+              </p>
+              <div class="aroma-chips" aria-label="Aromas posibles">
+                <span>cereza</span>
+                <span>flores</span>
+                <span>frutas</span>
+                <span>hierbas</span>
+                <span>especias</span>
+              </div>
+            </article>
+
+            <article class="tasting-copy-panel" data-step="4">
+              <p class="section-kicker">Paso 4 · Probar</p>
+              <h2>Probar</h2>
+              <p>
+                Ahora entra la textura: acidez, alcohol, taninos, dulzor y
+                persistencia aparecen juntos.
+              </p>
+            </article>
+
+            <article class="tasting-copy-panel" data-step="5">
+              <p class="section-kicker">Paso 5 · Descubrir</p>
+              <h2>Descubrir</h2>
+              <p>
+                Según tu perfil de consumo, este radar imagina qué atributos
+                podrían llamarte más la atención en una copa.
+              </p>
+            </article>
           </div>
 
           <div class="glass-stage" aria-hidden="true">
@@ -430,22 +642,6 @@
               <span></span>
               <span></span>
               <span></span>
-            </div>
-
-            <div class="wine-glass" id="wineGlass">
-              <div class="glass-bowl">
-                <div class="wine-surface"></div>
-                <div class="wine-fill"></div>
-                <div class="wine-glow"></div>
-                <div class="wine-tears">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-              </div>
-              <div class="glass-stem"></div>
-              <div class="glass-foot"></div>
             </div>
 
             <div class="flavor-wheel">
@@ -475,6 +671,6 @@
 
     </main>
 
-    <script src="script.js"></script>
+  <script src="script.js?v=stable-liquid-pour"></script>
   </body>
 </html>
