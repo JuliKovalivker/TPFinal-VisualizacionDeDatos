@@ -8,9 +8,21 @@ const wineBuilder = document.querySelector(".wine-builder");
 const worldSection = document.querySelector(".world-consumption");
 const argentinaSection = document.querySelector(".argentina-zoom");
 const calendarSection = document.querySelector(".wine-calendar");
+const productionHistoryViewport = document.querySelector("[data-production-history-viewport]");
+const productionHistoryTrack = document.querySelector("[data-production-history-track]");
+const productionHistoryScale = document.querySelector("[data-production-history-scale]");
+const productionHistoryActiveYear = document.querySelector("[data-production-active-year]");
+const productionHistoryActiveValue = document.querySelector("[data-production-active-value]");
+const productionHistoryActiveNote = document.querySelector("[data-production-active-note]");
 const flourishStorySection = document.querySelector(".flourish-story-section");
+const flourishStoryCards = [...document.querySelectorAll(".story-card")];
 const varietalSection = document.querySelector(".argentine-varietals");
 const varietalBottles = [...document.querySelectorAll(".bottle-lineup .varietal-bottle")];
+const storyMalbecBottle = document.querySelector(".bottle-malbec");
+const storyMalbecSlot = storyMalbecBottle?.closest(".varietal-slot");
+const storyMalbecHome = storyMalbecBottle?.parentElement;
+const storyBoxCard = document.querySelector(".story-card.card-3");
+const storyBoxFlyer = document.querySelector(".story-box-flyer");
 const bridgePour = document.querySelector("#bridgePour");
 const bridgePourPath = document.querySelector("#bridgePourPath");
 const bridgePourShadow = document.querySelector("#bridgePourShadow");
@@ -20,11 +32,8 @@ const bridgeGlassSurface = document.querySelector(".bridge-glass-surface-anchor"
 const bridgeWineFill = document.querySelector(".bridge-wine-fill");
 const bridgeWineSurface = document.querySelector(".bridge-wine-top");
 const pourSection = document.querySelector(".pour-story");
-const travelingBottle = document.querySelector(".traveling-bottle");
 const landingMark = document.querySelector(".landing-mark");
-const mapPointsLayer = document.querySelector(".argentina-world-stage .map-points");
-const mapHotspotsLayer = document.querySelector(".argentina-world-stage .map-hotspots");
-const mapTooltip = document.querySelector(".argentina-world-stage .map-tooltip");
+const argentinaWorldMap = document.querySelector(".argentina-world-map");
 const tasteButtons = [...document.querySelectorAll(".taste-options button")];
 const tasteQuestions = [...document.querySelectorAll(".taste-question")];
 const profileCharts = [...document.querySelectorAll("[data-profile-chart]")];
@@ -42,6 +51,8 @@ const compositionSection = document.querySelector(".wine-composition-section");
 const compositionSlices = [...document.querySelectorAll("[data-composition-slice]")];
 const compositionDetails = [...document.querySelectorAll("[data-composition-detail]")];
 const fermentationSection = document.querySelector(".fermentation-section");
+const fermentationFlourish = document.querySelector("[data-fermentation-flourish]");
+const malbecProfileSection = document.querySelector(".malbec-profile-section");
 const nextStep = document.querySelector("#nextStep");
 const prevStep = document.querySelector("#prevStep");
 const radarShape = document.querySelector("#radarShape");
@@ -60,7 +71,9 @@ let tasteResultResetUntil = 0;
 let tasteCurrentStep = 0;
 let currentTastingStep = 0;
 let flourishStorySlideIndex = -1;
-
+let fermentationFlourishSlideIndex = -1;
+let storyMalbecLineupSettled = false;
+let varietalBridgeGlassActive = false;
 const tasteTraitOrder = ["body", "flavor", "age"];
 const tasteProfile = {
   body: "",
@@ -199,6 +212,48 @@ const wineConsumptionData = [
   { country: "India", consumption: 0.2, lat: 22, lon: 78, fact: "El consumo aún es bajo per cápita pero crece rápidamente." },
 ];
 
+const productionHistoryData = [
+  { year: 1996, hectoliters: 15200000 },
+  { year: 1997, hectoliters: 14900000 },
+  { year: 1998, hectoliters: 12800000 },
+  { year: 1999, hectoliters: 15400000 },
+  { year: 2000, hectoliters: 12900000 },
+  { year: 2001, hectoliters: 15900000 },
+  { year: 2002, hectoliters: 12600000 },
+  { year: 2003, hectoliters: 13100000 },
+  { year: 2004, hectoliters: 15464289 },
+  { year: 2005, hectoliters: 15397000 },
+  { year: 2006, hectoliters: 15395000 },
+  { year: 2007, hectoliters: 15046000 },
+  { year: 2008, hectoliters: 15040000 },
+  { year: 2009, hectoliters: 12135000 },
+  { year: 2010, hectoliters: 13378000 },
+  { year: 2011, hectoliters: 15467000 },
+  { year: 2012, hectoliters: 11778000 },
+  { year: 2013, hectoliters: 14985000 },
+  { year: 2014, hectoliters: 15217000 },
+  { year: 2015, hectoliters: 13420000 },
+  { year: 2016, hectoliters: 8821000 },
+  { year: 2017, hectoliters: 11758000 },
+  { year: 2018, hectoliters: 13741000 },
+  { year: 2019, hectoliters: 13098000 },
+  { year: 2020, hectoliters: 10648000 },
+  { year: 2021, hectoliters: 10855000 },
+  { year: 2022, hectoliters: 11450571 },
+  { year: 2023, hectoliters: 8813048 },
+  { year: 2024, hectoliters: 10868843 },
+  { year: 2025, hectoliters: 10370000 },
+];
+
+const productionHistoryNotes = {
+  2001: "Máximo de la serie. La producción alcanza uno de sus picos antes de la crisis.",
+  2002: "Crisis económica argentina. El sector empieza a reconfigurar su perfil exportador.",
+  2009: "Caída marcada en la producción, en un contexto de menor cosecha y mercado internacional inestable.",
+  2016: "Cosecha muy baja. El clima golpea la disponibilidad de uva y reduce el volumen elaborado.",
+  2020: "Pandemia. Cambian hábitos de consumo, logística y condiciones comerciales.",
+  2023: "Mínimo de la serie. Una cosecha difícil deja uno de los volúmenes más bajos del período.",
+};
+
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
@@ -206,6 +261,268 @@ function clamp(value, min, max) {
 function smoothStep(value) {
   const eased = clamp(value, 0, 1);
   return eased * eased * (3 - 2 * eased);
+}
+
+function lerp(start, end, amount) {
+  return start + (end - start) * clamp(amount, 0, 1);
+}
+
+function formatMillions(value) {
+  return (value / 1000000).toFixed(1).replace(".", ",");
+}
+
+function getFermentationGlassShift() {
+  return window.innerWidth <= 700 ? 52 : window.innerWidth <= 980 ? 38 : 35;
+}
+
+function renderProductionHistory() {
+  if (!productionHistoryTrack || productionHistoryTrack.dataset.rendered === "true") return;
+
+  const maxValue = Math.max(...productionHistoryData.map((item) => item.hectoliters));
+  const minValue = Math.min(...productionHistoryData.map((item) => item.hectoliters));
+  const scaleMax = Math.ceil(maxValue / 1000000) * 1000000;
+  const scaleTicks = [scaleMax, scaleMax * 0.75, scaleMax * 0.5, scaleMax * 0.25];
+
+  if (productionHistoryScale) {
+    productionHistoryScale.innerHTML = scaleTicks
+      .map((tick) => `
+        <span style="--tick-ratio: ${(tick / scaleMax).toFixed(3)};">
+          <em>${formatMillions(tick)}</em>
+        </span>
+      `)
+      .join("");
+  }
+
+  productionHistoryTrack.innerHTML = productionHistoryData
+    .map((item, index) => {
+      const height = (item.hectoliters / scaleMax) * 100;
+      const yearClass = item.year % 5 === 0 || index === 0 || index === productionHistoryData.length - 1
+        ? " is-labeled-year"
+        : "";
+      const extremeClass = item.hectoliters === maxValue
+        ? " is-max"
+        : item.hectoliters === minValue
+          ? " is-min"
+          : "";
+      const extremeLabel = item.hectoliters === maxValue
+        ? `<span class="history-extreme">Máximo</span>`
+        : item.hectoliters === minValue
+          ? `<span class="history-extreme">Mínimo</span>`
+          : "";
+      const noteLabel = productionHistoryNotes[item.year]
+        ? `<span class="history-note-marker" aria-hidden="true"></span>`
+        : "";
+
+      return `
+        <div class="history-year${yearClass}${extremeClass}" data-history-year="${item.year}" data-history-value="${item.hectoliters}" style="--bar-height: ${height.toFixed(2)}%;">
+          ${extremeLabel}
+          ${noteLabel}
+          <span class="history-bar" aria-hidden="true"></span>
+          <span class="history-year-label">${item.year}</span>
+        </div>
+      `;
+    })
+    .join("");
+
+  productionHistoryTrack.dataset.rendered = "true";
+}
+
+function getStoryCardBaseSize() {
+  const isMobile = window.innerWidth <= 700;
+  const width = isMobile
+    ? Math.min(window.innerWidth * 0.84, 420)
+    : Math.min(window.innerWidth * 0.52, 560);
+  const height = isMobile
+    ? clamp(window.innerHeight * 0.24, 150, 240)
+    : clamp(window.innerHeight * 0.28, 170, 280);
+
+  return { width, height };
+}
+
+function getStoryBoxSize() {
+  const isMobile = window.innerWidth <= 700;
+
+  return {
+    width: isMobile
+      ? clamp(window.innerWidth * 0.62, 220, 300)
+      : clamp(window.innerWidth * 0.18, 250, 340),
+    height: isMobile
+      ? clamp(window.innerHeight * 0.58, 360, 500)
+      : clamp(window.innerHeight * 0.68, 430, 620),
+  };
+}
+
+function getVarietalBottleMetrics() {
+  const isMobile = window.innerWidth <= 700;
+  const width = isMobile
+    ? clamp(window.innerWidth * 0.184, 62, 82)
+    : clamp(window.innerWidth * 0.14, 142, 255);
+
+  return {
+    width,
+    height: Math.min(window.innerHeight * 0.82, width * 2.96),
+  };
+}
+
+function getStoryBoxMalbecTarget(boxWidth, boxHeight, cardX = 0, cardY = 0) {
+  const metrics = getVarietalBottleMetrics();
+  const isMobile = window.innerWidth <= 700;
+  const bottleHeight = boxHeight * (isMobile ? 0.72 : 0.74);
+  const scale = clamp(bottleHeight / metrics.height, 0.42, 0.82);
+
+  return {
+    left: isMobile ? 41 : 38,
+    top: 53,
+    width: metrics.width * scale,
+    height: metrics.height * scale,
+    scale: 1,
+  };
+}
+
+function getStoryBoxViewportMalbecTarget() {
+  const boxSize = getStoryBoxSize();
+  const boxTarget = getStoryBoxMalbecTarget(boxSize.width, boxSize.height);
+
+  return {
+    x: ((boxTarget.left - 50) / 100) * boxSize.width,
+    y: ((boxTarget.top - 50) / 100) * boxSize.height,
+    width: boxTarget.width,
+    height: boxTarget.height,
+    scale: boxTarget.scale,
+  };
+}
+
+function getFinalMalbecTarget() {
+  const metrics = getVarietalBottleMetrics();
+
+  if (!storyMalbecSlot) {
+    return {
+      x: -window.innerWidth * 0.37,
+      y: window.innerHeight * 0.5 - metrics.height / 2,
+      width: metrics.width,
+      height: metrics.height,
+      scale: 1,
+    };
+  }
+
+  const slotRect = storyMalbecSlot.getBoundingClientRect();
+
+  return {
+    x: slotRect.left + slotRect.width / 2 - window.innerWidth / 2,
+    y: slotRect.bottom - metrics.height / 2 - window.innerHeight / 2,
+    width: metrics.width,
+    height: metrics.height,
+    scale: 1,
+  };
+}
+
+function interpolateMalbecTarget(from, to, progressAmount) {
+  const amount = clamp(progressAmount, 0, 1);
+
+  return {
+    x: lerp(from.x, to.x, amount),
+    y: lerp(from.y, to.y, amount),
+    width: lerp(from.width, to.width, amount),
+    height: lerp(from.height, to.height, amount),
+    scale: lerp(from.scale, to.scale, amount),
+  };
+}
+
+function addLineupRiseToTarget(target, lineupProgress) {
+  const riseOffset = (1 - clamp(lineupProgress, 0, 1)) * window.innerHeight * 0.12;
+
+  return {
+    ...target,
+    y: target.y + riseOffset,
+  };
+}
+
+function applyStoryBoxMalbec(target, opacity = 1) {
+  if (!storyMalbecBottle || !storyBoxCard || !target) return;
+
+  if (storyMalbecBottle.parentElement !== storyBoxCard) {
+    storyBoxCard.appendChild(storyMalbecBottle);
+  }
+
+  storyMalbecSlot?.classList.add("is-box-bottle-source");
+  storyMalbecBottle.classList.remove("is-traveling-to-lineup");
+  storyMalbecBottle.classList.add("is-inside-story-box");
+  storyMalbecBottle.style.setProperty("--story-box-bottle-opacity", opacity.toFixed(3));
+  storyMalbecBottle.style.setProperty("--story-box-bottle-clip-right", "0%");
+  storyMalbecBottle.style.setProperty("--story-box-bottle-left", `${target.left.toFixed(2)}%`);
+  storyMalbecBottle.style.setProperty("--story-box-bottle-top", `${target.top.toFixed(2)}%`);
+  storyMalbecBottle.style.setProperty("--story-box-bottle-width", `${target.width.toFixed(2)}px`);
+  storyMalbecBottle.style.setProperty("--story-box-bottle-height", `${target.height.toFixed(2)}px`);
+  storyMalbecBottle.style.setProperty("--varietal-bottle-width", `${target.width.toFixed(2)}px`);
+  storyMalbecBottle.style.setProperty("--varietal-bottle-height", `${target.height.toFixed(2)}px`);
+  storyMalbecBottle.style.setProperty("--story-box-bottle-scale", target.scale.toFixed(3));
+}
+
+function applyTravelingMalbec(target, opacity = 1) {
+  if (!storyMalbecBottle || !target) return;
+
+  if (storyMalbecBottle.parentElement !== document.body) {
+    document.body.appendChild(storyMalbecBottle);
+  }
+
+  storyMalbecSlot?.classList.add("is-box-bottle-source");
+  storyMalbecBottle.classList.remove("is-inside-story-box");
+  storyMalbecBottle.classList.add("is-traveling-to-lineup");
+  storyMalbecBottle.style.setProperty("--story-box-bottle-opacity", opacity.toFixed(3));
+  storyMalbecBottle.style.setProperty("--story-box-bottle-clip-right", "0%");
+  storyMalbecBottle.style.setProperty("--story-box-bottle-x", `${target.x.toFixed(2)}px`);
+  storyMalbecBottle.style.setProperty("--story-box-bottle-y", `${target.y.toFixed(2)}px`);
+  storyMalbecBottle.style.setProperty("--story-box-bottle-width", `${target.width.toFixed(2)}px`);
+  storyMalbecBottle.style.setProperty("--story-box-bottle-height", `${target.height.toFixed(2)}px`);
+  storyMalbecBottle.style.setProperty("--varietal-bottle-width", `${target.width.toFixed(2)}px`);
+  storyMalbecBottle.style.setProperty("--varietal-bottle-height", `${target.height.toFixed(2)}px`);
+  storyMalbecBottle.style.setProperty("--story-box-bottle-scale", target.scale.toFixed(3));
+}
+
+function updateStoryBoxFlyer(exitProgress = 0, opacity = 0) {
+  if (!storyBoxFlyer) return;
+
+  const boxSize = getStoryBoxSize();
+  const exitAmount = clamp(exitProgress, 0, 1);
+
+  storyBoxFlyer.style.setProperty("--story-box-flyer-width", `${boxSize.width.toFixed(2)}px`);
+  storyBoxFlyer.style.setProperty("--story-box-flyer-height", `${boxSize.height.toFixed(2)}px`);
+  storyBoxFlyer.style.setProperty("--story-box-flyer-y", `${(-window.innerHeight * 1.18 * exitAmount).toFixed(2)}px`);
+  storyBoxFlyer.style.setProperty("--story-box-flyer-opacity", opacity.toFixed(3));
+}
+
+function hideStoryBoxFlyer() {
+  updateStoryBoxFlyer(0, 0);
+}
+
+function setCalculatedPourReady(isReady) {
+  root.style.setProperty("--calculated-pour-ready", isReady ? "1" : "0");
+}
+
+function clearStoryBoxMalbec() {
+  if (!storyMalbecBottle) return;
+
+  storyMalbecSlot?.classList.remove("is-box-bottle-source");
+  storyMalbecBottle.classList.remove("is-inside-story-box");
+  storyMalbecBottle.classList.remove("is-traveling-to-lineup");
+
+  if (storyMalbecHome && storyMalbecBottle.parentElement !== storyMalbecHome) {
+    storyMalbecHome.appendChild(storyMalbecBottle);
+  }
+
+  [
+    "--story-box-bottle-opacity",
+    "--story-box-bottle-clip-right",
+    "--story-box-bottle-left",
+    "--story-box-bottle-top",
+    "--story-box-bottle-x",
+    "--story-box-bottle-y",
+    "--story-box-bottle-width",
+    "--story-box-bottle-height",
+    "--story-box-bottle-scale",
+    "--varietal-bottle-width",
+    "--varietal-bottle-height",
+  ].forEach((property) => storyMalbecBottle.style.removeProperty(property));
 }
 
 function compositionPoint(radius, angle) {
@@ -398,6 +715,7 @@ function updateCalculatedPour() {
     !pourGlassBowl ||
     !pourGlassSurface
   ) {
+    setCalculatedPourReady(false);
     return;
   }
 
@@ -415,6 +733,7 @@ function updateCalculatedPour() {
     !mouthClient ||
     !mouthDirectionClient
   ) {
+    setCalculatedPourReady(false);
     return;
   }
 
@@ -438,6 +757,27 @@ function updateCalculatedPour() {
     y: end.y - start.y,
   };
   const distance = Math.hypot(delta.x, delta.y);
+  const geometrySizesReady = [
+    sceneRect.width,
+    sceneRect.height,
+    bowlRect.width,
+    bowlRect.height,
+    surfaceRect.width,
+    surfaceRect.height,
+    distance,
+  ].every((value) => Number.isFinite(value) && value > 0);
+  const geometryCoordinatesReady = [
+    start.x,
+    start.y,
+    end.x,
+    end.y,
+  ].every((value) => Number.isFinite(value));
+
+  if (!geometrySizesReady || !geometryCoordinatesReady || distance < sceneRect.width * 0.08) {
+    setCalculatedPourReady(false);
+    return;
+  }
+
   const exitVector = normalizeVector(mouthDirection);
   const waveVector = normalizeVector({ x: -delta.y, y: delta.x });
   const waveSize = clamp(sceneRect.width * 0.05, 24, 84);
@@ -485,6 +825,7 @@ function updateCalculatedPour() {
   );
   calculatedPourPath.setAttribute("d", path);
   calculatedPourShadow.setAttribute("d", path);
+  setCalculatedPourReady(true);
 }
 
 function playCorkPop() {
@@ -746,112 +1087,16 @@ function projectMapPoint(lat, lon) {
   };
 }
 
-function moveMapTooltip(event) {
-  if (!mapTooltip) return;
-
-  const offset = 18;
-  const tooltipWidth = mapTooltip.offsetWidth || 300;
-  const origin = Number.isFinite(event.clientX)
-    ? { x: event.clientX, y: event.clientY }
-    : {
-        x: event.currentTarget.getBoundingClientRect().left,
-        y: event.currentTarget.getBoundingClientRect().top,
-      };
-  const left = Math.min(origin.x + offset, window.innerWidth - tooltipWidth - 18);
-  const top = Math.max(82, origin.y - 18);
-  mapTooltip.style.transform = `translate(${left}px, ${top}px)`;
-}
-
-function showMapTooltip(event, item) {
-  if (!mapTooltip) return;
-
-  mapTooltip.innerHTML = `
-    <strong>${item.country}</strong>
-    <span>${item.consumption.toLocaleString("es-AR")} millones hl</span>
-    <p>${item.fact}</p>
-  `;
-  mapTooltip.classList.add("is-visible");
-  moveMapTooltip(event);
-}
-
-function hideMapTooltip() {
-  mapTooltip?.classList.remove("is-visible");
-}
-
-function renderWineMap() {
-  if (!mapPointsLayer) return;
-
-  const maxConsumption = Math.max(...wineConsumptionData.map((item) => item.consumption));
-  mapPointsLayer.innerHTML = "";
-  if (mapHotspotsLayer) mapHotspotsLayer.innerHTML = "";
-
-  wineConsumptionData.forEach((item) => {
-    const point = projectMapPoint(item.lat, item.lon);
-    const radius = 5 + Math.sqrt(item.consumption / maxConsumption) * 23;
-    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    const hotspot = document.createElement("button");
-
-    group.classList.add("map-point");
-    group.setAttribute("tabindex", "0");
-    group.setAttribute("role", "button");
-    group.setAttribute("aria-label", `${item.country}: ${item.consumption} millones de hectolitros`);
-    group.setAttribute("transform", `translate(${point.x.toFixed(1)} ${point.y.toFixed(1)})`);
-
-    circle.setAttribute("r", radius.toFixed(1));
-
-    const bindTooltip = (target) => {
-      target.addEventListener("mouseenter", (event) => showMapTooltip(event, item));
-      target.addEventListener("mousemove", moveMapTooltip);
-      target.addEventListener("mouseleave", hideMapTooltip);
-      target.addEventListener("pointerenter", (event) => showMapTooltip(event, item));
-      target.addEventListener("pointermove", moveMapTooltip);
-      target.addEventListener("pointerleave", hideMapTooltip);
-      target.addEventListener("click", (event) => showMapTooltip(event, item));
-    };
-
-    group.append(circle);
-    bindTooltip(group);
-    bindTooltip(circle);
-    group.addEventListener("focus", (event) => showMapTooltip(event, item));
-    group.addEventListener("blur", hideMapTooltip);
-
-    mapPointsLayer.append(group);
-
-    if (mapHotspotsLayer) {
-      hotspot.className = "map-hotspot";
-      hotspot.type = "button";
-      hotspot.setAttribute("aria-label", `${item.country}: ${item.consumption} millones de hectolitros`);
-      hotspot.style.left = `${(point.x / 1000) * 100}%`;
-      hotspot.style.top = `${(point.y / 520) * 100}%`;
-      hotspot.style.width = `${Math.max(radius * 2.4, 24)}px`;
-      hotspot.style.height = `${Math.max(radius * 2.4, 24)}px`;
-      bindTooltip(hotspot);
-      hotspot.addEventListener("mouseenter", () => group.classList.add("is-active"));
-      hotspot.addEventListener("mouseleave", () => group.classList.remove("is-active"));
-      hotspot.addEventListener("pointerenter", () => group.classList.add("is-active"));
-      hotspot.addEventListener("pointerleave", () => group.classList.remove("is-active"));
-      hotspot.addEventListener("focus", (event) => showMapTooltip(event, item));
-      hotspot.addEventListener("focus", () => group.classList.add("is-active"));
-      hotspot.addEventListener("blur", () => {
-        group.classList.remove("is-active");
-        hideMapTooltip();
-      });
-      mapHotspotsLayer.append(hotspot);
-    }
-  });
-}
-
 function updateWorldState() {
   if (!worldSection) return;
 
   const travel = Math.max(worldSection.offsetHeight - window.innerHeight, 1);
   const rect = worldSection.getBoundingClientRect();
   const worldProgress = clamp(-rect.top / travel, 0, 1);
-  const questionOpacity = 1 - clamp(worldProgress * 2.4, 0, 1);
+  const questionOpacity = worldProgress < 0.38 ? 1 : 0;
   const noteIn = clamp((worldProgress - 0.18) * 4, 0, 1);
   const noteOut = clamp((worldProgress - 0.55) * 4, 0, 1);
-  const noteOpacity = noteIn * (1 - noteOut);
+  const noteOpacity = worldProgress >= 0.18 && worldProgress < 0.55 ? 1 : 0;
   const mapProgress = clamp((worldProgress - 0.58) * 2.6, 0, 1);
 
   root.style.setProperty("--world-progress", worldProgress.toFixed(3));
@@ -868,62 +1113,113 @@ function updateArgentinaState() {
   const travel = Math.max(argentinaSection.offsetHeight - window.innerHeight, 1);
   const rect = argentinaSection.getBoundingClientRect();
   const argProgress = clamp(-rect.top / travel, 0, 1);
-  const questionOpacity = 1 - clamp(argProgress / 0.18, 0, 1);
-  const noteIn = clamp((argProgress - 0.1) / 0.13, 0, 1);
-  const noteOut = clamp((argProgress - 0.31) / 0.13, 0, 1);
-  const noteOpacity = noteIn * (1 - noteOut);
-  const mapProgress = clamp((argProgress - 0.36) / 0.14, 0, 1);
-  const zoomStage = clamp((argProgress - 0.47) / 0.53, 0, 1);
-  const metaFade = 1 - clamp((zoomStage - 0.07) / 0.18, 0, 1);
-  const mapMetaOpacity = mapProgress * metaFade;
-  const mapY = mapMetaOpacity * 28;
-  const neighborOpacity = 1 - clamp((zoomStage - 0.1) / 0.34, 0, 1);
-  const pointsOpacity = neighborOpacity;
-  const neighborY = clamp(zoomStage / 0.55, 0, 1);
-  const zoomProgress = clamp((zoomStage - 0.18) / 0.42, 0, 1);
-  const argZoom = 1 + zoomProgress * 1.85;
-  const argShift = clamp((zoomStage - 0.58) / 0.27, 0, 1);
-  const copyOpacity = clamp((zoomStage - 0.66) / 0.24, 0, 1);
-  const focusOpacity = 0.45 + clamp(zoomStage / 0.42, 0, 1) * 0.55;
+  const isMobileArgentina = window.innerWidth <= 700;
+  const setArgentinaVar = (name, value) => {
+    root.style.setProperty(name, value);
+    argentinaSection.style.setProperty(name, value);
+  };
 
-  root.style.setProperty("--arg-progress", argProgress.toFixed(3));
-  root.style.setProperty("--world-progress", argProgress.toFixed(3));
-  root.style.setProperty("--world-question-opacity", questionOpacity.toFixed(3));
-  root.style.setProperty("--world-note-in", noteIn.toFixed(3));
-  root.style.setProperty("--world-note-out", noteOut.toFixed(3));
-  root.style.setProperty("--world-note-opacity", noteOpacity.toFixed(3));
-  root.style.setProperty("--world-map-progress", mapProgress.toFixed(3));
-  root.style.setProperty("--arg-map-stage-opacity", mapProgress.toFixed(3));
-  root.style.setProperty("--arg-map-meta-opacity", mapMetaOpacity.toFixed(3));
-  root.style.setProperty("--arg-map-y", `${mapY.toFixed(2)}vh`);
-  root.style.setProperty("--arg-points-opacity", pointsOpacity.toFixed(3));
-  root.style.setProperty("--arg-neighbor-opacity", neighborOpacity.toFixed(3));
-  root.style.setProperty("--arg-neighbor-y", neighborY.toFixed(3));
-  root.style.setProperty("--arg-zoom", argZoom.toFixed(3));
-  root.style.setProperty("--arg-shift", argShift.toFixed(3));
-  root.style.setProperty("--arg-copy-opacity", copyOpacity.toFixed(3));
-  root.style.setProperty("--arg-focus-opacity", focusOpacity.toFixed(3));
-  root.classList.toggle("is-argentina-focus", pointsOpacity < 0.08);
+  // Tramos: mapa completo -> popups narrativos -> salida del mundo -> zoom por viewBox.
+  const mapIn = smoothStep((window.innerHeight - rect.top) / (window.innerHeight * 0.5));
+  const popupIn = smoothStep((argProgress - 0.12) / 0.06);
+  const popupOut = smoothStep((argProgress - 0.35) / 0.15);
+  const popupOpacity = popupIn * (1 - popupOut);
+  const finalProgress = clamp((argProgress - 0.5) / 0.5, 0, 1);
+  const worldExit = smoothStep((finalProgress - 0.1) / 0.28);
+  const argZoomProgress = smoothStep((finalProgress - 0.38) / 0.28);
+  const copyIn = smoothStep((finalProgress - 0.72) / 0.18);
+  const worldY = worldExit * (isMobileArgentina ? -260 : -420);
+  const worldOpacity = mapIn * (1 - worldExit);
+  const targetViewBoxWidth = isMobileArgentina ? 280 : 290;
+  const targetViewBoxHeight = targetViewBoxWidth * 0.52;
+  const argentinaCenter = { x: 324, y: 371 };
+  const argentinaScreenFocus = {
+    x: isMobileArgentina ? 0.5 : 0.2,
+    y: isMobileArgentina ? 0.55 : 0.42,
+  };
+  const targetViewBoxX = clamp(
+    argentinaCenter.x - targetViewBoxWidth * argentinaScreenFocus.x,
+    0,
+    1000 - targetViewBoxWidth,
+  );
+  const targetViewBoxY = clamp(
+    argentinaCenter.y - targetViewBoxHeight * argentinaScreenFocus.y,
+    0,
+    520 - targetViewBoxHeight,
+  );
+  const viewBoxX = targetViewBoxX * argZoomProgress;
+  const viewBoxY = targetViewBoxY * argZoomProgress;
+  const viewBoxWidth = 1000 + (targetViewBoxWidth - 1000) * argZoomProgress;
+  const viewBoxHeight = 520 + (targetViewBoxHeight - 520) * argZoomProgress;
+  const argentinaOnlyScale = 1000 / viewBoxWidth;
+  const mapMetaOpacity = mapIn * (1 - smoothStep((finalProgress - 0.08) / 0.2));
+  const isFocusedArgentina = worldExit > 0.72 || argZoomProgress > 0.12;
 
-  if (pointsOpacity < 0.08) {
-    hideMapTooltip();
-  }
+  argentinaWorldMap?.setAttribute(
+    "viewBox",
+    `${viewBoxX.toFixed(1)} ${viewBoxY.toFixed(1)} ${viewBoxWidth.toFixed(1)} ${viewBoxHeight.toFixed(1)}`,
+  );
+  setArgentinaVar("--arg-progress", argProgress.toFixed(3));
+  setArgentinaVar("--arg-map-stage-opacity", mapIn.toFixed(3));
+  setArgentinaVar("--arg-map-meta-opacity", mapMetaOpacity.toFixed(3));
+  setArgentinaVar("--arg-world-y", `${worldY.toFixed(1)}px`);
+  setArgentinaVar("--arg-world-opacity", worldOpacity.toFixed(3));
+  setArgentinaVar("--argentina-only-scale", argentinaOnlyScale.toFixed(3));
+  setArgentinaVar("--argentina-only-x", `${viewBoxX.toFixed(1)}px`);
+  setArgentinaVar("--argentina-only-y", `${viewBoxY.toFixed(1)}px`);
+  setArgentinaVar("--popup-opacity", popupOpacity.toFixed(3));
+  setArgentinaVar("--arg-copy-opacity", copyIn.toFixed(3));
+  root.classList.toggle("is-argentina-focus", isFocusedArgentina);
 }
 
 function updateCalendarState() {
-  if (!calendarSection) return;
+  if (!calendarSection || !productionHistoryTrack || !productionHistoryViewport) return;
 
+  renderProductionHistory();
   const travel = Math.max(calendarSection.offsetHeight - window.innerHeight, 1);
   const rect = calendarSection.getBoundingClientRect();
-  const calendarProgress = clamp(-rect.top / travel, 0, 1);
-  const copyProgress = clamp(calendarProgress / 0.24, 0, 1);
-  const stainProgress = clamp((calendarProgress - 0.18) / 0.64, 0, 1);
-  const noteProgress = clamp((calendarProgress - 0.74) / 0.2, 0, 1);
+  const setHistoryVar = (name, value) => {
+    calendarSection.style.setProperty(name, value);
+  };
+  const historyProgress = clamp(-rect.top / travel, 0, 1);
+  const copyMotion = smoothStep(historyProgress / 0.16);
+  const copyVisible = historyProgress > 0.015 ? 1 : 0;
+  const chartVisible = historyProgress > 0.075 ? 1 : 0;
+  const timelineProgress = clamp((historyProgress - 0.14) / 0.72, 0, 1);
+  const trackMaxShift = Math.max(
+    productionHistoryTrack.scrollWidth - productionHistoryViewport.clientWidth,
+    0,
+  );
+  const trackX = -trackMaxShift * timelineProgress;
+  const barElements = [...productionHistoryTrack.querySelectorAll(".history-year")];
+  const activeIndex = Math.round(timelineProgress * (productionHistoryData.length - 1));
+  const activeItem = productionHistoryData[activeIndex] || productionHistoryData[0];
 
-  root.style.setProperty("--calendar-progress", calendarProgress.toFixed(3));
-  root.style.setProperty("--calendar-copy-progress", copyProgress.toFixed(3));
-  root.style.setProperty("--calendar-stain-progress", stainProgress.toFixed(3));
-  root.style.setProperty("--calendar-note-progress", noteProgress.toFixed(3));
+  setHistoryVar("--history-progress", historyProgress.toFixed(3));
+  setHistoryVar("--history-copy-opacity", copyVisible.toFixed(3));
+  setHistoryVar("--history-copy-y", `${(1.8 * (1 - copyMotion)).toFixed(2)}rem`);
+  setHistoryVar("--history-chart-opacity", chartVisible.toFixed(3));
+  setHistoryVar("--history-track-x", `${trackX.toFixed(2)}px`);
+  setHistoryVar("--history-readout-opacity", chartVisible.toFixed(3));
+
+  if (productionHistoryActiveYear) {
+    productionHistoryActiveYear.textContent = String(activeItem.year);
+  }
+
+  if (productionHistoryActiveValue) {
+    productionHistoryActiveValue.textContent = formatMillions(activeItem.hectoliters);
+  }
+
+  if (productionHistoryActiveNote) {
+    productionHistoryActiveNote.textContent = productionHistoryNotes[activeItem.year] || "";
+  }
+
+  barElements.forEach((bar, index) => {
+    const distance = Math.abs(index - activeIndex);
+
+    bar.classList.toggle("is-active", distance === 0);
+    bar.style.setProperty("--year-focus", Math.max(0, 1 - distance / 4).toFixed(3));
+  });
 }
 
 function updateVarietalState() {
@@ -932,9 +1228,27 @@ function updateVarietalState() {
   const travel = Math.max(varietalSection.offsetHeight - window.innerHeight, 1);
   const rect = varietalSection.getBoundingClientRect();
   const varietalProgress = clamp(-rect.top / travel, 0, 1);
+  const hasStoryBridge = Boolean(
+    flourishStorySection &&
+    storyBoxCard &&
+    storyMalbecBottle &&
+    storyMalbecSlot,
+  );
+  const storyFinished = !flourishStorySection ||
+    flourishStorySection.getBoundingClientRect().bottom <= window.innerHeight + 2;
+  const bridgeActive = hasStoryBridge && storyFinished;
+  const malbecTravelProgress = bridgeActive
+    ? smoothStep((varietalProgress - 0.17) / 0.12)
+    : 1;
   const copyOpacity = 1 - clamp((varietalProgress - 0.02) / 0.18, 0, 1);
-  const lineupOpacity = clamp((varietalProgress - 0.08) / 0.12, 0, 1);
-  const turnProgress = clamp((varietalProgress - 0.13) / 0.45, 0, 1);
+  const lineupOpacity = bridgeActive
+    ? smoothStep((varietalProgress - 0.31) / 0.09)
+    : clamp((varietalProgress - 0.2) / 0.12, 0, 1);
+  const turnProgress = clamp(
+    (varietalProgress - (bridgeActive ? 0.44 : 0.24)) / (bridgeActive ? 0.18 : 0.34),
+    0,
+    1,
+  );
   const transitionProgress = smoothStep((varietalProgress - 0.58) / 0.16);
   const labelClearProgress = smoothStep((varietalProgress - 0.58) / 0.07);
   const heroProgress = smoothStep((varietalProgress - 0.62) / 0.13);
@@ -962,8 +1276,18 @@ function updateVarietalState() {
   const bridgeGlassY = (1 - bridgeGlassProgress) * 128;
   const bridgeGlassOpacity = bridgeGlassProgress;
   const bridgeGlassScale = 1;
+  const bridgeGlassControlsScene = varietalProgress > 0.84 && varietalProgress < 0.995;
   const bridgeFillProgress = smoothStep((varietalProgress - 0.946) / 0.036);
-  const heroIndex = Math.floor(varietalBottles.length / 2);
+  const malbecIndex = varietalBottles.findIndex((bottle) =>
+    bottle.classList.contains("bottle-malbec"),
+  );
+  const heroIndex = malbecIndex >= 0
+    ? malbecIndex
+    : Math.floor(varietalBottles.length / 2);
+
+  if (!bridgeActive || varietalProgress < 0.34) {
+    storyMalbecLineupSettled = false;
+  }
 
   root.style.setProperty("--varietal-progress", varietalProgress.toFixed(3));
   root.style.setProperty("--varietal-copy-opacity", copyOpacity.toFixed(3));
@@ -980,6 +1304,39 @@ function updateVarietalState() {
   root.style.setProperty("--bridge-glass-y", `${bridgeGlassY.toFixed(2)}vh`);
   root.style.setProperty("--bridge-glass-scale", bridgeGlassScale.toFixed(3));
   root.style.setProperty("--bridge-wine-fill-progress", bridgeFillProgress.toFixed(3));
+
+  if (bridgeGlassControlsScene) {
+    root.style.setProperty("--bridge-glass-extra-x", "0vw");
+    root.style.setProperty("--bridge-glass-rotate", "0deg");
+    root.style.setProperty("--shared-glass-opacity", "1");
+  }
+
+  const bridgeCard = bridgeActive ? flourishStoryCards[flourishStoryCards.length - 1] : null;
+  if (bridgeCard && !storyMalbecLineupSettled) {
+    const boxExit = smoothStep((varietalProgress - 0.02) / 0.2);
+    const flyerOpacity = 1 - smoothStep((boxExit - 0.88) / 0.12);
+    const fromTarget = getStoryBoxViewportMalbecTarget();
+    const toTarget = addLineupRiseToTarget(getFinalMalbecTarget(), lineupOpacity);
+    const travelTarget = interpolateMalbecTarget(fromTarget, toTarget, malbecTravelProgress);
+    const malbecReadyForLineup = storyMalbecLineupSettled || varietalProgress >= 0.43;
+
+    updateStoryBoxFlyer(boxExit, flyerOpacity);
+    bridgeCard.style.setProperty("--story-card-opacity", "0");
+    bridgeCard.style.setProperty("--story-card-text-opacity", "0");
+    bridgeCard.style.setProperty("--story-card-y", "0px");
+
+    if (!malbecReadyForLineup) {
+      applyTravelingMalbec(travelTarget, 1);
+    } else {
+      storyMalbecLineupSettled = true;
+      clearStoryBoxMalbec();
+      hideStoryBoxFlyer();
+    }
+  } else {
+    hideStoryBoxFlyer();
+  }
+
+  varietalBridgeGlassActive = bridgeGlassControlsScene;
 
   const bridgeWineLevel = buildBridgeWineLevel(bridgeFillProgress);
   bridgeWineFill?.setAttribute("d", bridgeWineLevel.fill);
@@ -1056,6 +1413,7 @@ function updateVarietalState() {
 
   const heroBottle = varietalBottles[heroIndex];
   const pin = varietalSection.querySelector(".varietal-pin");
+  root.style.setProperty("--bridge-stream-ready", "0");
   if (heroBottle && pin) {
     const heroRect = heroBottle.getBoundingClientRect();
     const pinRect = pin.getBoundingClientRect();
@@ -1093,8 +1451,6 @@ function updateVarietalState() {
       const pourTargetRect =
         wineSurfaceRect?.width && wineSurfaceRect?.height ? wineSurfaceRect : surfaceRect;
       const mouthWidth = clamp(Math.min(correctedMouthRect.width, correctedMouthRect.height) * 1.18, 24, 46);
-      root.style.setProperty("--bridge-stream-width", `${mouthWidth.toFixed(2)}px`);
-      root.style.setProperty("--bridge-stream-shadow-width", `${(mouthWidth + 10).toFixed(2)}px`);
       const surfaceEnd = {
         x: pourTargetRect.left + pourTargetRect.width / 2 - pinRect.left,
         y: pourTargetRect.top + pourTargetRect.height * 0.5 - pinRect.top,
@@ -1110,6 +1466,28 @@ function updateVarietalState() {
         x: streamX,
         y: surfaceEnd.y + fixedMouthWidth * 0.08,
       };
+      const streamSizesReady = [
+        pinRect.width,
+        pinRect.height,
+        correctedMouthRect.width,
+        correctedMouthRect.height,
+        pourTargetRect.width,
+        pourTargetRect.height,
+      ].every((value) => Number.isFinite(value) && value > 0);
+      const streamCoordinatesReady = [
+        start.x,
+        start.y,
+        end.x,
+        end.y,
+      ].every((value) => Number.isFinite(value));
+
+      if (!streamSizesReady || !streamCoordinatesReady || end.y <= start.y) {
+        return;
+      }
+
+      root.style.setProperty("--bridge-stream-ready", "1");
+      root.style.setProperty("--bridge-stream-width", `${mouthWidth.toFixed(2)}px`);
+      root.style.setProperty("--bridge-stream-shadow-width", `${(mouthWidth + 10).toFixed(2)}px`);
       const distance = Math.max(end.y - start.y, fixedMouthWidth * 4);
       const controlStart = {
         x: sourceX,
@@ -1150,14 +1528,90 @@ function updateVarietalState() {
 function updateFlourishStoryState() {
   if (!flourishStorySection) return;
 
-  const iframe = flourishStorySection.querySelector(".flourish-embed iframe");
-  if (!iframe || !iframe.src) return;
-
   const slideCount = Math.max(Number(flourishStorySection.dataset.slideCount) || 1, 1);
   const travel = Math.max(flourishStorySection.offsetHeight - window.innerHeight, 1);
   const rect = flourishStorySection.getBoundingClientRect();
   const storyProgress = clamp(-rect.top / travel, 0, 1);
-  const slideIndex = Math.min(slideCount - 1, Math.floor(storyProgress * slideCount));
+  const storyFinished = rect.bottom <= window.innerHeight + 2;
+  const cardTimelines = [
+    { start: 0.14, enter: 0.07, hold: 0.11, exit: 0.08 },
+    { start: 0.5, enter: 0.07, hold: 0.11, exit: 0.08 },
+    { start: 0.84, enter: 0.07, hold: 1, exit: 0 },
+  ];
+  const slideIndex = storyProgress >= 0.8
+    ? Math.min(slideCount - 1, 2)
+    : storyProgress >= 0.44
+      ? Math.min(slideCount - 1, 1)
+      : 0;
+  const graphFade = smoothStep((storyProgress - 0.9) / 0.055);
+  const graphOpacity = 1 - graphFade;
+  const baseCardSize = getStoryCardBaseSize();
+  const finalTextFade = smoothStep((storyProgress - 0.89) / 0.045);
+  const finalBoxProgress = smoothStep((storyProgress - 0.905) / 0.045);
+  const finalDoorProgress = smoothStep((storyProgress - 0.97) / 0.03);
+  const travelDistance = window.innerHeight * 0.72;
+  let storyBoxMalbecActive = false;
+
+  flourishStorySection.style.setProperty("--story-graph-opacity", graphOpacity.toFixed(3));
+
+  flourishStoryCards.forEach((card, index) => {
+    const timeline = cardTimelines[index] || cardTimelines[cardTimelines.length - 1];
+    const enterProgress = smoothStep((storyProgress - timeline.start) / timeline.enter);
+    const exitStart = timeline.start + timeline.enter + timeline.hold;
+    const exitProgress = timeline.exit > 0
+      ? smoothStep((storyProgress - exitStart) / timeline.exit)
+      : 0;
+    const cardOpacity = clamp(enterProgress - exitProgress, 0, 1);
+    let cardX = 0;
+    let cardY = travelDistance * (1 - enterProgress) - travelDistance * exitProgress;
+    let cardWidth = baseCardSize.width;
+    let cardHeight = baseCardSize.height;
+    const cardScale = 0.98 + cardOpacity * 0.02;
+    let cardRadius = "6px";
+    let textOpacity = 1;
+    let cardVisualOpacity = cardOpacity;
+
+    if (index === flourishStoryCards.length - 1) {
+      const boxSize = getStoryBoxSize();
+      const boxWidth = boxSize.width;
+      const boxHeight = boxSize.height;
+      cardWidth = lerp(baseCardSize.width, boxWidth, finalBoxProgress);
+      cardHeight = lerp(baseCardSize.height, boxHeight, finalBoxProgress);
+      cardRadius = `${lerp(6, 8, finalBoxProgress).toFixed(1)}px`;
+      textOpacity = 1 - finalTextFade;
+      cardVisualOpacity = cardOpacity;
+      const boxBottleOpacity = finalBoxProgress * cardOpacity;
+
+      if (boxBottleOpacity > 0.001 && !storyFinished && !storyMalbecLineupSettled) {
+        applyStoryBoxMalbec(
+          getStoryBoxMalbecTarget(cardWidth, cardHeight, cardX, cardY),
+          boxBottleOpacity,
+        );
+        storyBoxMalbecActive = true;
+      }
+
+      card.style.setProperty("--story-box-progress", finalBoxProgress.toFixed(3));
+      card.style.setProperty("--story-door-progress", finalDoorProgress.toFixed(3));
+      card.style.setProperty("--story-box-interior-progress", (finalBoxProgress * finalDoorProgress).toFixed(3));
+    }
+
+    card.style.setProperty("--story-card-opacity", cardVisualOpacity.toFixed(3));
+    card.style.setProperty("--story-card-x", `${cardX.toFixed(2)}px`);
+    card.style.setProperty("--story-card-y", `${cardY.toFixed(2)}px`);
+    card.style.setProperty("--story-card-width", `${cardWidth.toFixed(2)}px`);
+    card.style.setProperty("--story-card-height", `${cardHeight.toFixed(2)}px`);
+    card.style.setProperty("--story-card-min-height", `${cardHeight.toFixed(2)}px`);
+    card.style.setProperty("--story-card-radius", cardRadius);
+    card.style.setProperty("--story-card-text-opacity", textOpacity.toFixed(3));
+    card.style.setProperty("--story-card-scale", cardScale.toFixed(3));
+  });
+
+  if (!storyBoxMalbecActive && (!storyFinished || storyMalbecLineupSettled)) {
+    clearStoryBoxMalbec();
+  }
+
+  const iframe = flourishStorySection.querySelector(".flourish-embed iframe");
+  if (!iframe || !iframe.src) return;
 
   if (slideIndex === flourishStorySlideIndex) return;
 
@@ -1183,31 +1637,59 @@ function updateCompositionState() {
   const compositionProgress = clamp(-rect.top / travel, 0, 1);
   const isCompositionActive = rect.top <= window.innerHeight && rect.bottom >= 0;
   const isCompositionNear = rect.top <= window.innerHeight * 1.15 && rect.bottom >= 0;
+  const focusStart = 0.21;
+  const graphSequenceEnd = 0.94;
   const chartIn = smoothStep((compositionProgress - 0.04) / 0.13);
-  const chartOut = smoothStep((compositionProgress - 0.86) / 0.1);
-  const chartVisible = chartIn * (1 - chartOut);
+  const chartOut = smoothStep((compositionProgress - 0.97) / 0.03);
+  const chartVisible = chartIn > 0.04 && chartOut < 0.98 ? 1 : 0;
   const chartX = -42 * (1 - chartIn) - 42 * chartOut;
   const chartScale = 0.94 + chartIn * 0.06 - chartOut * 0.04;
   const copyIn = smoothStep((compositionProgress - 0.12) / 0.12);
-  const copyOut = smoothStep((compositionProgress - 0.84) / 0.08);
-  const copyVisible = copyIn * (1 - copyOut);
+  const copyOut = smoothStep((compositionProgress - 0.96) / 0.035);
+  const copyVisible = copyIn > 0.04 && copyOut < 0.98 ? 1 : 0;
   const copyY = 0;
-  const glassCentering = smoothStep((compositionProgress - 0.62) / 0.3);
-  const glassShift = 22 * (1 - glassCentering);
-  const focusStart = 0.25;
-  const focusEnd = 0.79;
+  const glassEntryProgress = smoothStep(
+    (window.innerHeight * 1.05 - rect.top) / (window.innerHeight * 0.42),
+  );
+  const glassShift = 25 * glassEntryProgress;
+  const focusEnd = graphSequenceEnd;
   const focusProgress = clamp(
     (compositionProgress - focusStart) / (focusEnd - focusStart),
     0,
     0.999,
   );
-  const segmentFloat = focusProgress * compositionSlices.length;
-  const activeSliceIndex =
-    compositionProgress >= focusStart && compositionProgress <= focusEnd
-      ? Math.min(compositionSlices.length - 1, Math.floor(segmentFloat))
-      : -1;
-  const activeSliceProgress =
-    activeSliceIndex >= 0 ? segmentFloat - activeSliceIndex : 0;
+  const segmentWeights = compositionSlices.map((_, index) => {
+    if (index === compositionSlices.length - 1) return 1.72;
+    if (index >= compositionSlices.length - 2) return 1.3;
+    if (index === 1) return 1.08;
+    return 1;
+  });
+  const totalSegmentWeight = segmentWeights.reduce((sum, weight) => sum + weight, 0);
+  let activeSliceIndex = -1;
+  let activeSliceProgress = 0;
+
+  if (compositionProgress >= focusStart && compositionProgress <= focusEnd) {
+    let segmentStart = 0;
+    segmentWeights.some((weight, index) => {
+      const segmentEnd = segmentStart + weight / totalSegmentWeight;
+      const isLastSegment = index === segmentWeights.length - 1;
+      const isActiveSegment =
+        focusProgress >= segmentStart && (focusProgress < segmentEnd || isLastSegment);
+
+      if (isActiveSegment) {
+        activeSliceIndex = index;
+        activeSliceProgress = clamp(
+          (focusProgress - segmentStart) / Math.max(segmentEnd - segmentStart, 0.001),
+          0,
+          0.999,
+        );
+        return true;
+      }
+
+      segmentStart = segmentEnd;
+      return false;
+    });
+  }
   const sliceFocus =
     activeSliceIndex >= 0
       ? smoothStep(activeSliceProgress / 0.18)
@@ -1223,7 +1705,7 @@ function updateCompositionState() {
   root.style.setProperty("--composition-copy-opacity", copyVisible.toFixed(3));
   root.style.setProperty("--composition-copy-y", `${copyY.toFixed(2)}rem`);
 
-  if (isCompositionNear) {
+  if (isCompositionNear && !varietalBridgeGlassActive) {
     root.style.setProperty("--bridge-glass-extra-x", `${glassShift.toFixed(2)}vw`);
     root.style.setProperty("--bridge-glass-y", "0vh");
     root.style.setProperty("--bridge-glass-scale", "1");
@@ -1235,8 +1717,8 @@ function updateCompositionState() {
     const focus = index === activeSliceIndex ? sliceFocus : 0;
     const midAngle = Number(slice.dataset.midAngle) || 0;
     const percent = Number(slice.dataset.percent) || 0;
-    const popDistance = percent > 50 ? 13 : percent > 5 ? 22 : 18;
-    const scaleBoost = percent > 50 ? 0.018 : percent > 5 ? 0.032 : 0.006;
+    const popDistance = percent > 50 ? 8 : percent > 5 ? 14 : 10;
+    const scaleBoost = percent > 50 ? 0.01 : percent > 5 ? 0.018 : 0.004;
     const pop = compositionPoint(popDistance * focus, midAngle);
 
     slice.style.setProperty("--slice-pop-x", `${pop.x.toFixed(2)}px`);
@@ -1266,32 +1748,101 @@ function updateFermentationState() {
   const copyOut = smoothStep((fermentationProgress - 0.78) / 0.1);
   const chartIn = smoothStep((fermentationProgress - 0.14) / 0.3);
   const chartOut = smoothStep((fermentationProgress - 0.76) / 0.2);
-  const chartVisible = chartIn * (1 - chartOut);
+  const copyVisible = copyIn > 0.04 && copyOut < 0.98 ? 1 : 0;
+  const chartVisible = chartIn > 0.04 && chartOut < 0.98 ? 1 : 0;
   const chartX = -52 * (1 - chartIn) - 52 * chartOut;
-  const chartAfterX = 52 * (1 - chartIn) + 52 * chartOut;
   const chartY = -1.5 * chartIn - 2 * chartOut;
   const chartScale = 0.98 + chartIn * 0.02 - chartOut * 0.02;
-  const glassShift = 0;
-  const glassScale = 1;
+  const glassCarryShift = 25;
+  const glassTargetShift = getFermentationGlassShift();
+  const glassTargetScale = window.innerWidth <= 700 ? 0.82 : window.innerWidth <= 980 ? 0.92 : 1;
+  const glassEntryProgress = smoothStep(
+    (window.innerHeight * 0.92 - rect.top) / (window.innerHeight * 0.56),
+  );
+  const glassShift = lerp(glassCarryShift, glassTargetShift, glassEntryProgress);
+  const glassScale = lerp(1, glassTargetScale, glassEntryProgress);
 
   root.classList.toggle("is-fermentation-active", isFermentationActive);
   root.classList.toggle("is-fermentation-near", isFermentationNear);
   root.style.setProperty("--fermentation-progress", fermentationProgress.toFixed(3));
-  root.style.setProperty("--fermentation-copy-opacity", (copyIn * (1 - copyOut)).toFixed(3));
+  root.style.setProperty("--fermentation-copy-opacity", copyVisible.toFixed(3));
   root.style.setProperty("--fermentation-copy-x", `${(-12 * (1 - copyIn) - 12 * copyOut).toFixed(2)}vw`);
   root.style.setProperty("--fermentation-chart-opacity", chartVisible.toFixed(3));
   root.style.setProperty("--fermentation-chart-x", `${chartX.toFixed(2)}vw`);
-  root.style.setProperty("--fermentation-chart-after-x", `${chartAfterX.toFixed(2)}vw`);
   root.style.setProperty("--fermentation-chart-y", `${chartY.toFixed(2)}vh`);
   root.style.setProperty("--fermentation-chart-scale", chartScale.toFixed(3));
+  updateFermentationFlourishSlide(fermentationProgress);
 
-  if (isFermentationNear) {
+  if (isFermentationNear && !varietalBridgeGlassActive) {
     root.style.setProperty("--bridge-glass-opacity", "1");
     root.style.setProperty("--bridge-glass-extra-x", `${glassShift.toFixed(2)}vw`);
     root.style.setProperty("--bridge-glass-y", "0vh");
     root.style.setProperty("--bridge-glass-scale", glassScale.toFixed(3));
     root.style.setProperty("--bridge-glass-rotate", "0deg");
     root.style.setProperty("--shared-glass-opacity", "1");
+  }
+}
+
+function updateFermentationFlourishSlide(fermentationProgress) {
+  if (!fermentationFlourish) return;
+
+  const slideCount = Math.max(Number(fermentationFlourish.dataset.slideCount) || 1, 1);
+  if (slideCount <= 1) return;
+
+  const iframe = fermentationFlourish.querySelector("iframe");
+  if (!iframe || !iframe.src) return;
+
+  const slideProgress = clamp((fermentationProgress - 0.2) / 0.58, 0, 0.999);
+  const slideIndex = Math.min(slideCount - 1, Math.floor(slideProgress * slideCount));
+  if (slideIndex === fermentationFlourishSlideIndex) return;
+
+  fermentationFlourishSlideIndex = slideIndex;
+  iframe.src = iframe.src.replace(/#slide-\d+$/, "") + `#slide-${slideIndex}`;
+}
+
+function updateMalbecProfileState() {
+  if (!malbecProfileSection) return;
+
+  const travel = Math.max(malbecProfileSection.offsetHeight - window.innerHeight, 1);
+  const rect = malbecProfileSection.getBoundingClientRect();
+  const profileProgress = clamp(-rect.top / travel, 0, 1);
+  const isProfileActive = rect.top <= window.innerHeight && rect.bottom >= 0;
+  const isProfileNear = rect.top <= window.innerHeight * 1.08 && rect.bottom >= 0;
+  const copyProgress = smoothStep((profileProgress - 0.04) / 0.12);
+  const radarProgress = smoothStep((profileProgress - 0.14) / 0.14);
+  const copyVisible = copyProgress > 0.04 ? 1 : 0;
+  const radarVisible = radarProgress > 0.04 ? 1 : 0;
+  const shapeProgress = smoothStep((profileProgress - 0.64) / 0.16);
+  const shapeFill = smoothStep((profileProgress - 0.72) / 0.1);
+  const glassScale = window.innerWidth <= 700 ? 0.82 : window.innerWidth <= 980 ? 0.92 : 1;
+
+  root.classList.toggle("is-malbec-profile-active", isProfileActive);
+  root.classList.toggle("is-malbec-profile-near", isProfileNear);
+  root.style.setProperty("--malbec-profile-progress", profileProgress.toFixed(3));
+  root.style.setProperty("--malbec-profile-copy-opacity", copyVisible.toFixed(3));
+  root.style.setProperty("--malbec-profile-copy-y", `${(1.6 * (1 - copyProgress)).toFixed(2)}rem`);
+  root.style.setProperty("--malbec-profile-radar-opacity", radarVisible.toFixed(3));
+  root.style.setProperty("--malbec-profile-radar-y", `${(1.8 * (1 - radarProgress)).toFixed(2)}rem`);
+  root.style.setProperty("--malbec-profile-radar-scale", (0.96 + radarProgress * 0.04).toFixed(3));
+  root.style.setProperty("--malbec-profile-grid-opacity", (radarProgress * 0.82).toFixed(3));
+  root.style.setProperty("--malbec-profile-shape-progress", shapeProgress.toFixed(3));
+  root.style.setProperty("--malbec-profile-shape-fill", shapeFill.toFixed(3));
+
+  for (let index = 0; index < 5; index += 1) {
+    const axisProgress = smoothStep((profileProgress - (0.26 + index * 0.055)) / 0.07);
+    const labelProgress = smoothStep((profileProgress - (0.34 + index * 0.055)) / 0.07);
+
+    root.style.setProperty(`--malbec-profile-axis-${index + 1}`, axisProgress.toFixed(3));
+    root.style.setProperty(`--malbec-profile-label-${index + 1}`, labelProgress.toFixed(3));
+  }
+
+  if (isProfileActive && !varietalBridgeGlassActive) {
+    root.style.setProperty("--bridge-glass-opacity", "1");
+    root.style.setProperty("--bridge-glass-extra-x", `${getFermentationGlassShift().toFixed(2)}vw`);
+    root.style.setProperty("--bridge-glass-y", "0vh");
+    root.style.setProperty("--bridge-glass-scale", glassScale.toFixed(3));
+    root.style.setProperty("--bridge-glass-rotate", "0deg");
+    root.style.setProperty("--shared-glass-opacity", "0.82");
   }
 }
 
@@ -1305,9 +1856,13 @@ function updateTastingScrollState() {
   const isTastingNear = rect.top <= window.innerHeight * 1.08 && rect.bottom >= 0;
   const entryProgress = 1;
   const copyY = 12 - tastingProgress * 24;
-  const copyOpacity = smoothStep((tastingProgress - 0.025) / 0.11);
+  const copyVisible = tastingProgress > 0.025 && tastingProgress < 0.985 ? 1 : 0;
   const tastingGlassEntry = smoothStep(tastingProgress / 0.28);
-  const glassShift = isTastingActive ? 22 * tastingGlassEntry : 0;
+  const glassCarryShift = getFermentationGlassShift();
+  const glassTargetShift = 22;
+  const glassShift = isTastingActive
+    ? lerp(glassCarryShift, glassTargetShift, tastingGlassEntry)
+    : glassCarryShift;
   const discoverGlassFade = smoothStep((tastingProgress - 0.8) / 0.1);
   const sharedGlassOpacity =
     isTastingActive ? 1 - discoverGlassFade : rect.top > window.innerHeight ? 1 : 0;
@@ -1327,9 +1882,9 @@ function updateTastingScrollState() {
   root.style.setProperty("--tasting-progress", tastingProgress.toFixed(3));
   root.style.setProperty("--tasting-entry-progress", entryProgress.toFixed(3));
   root.style.setProperty("--tasting-copy-y", `${copyY.toFixed(2)}vh`);
-  root.style.setProperty("--tasting-copy-opacity", copyOpacity.toFixed(3));
+  root.style.setProperty("--tasting-copy-opacity", copyVisible.toFixed(3));
   root.style.setProperty("--tasting-glass-drop-y", "0vh");
-  if (isTastingNear) {
+  if (isTastingNear && !varietalBridgeGlassActive) {
     root.style.setProperty("--bridge-glass-extra-x", `${glassShift.toFixed(2)}vw`);
     root.style.setProperty("--shared-glass-opacity", sharedGlassOpacity.toFixed(3));
   }
@@ -1341,7 +1896,7 @@ function updateTastingScrollState() {
     if (index < phaseIndex) {
       panelY = -68;
     } else if (index === activeTextIndex) {
-      panelOpacity = copyOpacity;
+      panelOpacity = copyVisible;
       panelScale = 1;
 
       if (phaseProgress < enterEnd) {
@@ -1386,7 +1941,17 @@ function updateScrollState() {
   updateTastingScrollState();
   updateCompositionState();
   updateFermentationState();
+  updateMalbecProfileState();
   updateCalculatedPour();
+}
+
+function queueLayoutRefresh() {
+  window.requestAnimationFrame(() => {
+    updateScrollState();
+    window.requestAnimationFrame(updateScrollState);
+  });
+  window.setTimeout(updateScrollState, 120);
+  window.setTimeout(updateScrollState, 420);
 }
 
 tasteButtons.forEach((button) => {
@@ -1416,16 +1981,17 @@ prevStep?.addEventListener("click", () => {
   renderTastingStep();
 });
 
-renderWineMap();
 renderCompositionPie();
 renderTastingStep();
 updateScrollState();
+queueLayoutRefresh();
 updateTasteRecommendation();
 window.setTimeout(updateFlourishStoryState, 1200);
 window.setTimeout(updateFlourishStoryState, 2800);
 document.fonts?.ready.then(() => {
   updatePosterCorkPosition();
-  updateCalculatedPour();
+  queueLayoutRefresh();
 }).catch(() => {});
 window.addEventListener("scroll", updateScrollState, { passive: true });
-window.addEventListener("resize", updateScrollState);
+window.addEventListener("resize", queueLayoutRefresh);
+window.addEventListener("load", queueLayoutRefresh);
