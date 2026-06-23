@@ -7,7 +7,7 @@ const posterBottleArt = document.querySelector(".bottle-illustration");
 const wineBuilder = document.querySelector(".wine-builder");
 const worldSection = document.querySelector(".world-consumption");
 const argentinaSection = document.querySelector(".argentina-zoom");
-const calendarSection = document.querySelector(".wine-calendar");
+const calendarSection = document.querySelector(".production-history-section");
 const productionHistoryViewport = document.querySelector("[data-production-history-viewport]");
 const productionHistoryTrack = document.querySelector("[data-production-history-track]");
 const productionHistoryScale = document.querySelector("[data-production-history-scale]");
@@ -1130,12 +1130,12 @@ function updateArgentinaState() {
   const copyIn = smoothStep((finalProgress - 0.72) / 0.18);
   const worldY = worldExit * (isMobileArgentina ? -260 : -420);
   const worldOpacity = mapIn * (1 - worldExit);
-  const targetViewBoxWidth = isMobileArgentina ? 280 : 290;
+  const targetViewBoxWidth = isMobileArgentina ? 265 : 270;
   const targetViewBoxHeight = targetViewBoxWidth * 0.52;
   const argentinaCenter = { x: 324, y: 371 };
   const argentinaScreenFocus = {
     x: isMobileArgentina ? 0.5 : 0.2,
-    y: isMobileArgentina ? 0.55 : 0.42,
+    y: isMobileArgentina ? 0.51 : 0.38,
   };
   const targetViewBoxX = clamp(
     argentinaCenter.x - targetViewBoxWidth * argentinaScreenFocus.x,
@@ -1634,9 +1634,14 @@ function updateCompositionState() {
 
   const travel = Math.max(compositionSection.offsetHeight - window.innerHeight, 1);
   const rect = compositionSection.getBoundingClientRect();
+  const fermentationRect = fermentationSection?.getBoundingClientRect();
   const compositionProgress = clamp(-rect.top / travel, 0, 1);
   const isCompositionActive = rect.top <= window.innerHeight && rect.bottom >= 0;
   const isCompositionNear = rect.top <= window.innerHeight * 1.15 && rect.bottom >= 0;
+  const isFermentationTakingGlass =
+    fermentationRect
+    && fermentationRect.top <= window.innerHeight * 1.08
+    && fermentationRect.bottom >= 0;
   const focusStart = 0.21;
   const graphSequenceEnd = 0.94;
   const chartIn = smoothStep((compositionProgress - 0.04) / 0.13);
@@ -1705,7 +1710,8 @@ function updateCompositionState() {
   root.style.setProperty("--composition-copy-opacity", copyVisible.toFixed(3));
   root.style.setProperty("--composition-copy-y", `${copyY.toFixed(2)}rem`);
 
-  if (isCompositionNear && !varietalBridgeGlassActive) {
+  if (isCompositionNear && !isFermentationTakingGlass && !varietalBridgeGlassActive) {
+    root.style.setProperty("--bridge-glass-opacity", "1");
     root.style.setProperty("--bridge-glass-extra-x", `${glassShift.toFixed(2)}vw`);
     root.style.setProperty("--bridge-glass-y", "0vh");
     root.style.setProperty("--bridge-glass-scale", "1");
@@ -1745,9 +1751,9 @@ function updateFermentationState() {
   const isFermentationActive = rect.top <= window.innerHeight && rect.bottom >= 0;
   const isFermentationNear = rect.top <= window.innerHeight * 1.08 && rect.bottom >= 0;
   const copyIn = smoothStep((fermentationProgress - 0.1) / 0.14);
-  const copyOut = smoothStep((fermentationProgress - 0.78) / 0.1);
+  const copyOut = smoothStep((fermentationProgress - 0.84) / 0.1);
   const chartIn = smoothStep((fermentationProgress - 0.14) / 0.3);
-  const chartOut = smoothStep((fermentationProgress - 0.76) / 0.2);
+  const chartOut = smoothStep((fermentationProgress - 0.86) / 0.12);
   const copyVisible = copyIn > 0.04 && copyOut < 0.98 ? 1 : 0;
   const chartVisible = chartIn > 0.04 && chartOut < 0.98 ? 1 : 0;
   const chartX = -52 * (1 - chartIn) - 52 * chartOut;
@@ -1756,9 +1762,7 @@ function updateFermentationState() {
   const glassCarryShift = 25;
   const glassTargetShift = getFermentationGlassShift();
   const glassTargetScale = window.innerWidth <= 700 ? 0.82 : window.innerWidth <= 980 ? 0.92 : 1;
-  const glassEntryProgress = smoothStep(
-    (window.innerHeight * 0.92 - rect.top) / (window.innerHeight * 0.56),
-  );
+  const glassEntryProgress = smoothStep(fermentationProgress / 0.2);
   const glassShift = lerp(glassCarryShift, glassTargetShift, glassEntryProgress);
   const glassScale = lerp(1, glassTargetScale, glassEntryProgress);
 
@@ -1792,7 +1796,7 @@ function updateFermentationFlourishSlide(fermentationProgress) {
   const iframe = fermentationFlourish.querySelector("iframe");
   if (!iframe || !iframe.src) return;
 
-  const slideProgress = clamp((fermentationProgress - 0.2) / 0.58, 0, 0.999);
+  const slideProgress = clamp((fermentationProgress - 0.46) / 0.38, 0, 0.999);
   const slideIndex = Math.min(slideCount - 1, Math.floor(slideProgress * slideCount));
   if (slideIndex === fermentationFlourishSlideIndex) return;
 
