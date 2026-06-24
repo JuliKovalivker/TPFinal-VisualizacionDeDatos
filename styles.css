@@ -11,6 +11,36 @@
   --rose: #c86f92;
   --blue: #3155d4;
   --rule: rgba(42, 16, 9, 0.2);
+  --font-heading: Inter, system-ui, sans-serif;  --font-body: Inter, system-ui, sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, monospace;
+  --hero-font: var(--font-heading);
+  --hero-size: clamp(3.4rem, 5.8vw, 6.1rem);
+  --heading-font: var(--font-heading);
+  --heading-size: clamp(2rem, 3vw, 3.35rem);
+  --subheading-font: var(--font-data);
+  --subheading-size: clamp(0.68rem, 0.78vw, 0.84rem);
+  --subtitle-font: var(--font-heading);
+  --subtitle-size: clamp(1.45rem, 2.05vw, 2.25rem);
+  --subtitle-line-height: 1.24;
+  --body-font: var(--font-body);
+  --body-size: clamp(1.06rem, 1.18vw, 1.28rem);
+  --type-title-hero: var(--hero-size);
+  --type-title-xl: var(--heading-size);
+  --type-title-lg: var(--heading-size);
+  --type-title-md: var(--heading-size);
+  --type-title-sm: var(--subheading-size);
+  --type-body: var(--body-size);
+  --type-body-lg: var(--body-size);
+  --intro-copy-size: var(--body-size);
+  --intro-copy-line-height: 1.42;
+  --intro-copy-width: min(760px, 70vw);
+  --intro-copy-gap: clamp(1.05rem, 1.6vw, 1.55rem);
+  --type-data-number: clamp(2rem, 3vw, 3.45rem);
+  --viz-title-size: var(--type-title-md);
+  --viz-title-size-small: var(--type-title-sm);
+  --story-title-size: var(--type-title-lg);
+  --section-body-size: var(--type-body);
+  --data-number-size: var(--type-data-number);
   --intro-progress: 0;
   --intro-toast-x: 0vw;
   --intro-toast-y: 0vh;
@@ -86,8 +116,11 @@
   --bridge-glass-opacity: 0;
   --bridge-glass-y: 128vh;
   --bridge-glass-scale: 1;
+  --bridge-glass-origin-y: 74%;
   --bridge-glass-extra-x: 0vw;
   --bridge-glass-rotate: 0deg;
+  --bridge-glass-zoom-copy-opacity: 0;
+  --bridge-glass-zoom-copy-y: 1.2rem;
   --bridge-wine-fill-progress: 0;
   --bridge-wine-fill-y: 72px;
   --tasting-progress: 0;
@@ -103,11 +136,19 @@
   --composition-copy-y: 2rem;
   --fermentation-progress: 0;
   --fermentation-copy-opacity: 0;
-  --fermentation-copy-x: -8vw;
+  --fermentation-copy-x: 0vw;
   --fermentation-chart-opacity: 0;
   --fermentation-chart-x: 74vw;
   --fermentation-chart-y: 0vh;
   --fermentation-chart-scale: 0.98;
+  --closing-left-x: -11vw;
+  --closing-right-x: 11vw;
+  --closing-toast-y: 0vh;
+  --closing-left-drop-y: -112vh;
+  --closing-right-drop-y: -112vh;
+  --closing-final-text-y: 3vh;
+  --closing-left-rotate: -1.5deg;
+  --closing-right-rotate: 1.5deg;
   --malbec-profile-progress: 0;
   --malbec-profile-copy-opacity: 0;
   --malbec-profile-copy-y: 1.6rem;
@@ -128,6 +169,10 @@
   --malbec-profile-shape-progress: 0;
   --malbec-profile-shape-fill: 0;
   --shared-glass-opacity: 1;
+  --chemistry-wine-scale: 0.2;
+  --chemistry-wine-opacity: 0;
+  --chemistry-text-y: 24vh;
+  --chemistry-text-visible: 0;
   --flight-x: -12vw;
   --flight-y: 16vh;
   --flight-rotate: -16deg;
@@ -148,7 +193,7 @@ body {
   margin: 0;
   color: var(--ink);
   background: var(--paper);
-  font-family: Inter, system-ui, sans-serif;
+  font-family: var(--font-body);
   overflow-x: hidden;
 }
 
@@ -163,7 +208,7 @@ a {
   z-index: 80;
   width: 0;
   height: 6px;
-  background: linear-gradient(90deg, var(--wine), var(--coral), var(--green));
+  background: var(--wine);
 }
 
 .site-header {
@@ -172,7 +217,7 @@ a {
   z-index: 70;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 2rem;
   min-height: 66px;
   padding: 0.9rem clamp(1.4rem, 4vw, 4rem);
@@ -181,7 +226,8 @@ a {
 }
 
 .brand {
-  font-family: Fraunces, Georgia, serif;
+  flex: 0 0 auto;
+  font-family: var(--font-heading);
   font-size: clamp(1.35rem, 2vw, 2rem);
   font-weight: 900;
   text-decoration: none;
@@ -191,7 +237,7 @@ a {
   display: flex;
   align-items: center;
   gap: clamp(0.85rem, 2vw, 1.7rem);
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   font-size: 0.76rem;
   font-weight: 700;
   letter-spacing: 0.09em;
@@ -221,11 +267,103 @@ a {
   transform: scaleX(1);
 }
 
+.scale-index {
+  flex: 0 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(0.18rem, 0.8vw, 0.62rem);
+  margin-left: 0;
+  color: rgba(42, 16, 9, 0.56);
+  font-family: var(--font-data);
+  font-size: clamp(0.62rem, 0.72vw, 0.76rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.scale-index::-webkit-scrollbar {
+  display: none;
+}
+
+.scale-index a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.48rem 0.5rem;
+  color: inherit;
+  opacity: 0.58;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    color 180ms ease,
+    opacity 180ms ease;
+}
+
+.scale-index a::after {
+  position: absolute;
+  left: 0.5rem;
+  right: 0.5rem;
+  bottom: 0.18rem;
+  height: 2px;
+  content: "";
+  background: var(--wine);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 180ms ease;
+}
+
+.scale-index a.is-active,
+.scale-index a:hover {
+  color: var(--wine);
+  opacity: 1;
+}
+
+.scale-index a.is-active::after,
+.scale-index a:hover::after {
+  transform: scaleX(1);
+}
+
+@media (max-width: 980px) {
+  .site-header {
+    gap: 0.9rem;
+    padding-inline: clamp(0.9rem, 3vw, 1.6rem);
+  }
+
+  .brand {
+    font-size: clamp(1rem, 2.4vw, 1.25rem);
+  }
+
+  .scale-index {
+    justify-content: flex-start;
+    font-size: 0.62rem;
+  }
+
+  .scale-index a {
+    padding-inline: 0.38rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .brand {
+    display: none;
+  }
+
+  .scale-index {
+    width: 100%;
+  }
+}
+
 .eyebrow,
 .chapter-kicker {
   margin: 0 0 1rem;
   color: var(--wine);
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -235,7 +373,7 @@ a {
 h1,
 h2 {
   margin: 0;
-  font-family: Fraunces, Georgia, serif;
+  font-family: var(--font-heading);
   font-weight: 900;
   letter-spacing: 0;
 }
@@ -268,7 +406,7 @@ p {
 .opener-copy {
   position: absolute;
   top: 50%;
-  right: clamp(1.2rem, 3.6vw, 4.2rem);
+  right: clamp(1.4rem, 4.5vw, 5.4rem);
   z-index: 6;
   width: min(54vw, 700px);
   margin: 0;
@@ -282,7 +420,7 @@ p {
 .written-title {
   max-width: 700px;
   color: rgba(139, 18, 50, 0);
-  font-family: Fraunces, Georgia, serif;
+  font-family: var(--font-heading);
   font-weight: 900;
   font-size: clamp(4.6rem, 6.2vw, 6.45rem);
   line-height: 1.02;
@@ -346,62 +484,46 @@ p {
 
 .intro-glass-scene {
   position: absolute;
-  left: clamp(1rem, 5vw, 5.2rem);
-  bottom: clamp(7rem, 14vh, 10rem);
+  left: clamp(1.4rem, 6vw, 6.8rem);
+  bottom: clamp(5.6rem, 11vh, 8.4rem);
   z-index: 4;
-  width: clamp(320px, 38vw, 560px);
-  opacity: calc(0.16 + var(--title-line-1) * 0.84);
+  width: clamp(320px, 34vw, 520px);
+  aspect-ratio: 640 / 520;
+  opacity: 1;
   transform:
     translate3d(
       var(--intro-toast-x),
-      calc(var(--intro-toast-y) + ((1 - var(--title-line-1)) * 18px)),
+      var(--intro-toast-y),
       0
     )
     rotate(var(--intro-toast-rotate));
-  transform-origin: 58% 55%;
+  transform-origin: 50% 56%;
 }
 
 .intro-glass-illustration {
+  position: relative;
+  inset: auto;
+  z-index: 2;
   display: block;
   width: 100%;
   height: auto;
   overflow: visible;
 }
 
-.intro-arm {
-  opacity: 1;
-}
-
-.intro-thumb,
-.intro-index-finger,
-.intro-middle-finger {
-  fill: #f0a36e;
-}
-
-.intro-hand-front {
-  opacity: 1;
-}
-
-.intro-thumb,
-.intro-index-finger,
-.intro-middle-finger {
-  fill: #f0a16c;
-}
-
-.intro-thumb {
-  fill: #f5b176;
-}
-
-.intro-arm .intro-index-finger {
-  fill: #eda36c;
-}
-
-.intro-arm .intro-middle-finger {
-  fill: #ee9f68;
+.intro-hand-png {
+  position: absolute;
+  left: -41%;
+  top: 41.5%;
+  z-index: 3;
+  display: block;
+  width: 128%;
+  height: auto;
+  pointer-events: none;
+  transform: translateZ(0);
 }
 
 .intro-glass {
-  opacity: calc(0.5 + var(--title-line-1) * 0.5);
+  opacity: 1;
 }
 
 .intro-glass-shadow {
@@ -466,7 +588,7 @@ p {
 
 @media (max-width: 1100px) {
   .opener-copy {
-    right: clamp(0.9rem, 3vw, 2.8rem);
+    right: clamp(1.1rem, 4vw, 3.4rem);
     width: min(55vw, 620px);
   }
 
@@ -503,17 +625,21 @@ p {
   }
 
   .intro-glass-scene {
-    top: 12vh;
+    top: 10vh;
     bottom: auto;
     left: 50%;
-    width: min(92vw, 430px);
+    width: min(86vw, 390px);
     transform:
       translate3d(
-        calc(-50% + var(--intro-toast-x)),
-        calc(var(--intro-toast-y) + ((1 - var(--title-line-1)) * 18px)),
+        calc(-50% + var(--intro-toast-x) * 0.75),
+        var(--intro-toast-y),
         0
       )
       rotate(var(--intro-toast-rotate));
+  }
+
+  .intro-glass-illustration {
+    width: 100%;
   }
 }
 
@@ -753,7 +879,7 @@ p {
 .section-kicker {
   margin: 0 0 0.75rem;
   color: rgba(42, 16, 9, 0.76);
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -764,7 +890,7 @@ p {
   max-width: 1040px;
   margin: 0 auto;
   color: var(--ink);
-  font-family: Fraunces, Georgia, serif;
+  font-family: var(--font-heading);
   font-size: clamp(3.55rem, 5.8vw, 6.85rem);
   line-height: 0.92;
 }
@@ -844,7 +970,7 @@ p {
   margin: 0;
   padding: 0;
   color: var(--ink);
-  font-family: inherit;
+  font-family: var(--font-body);
   font-size: clamp(2.05rem, 3vw, 3.35rem);
   font-weight: 850;
   line-height: 1.04;
@@ -1010,9 +1136,9 @@ p {
 
 .recommendation h3 {
   max-width: 900px;
-  margin: 0 auto clamp(1.9rem, 4.2vh, 3rem);
+  margin: 0 auto clamp(0.7rem, 1.4vh, 1.1rem);
   color: var(--wine);
-  font-family: inherit;
+  font-family: var(--font-body);
   font-size: var(--profile-title-size);
   font-weight: 900;
   line-height: 0.92;
@@ -1027,7 +1153,7 @@ p {
 
 .recommendation p:not(.section-kicker) {
   position: absolute;
-  top: calc(50% + clamp(8.1rem, 21vh, 12.6rem));
+  top: calc(50% + clamp(4.9rem, 12vh, 7.1rem));
   left: 50%;
   width: min(90vw, 780px);
   max-width: 780px;
@@ -1068,7 +1194,7 @@ p {
   padding: 0;
   color: var(--ink);
   border: 0;
-  font-family: inherit;
+  font-family: var(--font-body);
   font-size: var(--profile-tag-size);
   font-weight: 800;
   letter-spacing: 0;
@@ -1104,7 +1230,7 @@ p {
 .profile-chart-question {
   margin: 0;
   color: var(--ink);
-  font-family: inherit;
+  font-family: var(--font-body);
   font-size: clamp(1.15rem, 1.55vw, 1.55rem);
   font-weight: 850;
   line-height: 1.15;
@@ -1283,7 +1409,7 @@ p {
 .world-question h2 {
   max-width: 1050px;
   color: var(--wine);
-  font-family: Fraunces, Georgia, serif;
+  font-family: var(--font-heading);
   font-weight: 900;
   font-size: clamp(4.8rem, 7.5vw, 8.25rem);
   line-height: 0.9;
@@ -1302,7 +1428,7 @@ p {
   opacity: var(--world-note-opacity);
   transform:
     translate(-50%, -50%)
-    translateX(calc((1 - var(--world-note-in)) * 18vw))
+    translateY(calc((1 - var(--world-note-in)) * 1.1rem))
     translateY(calc(var(--world-note-out) * -32vh));
 }
 
@@ -1310,7 +1436,7 @@ p {
   max-width: none;
   margin: 0;
   color: rgba(42, 16, 9, 0.78);
-  font-family: Fraunces, Georgia, serif;
+  font-family: var(--font-heading);
   font-size: clamp(1.45rem, 2vw, 2.2rem);
   font-weight: 700;
   line-height: 1.18;
@@ -1338,7 +1464,7 @@ p {
   max-width: 760px;
   margin: 0;
   color: var(--ink);
-  font-family: Fraunces, Georgia, serif;
+  font-family: var(--font-heading);
   font-size: clamp(2rem, 3.2vw, 4rem);
   line-height: 0.95;
 }
@@ -1365,7 +1491,7 @@ p {
   max-width: none;
   margin: 0;
   color: rgba(42, 16, 9, 0.64);
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.07em;
@@ -1507,7 +1633,7 @@ p {
 .country-popup strong {
   display: block;
   color: var(--ink);
-  font-family: Fraunces, Georgia, serif;
+  font-family: var(--font-heading);
   font-size: clamp(0.98rem, 1.02vw, 1.16rem);
   line-height: 1;
 }
@@ -1516,7 +1642,7 @@ p {
   display: block;
   margin-top: 0.34rem;
   color: var(--wine);
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -1584,9 +1710,7 @@ p {
   z-index: 4;
   width: min(45vw, 650px);
   opacity: var(--arg-copy-opacity);
-  transform:
-    translateY(-50%)
-    translateX(calc((1 - var(--arg-copy-opacity)) * 8vw));
+  transform: translateY(-50%);
 }
 
 @media (max-width: 700px) {
@@ -1704,7 +1828,7 @@ p {
 .argentina-copy h2 {
   max-width: 650px;
   color: var(--ink);
-  font-family: Fraunces, Georgia, serif;
+  font-family: var(--font-heading);
   font-size: clamp(2.45rem, 3.65vw, 4.35rem);
   line-height: 0.92;
 }
@@ -1755,7 +1879,7 @@ p {
 
 .month-stain strong {
   color: rgba(42, 16, 9, 0.68);
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   font-size: 0.64rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -1825,7 +1949,7 @@ p {
 
 .argentina-stat strong {
   color: var(--wine);
-  font-family: Fraunces, Georgia, serif;
+  font-family: var(--font-heading);
   font-weight: 900;
   font-size: clamp(2.8rem, 4vw, 4.8rem);
   line-height: 0.88;
@@ -1833,7 +1957,7 @@ p {
 
 .argentina-stat span {
   color: rgba(42, 16, 9, 0.74);
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -1856,6 +1980,363 @@ p {
     justify-items: center;
     gap: 0.35rem;
   }
+}
+
+/* Narrative bridges: secciones editables para texto e imágenes de pausa scrollytelling. */
+.narrative-bridge {
+  --narrative-copy-y: 4rem;
+  --narrative-statement-y: 5rem;
+  --narrative-photo-x: 0vw;
+  --narrative-photo-y: 0vh;
+  --narrative-photo-clip: 0%;
+  --before-history-block-1-y: 18vh;
+  --before-history-block-1-opacity: 0;
+  --before-history-block-2-y: 18vh;
+  --before-history-block-2-opacity: 0;
+  --grape-block-1-y: 18vh;
+  --grape-block-1-opacity: 0;
+  --grape-block-2-y: 18vh;
+  --grape-block-2-opacity: 0;
+  position: relative;
+  min-height: 150vh;
+  background:
+    radial-gradient(circle at 18% 26%, rgba(139, 18, 50, 0.045), transparent 30%),
+    radial-gradient(circle at 82% 66%, rgba(0, 97, 58, 0.028), transparent 34%),
+    var(--paper);
+}
+
+.narrative-bridge-pin {
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-columns: minmax(260px, 0.74fr) minmax(340px, 1fr);
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: center;
+  min-height: 100vh;
+  padding: clamp(5rem, 8vh, 7rem) clamp(1.4rem, 6vw, 6.8rem);
+  overflow: hidden;
+}
+
+.narrative-bridge-copy,
+.narrative-bridge-statement {
+  transform: translate3d(0, var(--narrative-copy-y), 0);
+  will-change: transform;
+}
+
+.narrative-bridge-statement {
+  max-width: min(76vw, 860px);
+  margin: 0 auto;
+  transform: translate3d(0, var(--narrative-statement-y), 0);
+}
+
+.narrative-bridge-copy h2,
+.narrative-bridge-statement h2 {
+  max-width: 680px;
+  margin: 0;
+  color: var(--wine);
+  font-family: var(--font-heading);
+  font-size: clamp(1.65rem, 2.7vw, 3.45rem);
+  font-weight: 850;
+  line-height: 1.04;
+}
+
+.narrative-bridge-copy p,
+.narrative-bridge-statement p {
+  max-width: 620px;
+  margin: 0.9rem 0 0;
+  color: rgba(42, 16, 9, 0.7);
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 1.2vw, 1.28rem);
+  font-weight: 550;
+  line-height: 1.5;
+}
+
+.narrative-bridge-statement p {
+  font-size: clamp(1.35rem, 2.35vw, 3rem);
+  font-weight: 700;
+  line-height: 1.16;
+}
+
+.narrative-bridge-statement h2 + p {
+  max-width: 680px;
+  color: rgba(42, 16, 9, 0.7);
+  font-size: clamp(1rem, 1.28vw, 1.36rem);
+  font-weight: 550;
+  line-height: 1.5;
+}
+
+.narrative-bridge-statement p + p {
+  max-width: 720px;
+  margin-top: clamp(1.1rem, 2.6vh, 2rem);
+  color: var(--wine);
+}
+
+.narrative-photo-figure {
+  position: relative;
+  display: block;
+  min-height: clamp(380px, 62vh, 760px);
+  margin: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #2a1009;
+  box-shadow: 0 30px 80px rgba(42, 16, 9, 0.14);
+  clip-path: inset(0 0 0 0);
+  transform: none;
+  will-change: auto;
+}
+
+.narrative-photo-figure img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  object-fit: cover;
+}
+
+.narrative-photo-figure figcaption {
+  position: absolute;
+  left: clamp(1rem, 2vw, 1.55rem);
+  bottom: clamp(1rem, 2vw, 1.55rem);
+  max-width: min(72%, 520px);
+  padding: 0.8rem 0.9rem;
+  color: rgba(254, 254, 251, 0.92);
+  background: rgba(42, 16, 9, 0.72);
+  font-family: var(--font-body);
+  font-size: clamp(0.88rem, 0.98vw, 1.02rem);
+  font-weight: 600;
+  line-height: 1.38;
+}
+
+.narrative-bridge-text,
+.narrative-bridge-stark,
+.narrative-bridge-recap {
+  min-height: 118vh;
+}
+
+.narrative-bridge-opening-note {
+  min-height: 170vh;
+}
+
+.narrative-bridge-text .narrative-bridge-pin,
+.narrative-bridge-stark .narrative-bridge-pin,
+.narrative-bridge-recap .narrative-bridge-pin {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+
+.narrative-bridge-horizontal .narrative-bridge-pin {
+  grid-template-columns: minmax(340px, 1fr) minmax(260px, 0.78fr);
+}
+
+.narrative-bridge-stark {
+  background:
+    linear-gradient(180deg, rgba(42, 16, 9, 0.02), rgba(139, 18, 50, 0.045)),
+    var(--paper);
+}
+
+.narrative-bridge-recap {
+  min-height: 105vh;
+  background: var(--paper);
+}
+
+.narrative-bridge-recap .narrative-bridge-statement p {
+  max-width: 900px;
+  color: rgba(42, 16, 9, 0.78);
+  font-size: clamp(1.22rem, 2vw, 2.45rem);
+}
+
+.narrative-bridge-chapter {
+  min-height: 230vh;
+}
+
+.narrative-bridge-chapter .narrative-bridge-pin {
+  grid-template-columns: minmax(320px, 0.92fr) minmax(360px, 1fr);
+  gap: clamp(2.6rem, 7vw, 7.5rem);
+  align-items: center;
+}
+
+.narrative-bridge-variety-chapter .narrative-bridge-pin,
+.narrative-bridge-after-fermentation .narrative-bridge-pin {
+  grid-template-columns: minmax(360px, 0.96fr) minmax(320px, 0.9fr);
+}
+
+.narrative-bridge-landscape {
+  min-height: 250vh;
+}
+
+.narrative-bridge-before-history {
+  min-height: 420vh;
+}
+
+.narrative-bridge-landscape .narrative-bridge-pin {
+  grid-template-columns: minmax(300px, 0.72fr) minmax(520px, 1.42fr);
+  gap: clamp(2.8rem, 7vw, 8rem);
+}
+
+.narrative-bridge-before-history .narrative-bridge-pin {
+  align-items: center;
+}
+
+.narrative-bridge-before-history .narrative-bridge-copy {
+  position: relative;
+  align-self: center;
+  min-height: min(58vh, 560px);
+}
+
+.before-history-text-block {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: min(100%, 680px);
+  opacity: 0;
+  transform: translate3d(0, -50%, 0);
+  will-change: transform, opacity;
+}
+
+.before-history-text-block-1 {
+  opacity: var(--before-history-block-1-opacity);
+  transform: translate3d(0, calc(-50% + var(--before-history-block-1-y)), 0);
+}
+
+.before-history-text-block-2 {
+  opacity: var(--before-history-block-2-opacity);
+  transform: translate3d(0, calc(-50% + var(--before-history-block-2-y)), 0);
+}
+
+.narrative-bridge-before-history .narrative-photo-figure {
+  transform: translate3d(0, var(--narrative-photo-y), 0);
+  will-change: transform;
+}
+
+.narrative-photo-feature {
+  height: min(68vh, 680px);
+  min-height: 0;
+  align-self: center;
+}
+
+.narrative-photo-territory img {
+  object-position: center center;
+}
+
+.narrative-bridge-documentary {
+  min-height: 260vh;
+  background:
+    linear-gradient(180deg, rgba(42, 16, 9, 0.035), rgba(248, 245, 237, 0) 48%),
+    var(--paper);
+}
+
+.narrative-bridge-documentary .narrative-bridge-pin {
+  grid-template-columns: minmax(520px, 1.15fr) minmax(300px, 0.76fr);
+}
+
+.narrative-photo-documentary-frame {
+  min-height: clamp(520px, 78vh, 860px);
+}
+
+.narrative-photo-documentary-frame img {
+  object-position: center center;
+}
+
+.narrative-bridge-grape .narrative-bridge-pin {
+  grid-template-columns: minmax(480px, 1.08fr) minmax(320px, 0.88fr);
+}
+
+.narrative-bridge-grape {
+  min-height: 420vh;
+}
+
+.narrative-bridge-grape .narrative-bridge-copy {
+  position: relative;
+  align-self: center;
+  min-height: min(62vh, 620px);
+}
+
+.grape-text-block {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: min(100%, 680px);
+  opacity: 0;
+  transform: translate3d(0, -50%, 0);
+  will-change: transform, opacity;
+}
+
+.grape-text-block-1 {
+  opacity: var(--grape-block-1-opacity);
+  transform: translate3d(0, calc(-50% + var(--grape-block-1-y)), 0);
+}
+
+.grape-text-block-2 {
+  opacity: var(--grape-block-2-opacity);
+  transform: translate3d(0, calc(-50% + var(--grape-block-2-y)), 0);
+}
+
+.narrative-bridge-grape .narrative-photo-figure {
+  transform: translate3d(0, var(--narrative-photo-y), 0);
+  will-change: transform;
+}
+
+.narrative-photo-grape-frame {
+  min-height: clamp(440px, 70vh, 760px);
+}
+
+.narrative-photo-grape-frame img {
+  object-position: center center;
+}
+
+.narrative-bridge-opening-note .narrative-bridge-pin,
+.narrative-bridge-after-fermentation .narrative-bridge-pin,
+.narrative-bridge-before-tasting .narrative-bridge-pin {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+
+.narrative-bridge-before-tasting {
+  min-height: 190vh;
+}
+
+.narrative-prose {
+  max-width: 720px;
+}
+
+.narrative-prose-centered {
+  max-width: min(86vw, 780px);
+  margin-inline: auto;
+}
+
+.narrative-bridge-copy.narrative-prose h2,
+.narrative-bridge-statement.narrative-prose h2 {
+  margin-bottom: clamp(1.1rem, 2.4vh, 1.9rem);
+  font-size: clamp(1.75rem, 2.45vw, 3.1rem);
+  line-height: 1.08;
+}
+
+.narrative-bridge-copy.narrative-prose p,
+.narrative-bridge-statement.narrative-prose p,
+.narrative-prose p {
+  max-width: 680px;
+  margin: 0;
+  color: rgba(42, 16, 9, 0.74);
+  font-family: var(--font-body);
+  font-size: clamp(1.02rem, 1.16vw, 1.24rem);
+  font-weight: 500;
+  line-height: 1.68;
+}
+
+.narrative-bridge-statement.narrative-prose p {
+  font-size: clamp(1.04rem, 1.18vw, 1.26rem);
+  font-weight: 500;
+  line-height: 1.68;
+}
+
+.narrative-bridge-copy.narrative-prose p + p,
+.narrative-bridge-statement.narrative-prose p + p,
+.narrative-prose p + p {
+  margin-top: clamp(1rem, 2.4vh, 1.55rem);
+}
+
+.narrative-bridge-variety-chapter .narrative-prose h2 {
+  margin-top: clamp(2rem, 4.4vh, 3.4rem);
 }
 
 .production-history-section {
@@ -1897,7 +2378,7 @@ p {
   max-width: 760px;
   margin: 0;
   color: var(--wine);
-  font-family: Fraunces, Georgia, serif;
+  font-family: var(--font-heading);
   font-size: clamp(1.85rem, 2.75vw, 3.6rem);
   font-weight: 900;
   line-height: 0.96;
@@ -1931,7 +2412,7 @@ p {
 
 .production-history-readout span,
 .production-history-readout b {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.07em;
@@ -1941,7 +2422,7 @@ p {
 .production-history-readout strong {
   margin: 0.12rem 0 0.58rem;
   color: var(--wine);
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   font-size: clamp(1.85rem, 2.35vw, 2.85rem);
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -1967,7 +2448,7 @@ p {
   min-height: 2.65rem;
   margin: 0.72rem 0 0;
   color: rgba(42, 16, 9, 0.62);
-  font-family: Inter, system-ui, sans-serif;
+  font-family: var(--font-body);
   font-size: 0.92rem;
   font-weight: 600;
   line-height: 1.32;
@@ -1975,6 +2456,52 @@ p {
 
 .production-history-readout p:empty {
   display: none;
+}
+
+/* Timeline narrative cards: editar textos en productionHistoryNarrativeCards dentro de script.js. */
+.production-history-annotation {
+  position: absolute;
+  right: clamp(1.4rem, 5vw, 5.8rem);
+  top: 46%;
+  z-index: 6;
+  width: min(28vw, 360px);
+  min-width: 250px;
+  padding: 1rem 1.08rem 1.08rem;
+  border: 1px solid rgba(92, 8, 31, 0.16);
+  border-left: 4px solid var(--wine);
+  border-radius: 6px;
+  background: rgba(248, 245, 237, 0.92);
+  box-shadow: 0 22px 58px rgba(42, 16, 9, 0.1);
+  pointer-events: none;
+  transform: translate3d(0, -50%, 0);
+  transition: opacity 220ms ease, visibility 220ms ease;
+  visibility: hidden;
+  will-change: auto;
+}
+
+.production-history-section.is-history-annotation-active .production-history-annotation {
+  transform: translate3d(0, -50%, 0);
+  visibility: visible;
+}
+
+.production-history-annotation span {
+  display: block;
+  color: var(--wine);
+  font-family: var(--font-data);
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.production-history-annotation p {
+  margin: 0.55rem 0 0;
+  color: rgba(42, 16, 9, 0.72);
+  font-family: var(--font-body);
+  font-size: clamp(0.92rem, 1vw, 1.04rem);
+  font-weight: 600;
+  line-height: 1.38;
 }
 
 .production-history-viewport {
@@ -2024,7 +2551,7 @@ p {
   left: 0;
   bottom: 0.3rem;
   color: rgba(42, 16, 9, 0.46);
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   font-size: 0.68rem;
   font-style: normal;
   font-weight: 700;
@@ -2098,7 +2625,7 @@ p {
   position: absolute;
   top: calc(100% + 0.72rem);
   color: currentColor;
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -2126,7 +2653,7 @@ p {
   gap: 0.35rem;
   min-width: 8rem;
   color: rgba(42, 16, 9, 0.62);
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   font-size: 0.66rem;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -2160,7 +2687,7 @@ p {
   width: min(78vw, 980px);
   margin: 1rem 0 0 clamp(1.4rem, 6vw, 6rem);
   color: rgba(42, 16, 9, 0.46);
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -2169,6 +2696,26 @@ p {
 }
 
 @media (max-width: 980px) {
+  .narrative-bridge-pin {
+    grid-template-columns: 1fr;
+    align-content: center;
+  }
+
+  .narrative-bridge-horizontal .narrative-bridge-pin {
+    grid-template-columns: 1fr;
+  }
+
+  .narrative-bridge-chapter .narrative-bridge-pin,
+  .narrative-bridge-variety-chapter .narrative-bridge-pin,
+  .narrative-bridge-after-fermentation .narrative-bridge-pin {
+    grid-template-columns: 1fr;
+  }
+
+  .narrative-photo-figure {
+    width: min(100%, 760px);
+    min-height: clamp(300px, 48vh, 520px);
+  }
+
   .production-history-section {
     min-height: 570vh;
   }
@@ -2182,9 +2729,65 @@ p {
     right: clamp(1rem, 4vw, 2rem);
     bottom: clamp(2.2rem, 6vh, 4rem);
   }
+
+  .production-history-annotation {
+    top: auto;
+    right: clamp(1rem, 4vw, 2rem);
+    bottom: clamp(11rem, 24vh, 15rem);
+    width: min(72vw, 360px);
+    transform: translate3d(120%, 0, 0);
+  }
+
+  .production-history-section.is-history-annotation-active .production-history-annotation {
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 @media (max-width: 700px) {
+  .narrative-bridge {
+    min-height: 125vh;
+  }
+
+  .narrative-bridge-chapter,
+  .narrative-bridge-before-tasting {
+    min-height: 185vh;
+  }
+
+  .narrative-bridge-pin {
+    padding: 5rem 1rem 3.8rem;
+  }
+
+  .narrative-bridge-statement {
+    max-width: min(90vw, 520px);
+  }
+
+  .narrative-bridge-statement p {
+    font-size: clamp(1.28rem, 6.2vw, 2.25rem);
+  }
+
+  .narrative-bridge-copy.narrative-prose p,
+  .narrative-bridge-statement.narrative-prose p,
+  .narrative-prose p {
+    font-size: clamp(1rem, 4.4vw, 1.12rem);
+    line-height: 1.62;
+  }
+
+  .narrative-bridge-copy h2,
+  .narrative-bridge-statement h2 {
+    font-size: clamp(1.9rem, 8vw, 3rem);
+  }
+
+  .narrative-photo-figure {
+    min-height: clamp(250px, 42vh, 430px);
+  }
+
+  .narrative-photo-figure figcaption {
+    left: 0.85rem;
+    right: 0.85rem;
+    bottom: 0.85rem;
+    max-width: none;
+  }
+
   .production-history-section {
     min-height: 540vh;
   }
@@ -2196,6 +2799,13 @@ p {
   .production-history-heading {
     width: min(90vw, 420px);
     margin-inline: auto;
+  }
+
+  .production-history-annotation {
+    right: 1rem;
+    bottom: clamp(9.4rem, 22vh, 12rem);
+    width: calc(100vw - 2rem);
+    min-width: 0;
   }
 
   .production-history-heading h2 {
@@ -2222,7 +2832,7 @@ p {
 
 .flourish-story-section {
   position: relative;
-  min-height: 780vh;
+  min-height: 940vh;
   padding: 0 clamp(1.4rem, 4vw, 4.5rem);
   background: var(--paper);
 }
@@ -2266,7 +2876,7 @@ p {
 
 .flourish-story-stage .fl-scrolly-caption > div {
   color: var(--ink);
-  font-family: Inter, Arial, sans-serif;
+  font-family: var(--font-body);
   background: rgba(254, 254, 251, 0.94) !important;
   border: 1px solid rgba(42, 16, 9, 0.12);
   box-shadow: 0 18px 42px rgba(42, 16, 9, 0.08) !important;
@@ -2422,7 +3032,7 @@ p {
 
 @media (max-width: 700px) {
   .flourish-story-section {
-    min-height: 760vh;
+    min-height: 900vh;
     padding-inline: 1rem;
   }
 
@@ -2450,7 +3060,7 @@ p {
   --varietal-bottle-width: clamp(142px, 14vw, 255px);
   --varietal-bottle-height: min(82vh, calc(var(--varietal-bottle-width) * 2.96));
   position: relative;
-  min-height: 980vh;
+  min-height: 1650vh;
   background: var(--paper);
 }
 
@@ -2486,12 +3096,36 @@ p {
 .bottle-transition-title p {
   margin: 0;
   color: var(--paper);
-  font-family: Fraunces, Georgia, serif;
+  font-family: var(--font-heading);
   font-size: clamp(2.85rem, 5.75vw, 7.1rem);
   font-weight: 900;
   line-height: 0.92;
   letter-spacing: 0;
   text-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+}
+
+.bridge-glass-zoom-copy {
+  position: absolute;
+  inset: 0;
+  z-index: 38;
+  display: grid;
+  place-items: center;
+  padding: clamp(1.5rem, 5vw, 6rem);
+  color: var(--paper);
+  text-align: center;
+  pointer-events: none;
+  opacity: var(--bridge-glass-zoom-copy-opacity);
+  transform: translate3d(0, var(--bridge-glass-zoom-copy-y), 0);
+}
+
+.bridge-glass-zoom-copy p {
+  max-width: min(76vw, 680px);
+  margin: 0;
+  font-family: var(--body-font);
+  font-size: clamp(1.16rem, 1.45vw, 1.58rem);
+  font-weight: 560;
+  line-height: 1.48;
+  letter-spacing: 0;
 }
 
 .bridge-pour-stream {
@@ -2542,11 +3176,17 @@ p {
     translate3d(calc(-50% + var(--bridge-glass-extra-x)), var(--bridge-glass-y), 0)
     rotate(var(--bridge-glass-rotate))
     scale(var(--bridge-glass-scale));
-  transform-origin: 50% 74%;
+  transform-origin: 50% var(--bridge-glass-origin-y);
+  will-change: transform, opacity;
   transition:
     opacity 420ms ease,
     transform 420ms ease,
     filter 320ms ease;
+}
+
+:root.is-bridge-glass-zooming .bridge-receiving-glass {
+  z-index: 34;
+  transition: none;
 }
 
 .bridge-receiving-glass::after {
@@ -2656,7 +3296,7 @@ p {
 .varietal-copy h2 {
   max-width: 620px;
   color: var(--ink);
-  font-family: Fraunces, Georgia, serif;
+  font-family: var(--font-heading);
   font-size: clamp(2.35rem, 3.6vw, 4.75rem);
   line-height: 0.9;
 }
@@ -3140,7 +3780,7 @@ p {
 }
 
 .varietal-bottle .label-back em {
-  font-family: Fraunces, Georgia, serif;
+  font-family: var(--font-heading);
   font-size: clamp(0.84rem, 0.96vw, 1.14rem);
   font-weight: 900;
   letter-spacing: 0;
@@ -3165,7 +3805,7 @@ p {
 
 .varietal-bottle em {
   color: var(--label-ink);
-  font-family: Fraunces, Georgia, serif;
+  font-family: var(--font-heading);
   font-size: clamp(1.06rem, 1.28vw, 1.64rem);
   font-style: normal;
   font-weight: 900;
@@ -3178,7 +3818,7 @@ p {
 .varietal-bottle small {
   margin-top: 0.22rem;
   color: var(--label-accent);
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   font-size: clamp(0.52rem, 0.6vw, 0.72rem);
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -3191,7 +3831,7 @@ p {
   max-width: 100%;
   margin-top: clamp(0.32rem, 0.5vw, 0.58rem);
   color: rgba(42, 16, 9, 0.74);
-  font-family: Inter, system-ui, sans-serif;
+  font-family: var(--font-body);
   font-size: clamp(0.62rem, 0.78vw, 0.92rem);
   font-weight: 600;
   line-height: 1.18;
@@ -3241,7 +3881,7 @@ p {
 .varietal-caption h3 {
   margin: 0;
   color: var(--ink);
-  font-family: Fraunces, Georgia, serif;
+  font-family: var(--font-heading);
   font-size: clamp(1.25rem, 1.65vw, 2rem);
   font-weight: 900;
   line-height: 0.92;
@@ -3251,7 +3891,7 @@ p {
   max-width: 210px;
   margin: 0.5rem 0 0;
   color: rgba(42, 16, 9, 0.72);
-  font-family: Inter, system-ui, sans-serif;
+  font-family: var(--font-body);
   font-size: 0.86rem;
   line-height: 1.35;
 }
@@ -3596,7 +4236,7 @@ p {
   max-width: 560px;
   margin: 0 0 clamp(0.8rem, 2vh, 1.7rem);
   color: var(--wine);
-  font-family: Fraunces, Georgia, serif;
+  font-family: var(--font-heading);
   font-size: clamp(1.65rem, 2.35vw, 2.95rem);
   font-weight: 900;
   line-height: 1;
@@ -3642,7 +4282,7 @@ p {
 .composition-detail strong {
   display: inline;
   color: var(--detail-color);
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   font-size: clamp(0.98rem, 1.08vw, 1.18rem);
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -3653,7 +4293,7 @@ p {
   display: inline;
   margin: 0 0 0 0.35rem;
   color: var(--detail-color);
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   font-size: clamp(0.98rem, 1.08vw, 1.18rem);
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -3664,7 +4304,7 @@ p {
   max-width: 290px;
   margin-top: 0.5rem;
   color: rgba(42, 16, 9, 0.62);
-  font-family: Inter, system-ui, sans-serif;
+  font-family: var(--font-body);
   font-size: clamp(0.88rem, 0.96vw, 1.02rem);
   font-weight: 600;
   line-height: 1.34;
@@ -3753,7 +4393,7 @@ p {
   width: min(42vw, 560px);
   opacity: var(--fermentation-copy-opacity);
   text-align: left;
-  transform: translateX(var(--fermentation-copy-x));
+  transform: none;
   pointer-events: none;
 }
 
@@ -3761,7 +4401,7 @@ p {
   max-width: 520px;
   margin: 0;
   color: var(--wine);
-  font-family: Fraunces, Georgia, serif;
+  font-family: var(--font-heading);
   font-size: clamp(1.65rem, 2.2vw, 2.7rem);
   font-weight: 900;
   line-height: 1;
@@ -3769,7 +4409,7 @@ p {
 
 .fermentation-chart-panel {
   position: absolute;
-  top: 60%;
+  top: 57%;
   left: clamp(4.8rem, 9vw, 10.5rem);
   z-index: 3;
   width: min(52vw, 900px);
@@ -3790,9 +4430,9 @@ p {
 
 .fermentation-chart-item {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16 / 10.4;
   height: auto;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .fermentation-flourish-embed {
@@ -3886,7 +4526,7 @@ p {
   max-width: 640px;
   margin: 0;
   color: var(--wine);
-  font-family: Fraunces, Georgia, serif;
+  font-family: var(--font-heading);
   font-size: clamp(1.85rem, 3vw, 3.8rem);
   font-weight: 900;
   line-height: 1;
@@ -4012,7 +4652,7 @@ p {
 .malbec-axis-name,
 .malbec-axis-value {
   fill: currentColor;
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -4045,7 +4685,7 @@ p {
   left: 50%;
   bottom: 0.25rem;
   color: rgba(42, 16, 9, 0.5);
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -4142,7 +4782,7 @@ p {
 .tasting-copy-panel h2 {
   max-width: 620px;
   color: var(--wine);
-  font-family: Fraunces, Georgia, serif;
+  font-family: var(--font-heading);
   font-weight: 900;
   font-size: clamp(2.2rem, 3.7vw, 4.6rem);
   line-height: 0.98;
@@ -4152,7 +4792,7 @@ p {
   max-width: 560px;
   margin-top: 1.15rem;
   color: rgba(42, 16, 9, 0.75);
-  font-family: Inter, system-ui, sans-serif;
+  font-family: var(--font-body);
   font-size: clamp(1rem, 1.16vw, 1.22rem);
   font-weight: 600;
   line-height: 1.42;
@@ -4179,7 +4819,7 @@ p {
   border: 1px solid rgba(139, 18, 50, 0.28);
   background: rgba(255, 247, 232, 0.76);
   color: var(--wine);
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -4491,7 +5131,7 @@ p {
 .radar-label {
   position: absolute;
   color: var(--ink);
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-data);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -4791,16 +5431,7 @@ p {
 }
 
 /* Typographic hierarchy: titles introduce, data leads, body explains. */
-:root {
-  --font-display: Fraunces, Georgia, serif;
-  --font-data: "IBM Plex Mono", ui-monospace, monospace;
-  --font-body: Inter, system-ui, sans-serif;
-  --viz-title-size: clamp(1.45rem, 2vw, 2.45rem);
-  --viz-title-size-small: clamp(1.28rem, 1.55vw, 1.85rem);
-  --story-title-size: clamp(1.58rem, 2.25vw, 2.75rem);
-  --section-body-size: clamp(0.96rem, 1.06vw, 1.12rem);
-  --data-number-size: clamp(2.15rem, 3.1vw, 3.55rem);
-}
+:root {}
 
 body {
   font-family: var(--font-body);
@@ -4833,7 +5464,7 @@ body {
 .fermentation-copy h2,
 .malbec-profile-copy h2,
 .tasting-copy-panel h2 {
-  font-family: var(--font-display);
+  font-family: var(--font-heading);
   font-size: var(--viz-title-size);
   font-weight: 850;
   line-height: 1.06;
@@ -4843,7 +5474,7 @@ body {
 .argentina-copy h2,
 .varietal-copy h2,
 .bottle-transition-title p {
-  font-family: var(--font-display);
+  font-family: var(--font-heading);
   font-size: var(--story-title-size);
   font-weight: 850;
   line-height: 1.04;
@@ -4987,14 +5618,14 @@ body {
 
 /* Iteration tuning: restore title consistency and data clarity. */
 .builder-intro h2 {
-  font-family: var(--font-display);
+  font-family: var(--font-heading);
   font-size: clamp(3.25rem, 5.25vw, 6.25rem);
   font-weight: 900;
   line-height: 0.98;
 }
 
 .recommendation h3 {
-  font-family: var(--font-display);
+  font-family: var(--font-heading);
   font-size: clamp(3rem, 5.35vw, 6.35rem);
   font-weight: 900;
   line-height: 0.96;
@@ -5002,7 +5633,7 @@ body {
 
 .bottle-transition-title p {
   max-width: min(78vw, 1080px);
-  font-family: var(--font-display);
+  font-family: var(--font-heading);
   font-size: clamp(3.85rem, 7.4vw, 8.9rem);
   font-weight: 900;
   line-height: 0.9;
@@ -5042,15 +5673,15 @@ body {
   padding: clamp(1.4rem, 3vw, 2.4rem) 0;
   grid-template-columns: minmax(260px, 0.7fr) minmax(460px, 1.15fr);
   gap: clamp(1.8rem, 5vw, 5.4rem);
-  border-top-color: rgba(139, 18, 50, 0.22);
-  border-bottom: 1px solid rgba(139, 18, 50, 0.16);
+  border-top: 0;
+  border-bottom: 0;
 }
 
 .consumption-calendar .monthly-ritual-copy h2 {
   max-width: 520px;
   margin: 0;
   color: var(--wine);
-  font-family: var(--font-display);
+  font-family: var(--font-heading);
   font-size: clamp(1.8rem, 2.55vw, 3.15rem);
   font-weight: 900;
   line-height: 1.02;
@@ -5108,7 +5739,7 @@ body {
   max-width: 700px;
   margin: 0;
   color: var(--wine);
-  font-family: var(--font-display);
+  font-family: var(--font-heading);
   font-size: clamp(1.65rem, 2.25vw, 2.85rem);
   font-weight: 900;
   line-height: 1.02;
@@ -5155,8 +5786,8 @@ body {
 }
 
 .fermentation-chart-panel {
-  top: 64%;
-  width: min(48vw, 820px);
+  top: 58%;
+  width: min(46vw, 780px);
 }
 
 .malbec-profile-layout {
@@ -5191,7 +5822,7 @@ body {
 }
 
 .recommendation p:not(.section-kicker) {
-  top: calc(50% + clamp(5.4rem, 13vh, 7.8rem));
+  top: calc(50% + clamp(3.9rem, 9vh, 5.8rem));
 }
 
 .profile-chart-panel {
@@ -5232,7 +5863,7 @@ body {
   }
 
   .recommendation p:not(.section-kicker) {
-    top: calc(50% + clamp(4.8rem, 13vh, 6.6rem));
+    top: calc(50% + clamp(3.8rem, 10vh, 5.6rem));
   }
 
   .profile-chart-panel {
@@ -5285,7 +5916,7 @@ body {
   }
 
   .fermentation-chart-panel {
-    top: 70%;
+    top: 66%;
     width: min(86vw, 430px);
   }
 
@@ -5296,6 +5927,1024 @@ body {
   .malbec-profile-visual figcaption {
     max-width: 90vw;
     text-align: center;
+  }
+}
+
+/* Global typography refactor: one heading voice, one body voice, one data voice. */
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-body);
+}
+
+.brand,
+.written-title,
+.builder-intro h2,
+.taste-question-title,
+.recommendation h3,
+.profile-chart-question,
+.world-question h2,
+.map-heading h3,
+.argentina-copy h2,
+.monthly-ritual-copy h2,
+.narrative-bridge-copy h2,
+.narrative-bridge-statement h2,
+.production-history-heading h2,
+.bottle-transition-title p,
+.varietal-copy h2,
+.varietal-caption h3,
+.varietal-bottle .label-face em,
+.composition-copy h2,
+.chemistry-variety-heading h2,
+.fermentation-copy h2,
+.malbec-profile-copy h2,
+.tasting-copy-panel h2,
+.country-popup strong {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.written-title {
+  font-size: var(--type-title-hero);
+  line-height: 0.96;
+}
+
+.builder-intro h2,
+.world-question h2,
+.recommendation h3,
+.bottle-transition-title p {
+  font-size: var(--type-title-xl);
+  line-height: 0.98;
+}
+
+.argentina-copy h2,
+.production-history-heading h2,
+.monthly-ritual-copy h2,
+.narrative-bridge-copy h2,
+.narrative-bridge-statement h2,
+.varietal-copy h2,
+.composition-copy h2,
+.chemistry-variety-heading h2,
+.fermentation-copy h2,
+.malbec-profile-copy h2,
+.tasting-copy-panel h2 {
+  font-size: var(--type-title-lg);
+  line-height: 1.04;
+}
+
+.map-heading h3,
+.taste-question-title,
+.profile-chart-question,
+.varietal-caption h3,
+.country-popup strong {
+  font-size: var(--type-title-sm);
+  line-height: 1.12;
+}
+
+.world-note p,
+.argentina-copy p:not(.section-kicker),
+.monthly-ritual-copy p:not(.section-kicker),
+.narrative-bridge-copy p,
+.narrative-bridge-statement p,
+.narrative-prose p,
+.production-history-heading p:not(.section-kicker),
+.production-history-annotation p,
+.story-card p,
+.varietal-copy p:not(.section-kicker),
+.composition-detail p,
+.chemistry-variety-heading > p,
+.fermentation-copy p,
+.malbec-profile-copy p,
+.tasting-copy-panel p:not(.section-kicker),
+.recommendation p:not(.section-kicker),
+.country-popup p,
+.varietal-bottle .label-note,
+.varietal-caption p {
+  font-family: var(--font-body);
+  font-size: var(--type-body);
+  font-weight: 550;
+  line-height: 1.5;
+}
+
+.narrative-bridge-statement:not(.narrative-prose) p,
+.narrative-bridge-recap .narrative-bridge-statement p {
+  font-family: var(--font-heading);
+  font-size: var(--type-title-lg);
+  font-weight: 700;
+  line-height: 1.12;
+}
+
+.narrative-bridge-opening-note .narrative-bridge-copy p {
+  max-width: var(--intro-copy-width);
+  margin-top: var(--intro-copy-gap);
+  font-size: var(--intro-copy-size);
+  font-weight: 560;
+  line-height: var(--intro-copy-line-height);
+}
+
+.section-kicker,
+.chapter-kicker,
+.map-caption,
+.history-year-label,
+.history-axis-label,
+.history-note-marker,
+.production-history-readout span,
+.production-history-readout strong,
+.production-history-readout b,
+.production-history-annotation span,
+.composition-detail strong,
+.composition-detail h3,
+.malbec-axis-name,
+.malbec-axis-value,
+.malbec-profile-visual figcaption,
+.radar-label,
+.aroma-chips span,
+.argentina-stat strong,
+.argentina-stat span,
+.country-popup span,
+.month-stain strong,
+.timeline-source,
+.varietal-bottle .label-face small,
+.production-history-source {
+  font-family: var(--font-data);
+  letter-spacing: 0.06em;
+}
+
+.section-kicker {
+  margin-bottom: 0.42rem;
+  font-size: clamp(0.66rem, 0.78vw, 0.82rem);
+  line-height: 1.15;
+}
+
+.argentina-stat strong,
+.production-history-readout strong {
+  font-size: var(--type-data-number);
+  letter-spacing: -0.02em;
+}
+
+.recommendation h3 {
+  margin-bottom: clamp(0.6rem, 1.1vh, 0.9rem);
+}
+
+.chemistry-variety-heading h2,
+.consumption-calendar .monthly-ritual-copy h2 {
+  font-size: var(--type-title-lg);
+}
+
+.composition-detail strong,
+.composition-detail h3 {
+  font-size: clamp(0.92rem, 1vw, 1.08rem);
+}
+
+.closing-section {
+  position: relative;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.closing-toast-scroll {
+  position: relative;
+  min-height: 230vh;
+}
+
+.closing-toast-pin {
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(1.4rem, 3vh, 2.4rem);
+  min-height: 100vh;
+  place-items: center;
+  overflow: hidden;
+  padding: clamp(5.6rem, 9vh, 7.4rem) clamp(1rem, 4vw, 4rem) clamp(2.8rem, 5vh, 4rem);
+}
+
+.closing-final-text {
+  z-index: 6;
+  width: min(86vw, 980px);
+  margin: 0 auto;
+  color: rgba(42, 16, 9, 0.82);
+  font-family: var(--subtitle-font);
+  font-size: var(--subtitle-size);
+  font-weight: 650;
+  line-height: var(--subtitle-line-height);
+  text-align: center;
+  transform: translate3d(0, var(--closing-final-text-y), 0);
+}
+
+.closing-toast-stage {
+  position: relative;
+  width: min(100%, 1440px);
+  height: min(68vh, 640px);
+}
+
+.closing-toast-scene {
+  position: absolute;
+  top: 50%;
+  width: clamp(520px, 42vw, 760px);
+  aspect-ratio: 3 / 2;
+  pointer-events: none;
+  transform-origin: 74% 58%;
+}
+
+.closing-toast-left {
+  left: 50%;
+  margin-left: clamp(-620px, -41vw, -430px);
+  transform:
+    translate3d(var(--closing-left-x), calc(var(--closing-toast-y) + var(--closing-left-drop-y)), 0)
+    translateY(-50%)
+    rotate(var(--closing-left-rotate));
+}
+
+.closing-toast-right {
+  left: 50%;
+  margin-left: clamp(-175px, -11vw, -100px);
+  transform-origin: 26% 58%;
+  transform:
+    translate3d(var(--closing-right-x), calc(var(--closing-toast-y) + var(--closing-right-drop-y)), 0)
+    translateY(-50%)
+    scaleX(-1)
+    rotate(var(--closing-right-rotate));
+}
+
+.closing-hand-png {
+  position: absolute;
+  left: -19%;
+  top: 44%;
+  z-index: 3;
+  display: block;
+  width: 128%;
+  height: auto;
+  opacity: 1;
+  pointer-events: none;
+}
+
+.closing-glass-illustration {
+  position: absolute;
+  top: -21%;
+  left: 27%;
+  z-index: 2;
+  display: block;
+  width: 96%;
+  height: auto;
+  overflow: visible;
+}
+
+.closing-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(2.2rem, 8vw, 7rem);
+  align-items: start;
+  width: min(1180px, calc(100% - clamp(2rem, 12vw, 12rem)));
+  margin: 0 auto;
+}
+
+.closing-meta h3 {
+  margin: 0 0 1rem;
+  color: var(--paper);
+  font-family: var(--font-heading);
+  font-size: clamp(1.15rem, 1.5vw, 1.45rem);
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.closing-meta ul {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.closing-meta li {
+  color: rgba(254, 254, 251, 0.82);
+  font-family: var(--font-body);
+  font-size: clamp(0.98rem, 1.08vw, 1.12rem);
+  line-height: 1.45;
+}
+
+.closing-band {
+  width: 100%;
+  min-height: clamp(260px, 34vh, 380px);
+  padding: clamp(3.8rem, 8vh, 6.5rem) 0;
+  background: var(--wine);
+}
+
+@media (max-width: 900px) {
+  .closing-toast-stage {
+    height: min(66vh, 560px);
+  }
+
+  .closing-toast-scene {
+    width: clamp(430px, 72vw, 620px);
+  }
+
+  .closing-toast-left {
+    margin-left: clamp(-530px, -70vw, -360px);
+  }
+
+  .closing-toast-right {
+    margin-left: clamp(-150px, -18vw, -82px);
+  }
+}
+
+@media (max-width: 640px) {
+  .closing-toast-scroll {
+    min-height: 210vh;
+  }
+
+  .closing-toast-stage {
+    height: 58vh;
+  }
+
+  .closing-toast-scene {
+    width: clamp(350px, 94vw, 500px);
+  }
+
+  .closing-toast-left {
+    margin-left: clamp(-420px, -92vw, -300px);
+  }
+
+  .closing-toast-right {
+    margin-left: clamp(-112px, -22vw, -70px);
+  }
+
+  .closing-meta {
+    grid-template-columns: 1fr;
+    gap: 2.4rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .written-title {
+    font-size: clamp(3.1rem, 13vw, 4.4rem);
+  }
+
+  .builder-intro h2,
+  .world-question h2,
+  .recommendation h3,
+  .bottle-transition-title p {
+    font-size: clamp(2.25rem, 10vw, 4rem);
+  }
+
+  .argentina-copy h2,
+  .production-history-heading h2,
+  .monthly-ritual-copy h2,
+  .narrative-bridge-copy h2,
+  .narrative-bridge-statement h2,
+  .varietal-copy h2,
+  .composition-copy h2,
+  .chemistry-variety-heading h2,
+  .fermentation-copy h2,
+  .malbec-profile-copy h2,
+  .tasting-copy-panel h2 {
+    font-size: clamp(1.75rem, 7vw, 2.8rem);
+  }
+
+  .narrative-bridge-opening-note .narrative-bridge-copy p {
+    max-width: min(88vw, 34rem);
+    font-size: clamp(1.18rem, 4.6vw, 1.55rem);
+    line-height: 1.42;
+  }
+}
+
+/* Fermentation layout: keep the title compact and give the chart its own air. */
+.fermentation-copy {
+  top: clamp(5.2rem, 9vh, 7rem);
+  width: min(48vw, 720px);
+}
+
+.fermentation-copy h2 {
+  max-width: 720px;
+  font-size: clamp(1.65rem, 2.05vw, 2.55rem);
+  line-height: 1.08;
+}
+
+.fermentation-title-line {
+  display: block;
+  white-space: nowrap;
+}
+
+.fermentation-chart-panel {
+  top: 64%;
+  width: min(39vw, 640px);
+}
+
+@media (max-width: 980px) {
+  .fermentation-copy {
+    width: min(78vw, 680px);
+  }
+
+  .fermentation-chart-panel {
+    top: 66%;
+    width: min(68vw, 560px);
+  }
+}
+
+@media (max-width: 700px) {
+  .fermentation-copy {
+    width: min(92vw, 520px);
+  }
+
+  .fermentation-copy h2 {
+    font-size: clamp(1.18rem, 5.45vw, 2rem);
+  }
+
+  .fermentation-chart-panel {
+    top: 70%;
+    width: min(82vw, 390px);
+  }
+}
+
+/* Global motion + typography cleanup.
+   Keep meaningful transitions, but stop decorative lateral drift in text and photos. */
+.narrative-bridge {
+  --narrative-photo-x: 0vw;
+  --narrative-photo-clip: 0%;
+}
+
+.narrative-photo-figure {
+  clip-path: inset(0 0 0 0);
+  transform: none;
+  will-change: auto;
+}
+
+.narrative-bridge-before-history .narrative-photo-figure {
+  transform: translate3d(0, var(--narrative-photo-y), 0);
+  will-change: transform;
+}
+
+.narrative-bridge-documentary .narrative-photo-figure {
+  transform: translate3d(0, var(--narrative-photo-y), 0);
+  will-change: transform;
+}
+
+.world-note {
+  transform:
+    translate(-50%, -50%)
+    translateY(calc((1 - var(--world-note-in)) * 1.1rem))
+    translateY(calc(var(--world-note-out) * -32vh));
+}
+
+.argentina-copy {
+  transform: translateY(-50%);
+}
+
+.fermentation-copy {
+  transform: none;
+}
+
+.production-history-annotation,
+.production-history-section.is-history-annotation-active .production-history-annotation {
+  transform: translate3d(0, -50%, 0);
+  transition-property: opacity, visibility;
+  will-change: auto;
+}
+
+/* Four-category type system. */
+.brand,
+.written-title {
+  font-family: var(--hero-font);
+  font-size: var(--hero-size);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+.builder-intro h2,
+.taste-question-title,
+.recommendation h3,
+.profile-chart-question,
+.world-question h2,
+.map-heading h3,
+.argentina-copy h2,
+.monthly-ritual-copy h2,
+.narrative-bridge-copy h2,
+.narrative-bridge-statement h2,
+.production-history-heading h2,
+.bottle-transition-title p,
+.varietal-copy h2,
+.varietal-caption h3,
+.composition-copy h2,
+.chemistry-variety-heading h2,
+.fermentation-copy h2,
+.malbec-profile-copy h2,
+.tasting-copy-panel h2,
+.closing-meta h3,
+.country-popup strong {
+  font-family: var(--heading-font);
+  font-size: var(--heading-size);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: 0;
+}
+
+.section-kicker,
+.chapter-kicker,
+.map-caption,
+.argentina-map-caption,
+.history-year-label,
+.history-axis-label,
+.history-note-marker,
+.production-history-readout span,
+.production-history-readout b,
+.production-history-annotation span,
+.composition-detail strong,
+.composition-detail h3,
+.malbec-axis-name,
+.malbec-axis-value,
+.malbec-profile-visual figcaption,
+.radar-label,
+.aroma-chips span,
+.argentina-stat span,
+.country-popup span,
+.month-stain strong,
+.timeline-source,
+.production-history-source,
+.varietal-bottle .label-face small {
+  font-family: var(--subheading-font);
+  font-size: var(--subheading-size);
+  font-weight: 700;
+  line-height: 1.24;
+  letter-spacing: 0.06em;
+}
+
+.builder-intro p,
+.world-note p,
+.argentina-copy p:not(.section-kicker),
+.monthly-ritual-copy p:not(.section-kicker),
+.narrative-bridge-copy p,
+.narrative-bridge-statement p,
+.narrative-prose p,
+.production-history-heading p:not(.section-kicker),
+.production-history-annotation p,
+.story-card p,
+.varietal-copy p:not(.section-kicker),
+.varietal-caption p,
+.composition-detail p,
+.chemistry-variety-heading > p,
+.fermentation-copy p,
+.malbec-profile-copy p,
+.tasting-copy-panel p:not(.section-kicker),
+.recommendation p:not(.section-kicker),
+.country-popup p,
+.varietal-bottle .label-note,
+.closing-narrative p,
+.closing-meta li,
+.narrative-photo-figure figcaption {
+  font-family: var(--body-font);
+  font-size: var(--body-size);
+  font-weight: 500;
+  line-height: 1.52;
+  letter-spacing: 0;
+}
+
+.narrative-bridge-statement:not(.narrative-prose) p,
+.narrative-bridge-recap .narrative-bridge-statement p,
+.narrative-bridge-opening-note .narrative-bridge-copy p {
+  font-family: var(--body-font);
+  font-size: var(--body-size);
+  font-weight: 560;
+  line-height: 1.44;
+}
+
+.narrative-bridge-opening-note .narrative-bridge-copy {
+  max-width: min(88vw, 1080px);
+  transform: translateY(clamp(-4.8rem, -8vh, -3rem));
+}
+
+.narrative-bridge-opening-note .narrative-bridge-copy h2 {
+  max-width: min(86vw, 1080px);
+}
+
+.narrative-bridge-opening-note .narrative-bridge-copy p {
+  max-width: min(82vw, 900px);
+  color: rgba(42, 16, 9, 0.74);
+  font-family: var(--subtitle-font);
+  font-size: clamp(1.24rem, 1.65vw, 1.82rem);
+  font-weight: 560;
+  line-height: 1.34;
+}
+
+.narrative-bridge-opening-note .narrative-bridge-copy h2 + p {
+  margin-top: clamp(1rem, 1.8vh, 1.45rem);
+}
+
+.narrative-bridge-scale-intro .narrative-bridge-statement {
+  max-width: min(84vw, 920px);
+  text-align: center;
+}
+
+.narrative-bridge-scale-intro .narrative-bridge-statement p {
+  max-width: min(78vw, 860px);
+  margin-inline: auto;
+  color: rgba(42, 16, 9, 0.78);
+  font-family: var(--subtitle-font);
+  font-size: clamp(1.2rem, 1.58vw, 1.7rem);
+  font-weight: 560;
+  line-height: 1.35;
+}
+
+.narrative-bridge-scale-intro .narrative-bridge-statement h2 {
+  max-width: min(82vw, 980px);
+  margin-inline: auto;
+  margin-top: clamp(0.95rem, 2vh, 1.55rem);
+  color: var(--wine);
+  font-family: var(--heading-font);
+  font-size: clamp(2.1rem, 3.2vw, 3.6rem);
+  font-weight: 820;
+  line-height: 1.05;
+}
+
+.map-heading h3 {
+  max-width: min(92vw, 1180px);
+  font-size: clamp(1.35rem, 2.15vw, 2.35rem);
+  line-height: 1.08;
+  white-space: nowrap;
+}
+
+.country-popup strong {
+  color: var(--ink);
+  font-family: var(--heading-font);
+  font-size: clamp(1rem, 1.08vw, 1.18rem);
+  font-weight: 820;
+  line-height: 1.02;
+}
+
+.country-popup span {
+  margin-top: 0.32rem;
+  font-size: clamp(0.58rem, 0.62vw, 0.68rem);
+  line-height: 1.16;
+}
+
+.country-popup p {
+  margin-top: 0.34rem;
+  color: rgba(42, 16, 9, 0.64);
+  font-family: var(--body-font);
+  font-size: clamp(0.68rem, 0.72vw, 0.78rem);
+  font-weight: 460;
+  line-height: 1.24;
+}
+
+.country-popup .popup-fact {
+  color: rgba(42, 16, 9, 0.72);
+  font-weight: 540;
+}
+
+.country-popup .popup-context {
+  color: rgba(42, 16, 9, 0.58);
+  font-weight: 440;
+}
+
+.narrative-highlight {
+  margin-top: clamp(1.3rem, 2.6vh, 2rem);
+  color: var(--wine);
+  font-family: var(--body-font);
+  font-size: var(--body-size);
+  font-weight: 650;
+  line-height: 1.5;
+}
+
+.bottle-transition-title {
+  width: min(66vw, 960px);
+  box-sizing: border-box;
+  padding-inline: clamp(1.6rem, 3.8vw, 4.8rem);
+}
+
+.bottle-transition-title p {
+  font-family: var(--heading-font);
+  font-size: clamp(3.55rem, 6.65vw, 7.65rem);
+  font-weight: 860;
+  line-height: 0.9;
+}
+
+.composition-detail strong,
+.composition-detail h3 {
+  color: var(--detail-color);
+  font-family: var(--body-font);
+  font-size: var(--body-size);
+  font-weight: 650;
+  letter-spacing: 0;
+  line-height: 1.34;
+}
+
+.composition-detail p {
+  font-size: var(--body-size);
+  font-weight: 500;
+  line-height: 1.34;
+}
+
+.narrative-bridge-recap .narrative-bridge-pin {
+  grid-template-columns: minmax(420px, 0.78fr) minmax(360px, 0.9fr);
+  justify-items: stretch;
+  padding-left: clamp(3.6rem, 10vw, 12rem);
+  padding-right: clamp(2rem, 7vw, 8rem);
+}
+
+.narrative-bridge-recap .narrative-bridge-statement {
+  grid-column: 1;
+  justify-self: start;
+  max-width: min(42vw, 720px);
+  margin: 0;
+}
+
+.narrative-bridge-recap .narrative-bridge-statement p {
+  color: rgba(42, 16, 9, 0.78);
+  font-family: var(--subtitle-font);
+  font-size: var(--subtitle-size);
+  font-weight: 720;
+  line-height: var(--subtitle-line-height);
+}
+
+.profile-chart-question {
+  width: max-content;
+  max-width: 92vw;
+  margin-inline: auto;
+  white-space: nowrap;
+  font-size: clamp(1.16rem, 1.75vw, 1.9rem);
+}
+
+.argentina-stat strong,
+.production-history-readout strong {
+  font-family: var(--subheading-font);
+  font-size: var(--heading-size);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.country-popup strong {
+  font-size: var(--subheading-size);
+}
+
+.closing-band .closing-meta h3 {
+  color: var(--paper);
+  font-family: var(--subheading-font);
+  font-size: var(--subheading-size);
+  font-weight: 700;
+  line-height: 1.24;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.closing-band .closing-meta li {
+  color: rgba(254, 254, 251, 0.86);
+  font-family: var(--body-font);
+  font-size: var(--body-size);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* Uniform project surface: sections share one paper tone unless an inner element
+   has an explicit visual role such as wine, cards, charts, or bottle artwork. */
+html,
+body,
+main,
+main > section,
+.site-header {
+  background: var(--paper);
+}
+
+.narrative-bridge-before-chemistry {
+  min-height: 760vh;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--paper);
+}
+
+.narrative-bridge-before-chemistry .narrative-bridge-pin {
+  position: sticky;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.chemistry-wine-zoom-layer {
+  position: absolute;
+  left: 50%;
+  top: 54vh;
+  z-index: 26;
+  width: clamp(180px, 22vw, 390px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 42% 35%, rgba(196, 30, 75, 0.88), rgba(139, 18, 50, 0.98) 48%, #681021 100%);
+  opacity: var(--chemistry-wine-opacity);
+  transform:
+    translate(-50%, -50%)
+    scale(var(--chemistry-wine-scale));
+  transform-origin: 50% 50%;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.narrative-bridge-before-chemistry .narrative-bridge-statement {
+  position: relative;
+  z-index: 29;
+  max-width: min(84vw, 860px);
+  color: var(--paper);
+  text-align: left;
+  opacity: var(--chemistry-text-visible);
+  transform: translate3d(0, var(--chemistry-text-y), 0);
+  will-change: opacity;
+}
+
+.narrative-bridge-before-chemistry .narrative-bridge-statement h2,
+.narrative-bridge-before-chemistry .narrative-bridge-statement p {
+  color: var(--paper);
+}
+
+.narrative-bridge-before-chemistry .narrative-bridge-statement p {
+  color: rgba(254, 254, 251, 0.84);
+}
+
+:root.is-chemistry-bridge-active .bridge-receiving-glass {
+  z-index: 25;
+  opacity: calc(var(--bridge-glass-opacity) * var(--shared-glass-opacity));
+  transform-origin: 50% 44%;
+  transition: none;
+}
+
+.narrative-bridge-after-fermentation {
+  min-height: 520vh;
+  --after-fermentation-stage-1-opacity: 1;
+  --after-fermentation-stage-1-y: 0vh;
+  --after-fermentation-stage-2-opacity: 0;
+  --after-fermentation-stage-2-y: 16vh;
+  --after-fermentation-stage-3-opacity: 0;
+  --after-fermentation-stage-3-y: 16vh;
+  --after-fermentation-stage-4-opacity: 0;
+  --after-fermentation-stage-4-y: 16vh;
+}
+
+.narrative-bridge-after-fermentation .narrative-bridge-pin {
+  grid-template-columns: minmax(340px, 0.72fr) minmax(320px, 0.52fr);
+  justify-items: start;
+  padding-left: clamp(3.5rem, 18vw, 22rem);
+  padding-right: clamp(2.5rem, 7vw, 8rem);
+}
+
+.narrative-bridge-after-fermentation .narrative-bridge-statement {
+  grid-column: 1;
+  width: min(52vw, 820px);
+  max-width: 820px;
+  margin: 0;
+}
+
+.narrative-bridge-after-fermentation .narrative-bridge-statement h2 {
+  max-width: 780px;
+  margin-bottom: clamp(1.4rem, 3vh, 2.4rem);
+}
+
+.after-fermentation-stage-track {
+  position: relative;
+  min-height: clamp(12rem, 24vh, 18rem);
+}
+
+.narrative-bridge-after-fermentation .after-fermentation-stage {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: min(100%, 760px);
+  margin: 0;
+  will-change: transform, opacity;
+}
+
+/* Continuous canvas: large page surfaces must share one exact base tone.
+   Color remains inside data marks, artwork, cards, photos, bottles, and wine. */
+.opener,
+.opener-pin,
+.wine-builder,
+.world-consumption,
+.argentina-zoom,
+.consumption-calendar-section,
+.production-history-section,
+.narrative-bridge,
+.narrative-bridge-stark,
+.narrative-bridge-recap,
+.narrative-bridge-landscape,
+.narrative-bridge-before-history,
+.narrative-bridge-documentary,
+.narrative-bridge-grape,
+.flourish-story-section,
+.argentine-varietals,
+.wine-composition-section,
+.chemistry-variety-section,
+.fermentation-section,
+.pour-story,
+.malbec-profile-section,
+.tasting-section,
+.closing-section {
+  background: var(--paper);
+  background-color: var(--paper);
+}
+
+.chemistry-variety-frame,
+.production-history-readout {
+  background: var(--paper);
+  background-color: var(--paper);
+}
+
+.after-fermentation-stage-1 {
+  opacity: var(--after-fermentation-stage-1-opacity);
+  transform: translate3d(0, var(--after-fermentation-stage-1-y), 0);
+}
+
+.after-fermentation-stage-2 {
+  opacity: var(--after-fermentation-stage-2-opacity);
+  transform: translate3d(0, var(--after-fermentation-stage-2-y), 0);
+}
+
+.after-fermentation-stage-3 {
+  opacity: var(--after-fermentation-stage-3-opacity);
+  transform: translate3d(0, var(--after-fermentation-stage-3-y), 0);
+}
+
+.after-fermentation-stage-4 {
+  opacity: var(--after-fermentation-stage-4-opacity);
+  transform: translate3d(0, var(--after-fermentation-stage-4-y), 0);
+}
+
+@media (max-width: 700px) {
+  :root {
+    --hero-size: clamp(3rem, 12vw, 4.4rem);
+    --heading-size: clamp(1.75rem, 7vw, 2.8rem);
+    --subtitle-size: clamp(1.16rem, 5.2vw, 1.55rem);
+    --body-size: clamp(1rem, 4.25vw, 1.16rem);
+  }
+
+  .narrative-bridge-opening-note .narrative-bridge-copy p {
+    max-width: min(88vw, 34rem);
+  }
+
+  .narrative-bridge-opening-note .narrative-bridge-copy {
+    transform: translateY(clamp(-2.8rem, -5vh, -1.6rem));
+  }
+
+  .narrative-bridge-scale-intro .narrative-bridge-statement h2 {
+    font-size: clamp(1.9rem, 8vw, 2.8rem);
+  }
+
+  .chemistry-wine-zoom-layer {
+    top: 55vh;
+    width: clamp(180px, 54vw, 320px);
+  }
+
+  .narrative-bridge-after-fermentation .narrative-bridge-pin {
+    grid-template-columns: 1fr;
+    padding-inline: clamp(1.2rem, 6vw, 2rem);
+  }
+
+  .narrative-bridge-after-fermentation .narrative-bridge-statement {
+    width: min(88vw, 34rem);
+  }
+
+  .after-fermentation-stage-track {
+    min-height: clamp(18rem, 44vh, 27rem);
+  }
+
+  .map-heading h3 {
+    font-size: clamp(0.96rem, 4.2vw, 1.35rem);
+    white-space: nowrap;
+  }
+
+  .bottle-transition-title p {
+    font-size: clamp(2.85rem, 12.5vw, 4.55rem);
+  }
+
+  .narrative-bridge-recap .narrative-bridge-pin {
+    grid-template-columns: 1fr;
+  }
+
+  .narrative-bridge-recap .narrative-bridge-statement {
+    grid-column: 1;
+    max-width: min(88vw, 34rem);
+    margin-inline: auto;
+  }
+
+  .narrative-bridge-grape {
+    min-height: 440vh;
+  }
+
+  .narrative-bridge-before-history {
+    min-height: 440vh;
+  }
+
+  .narrative-bridge-before-history .narrative-bridge-copy {
+    min-height: 52vh;
+  }
+
+  .before-history-text-block {
+    width: 100%;
+  }
+
+  .narrative-bridge-grape .narrative-bridge-copy {
+    min-height: 52vh;
+  }
+
+  .grape-text-block {
+    width: 100%;
   }
 }
 

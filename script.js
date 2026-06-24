@@ -1,5 +1,6 @@
 ﻿const root = document.documentElement;
 const progress = document.querySelector(".scroll-progress");
+const scaleIndexLinks = [...document.querySelectorAll("[data-scale-link]")];
 const opener = document.querySelector(".opener");
 const posterBottle = document.querySelector(".poster-bottle");
 const posterCork = document.querySelector(".poster-cork");
@@ -7,6 +8,7 @@ const posterBottleArt = document.querySelector(".bottle-illustration");
 const wineBuilder = document.querySelector(".wine-builder");
 const worldSection = document.querySelector(".world-consumption");
 const argentinaSection = document.querySelector(".argentina-zoom");
+const consumptionCalendarSection = document.querySelector("#calendario-consumo");
 const calendarSection = document.querySelector(".production-history-section");
 const productionHistoryViewport = document.querySelector("[data-production-history-viewport]");
 const productionHistoryTrack = document.querySelector("[data-production-history-track]");
@@ -14,6 +16,10 @@ const productionHistoryScale = document.querySelector("[data-production-history-
 const productionHistoryActiveYear = document.querySelector("[data-production-active-year]");
 const productionHistoryActiveValue = document.querySelector("[data-production-active-value]");
 const productionHistoryActiveNote = document.querySelector("[data-production-active-note]");
+const productionHistoryAnnotation = document.querySelector("[data-production-history-annotation]");
+const productionHistoryAnnotationYear = document.querySelector("[data-history-annotation-year]");
+const productionHistoryAnnotationText = document.querySelector("[data-history-annotation-text]");
+const narrativeBridgeSections = [...document.querySelectorAll("[data-narrative-bridge]")];
 const flourishStorySection = document.querySelector(".flourish-story-section");
 const flourishStoryCards = [...document.querySelectorAll(".story-card")];
 const varietalSection = document.querySelector(".argentine-varietals");
@@ -50,9 +56,12 @@ const tastingCopyPanels = [...document.querySelectorAll(".tasting-copy-panel")];
 const compositionSection = document.querySelector(".wine-composition-section");
 const compositionSlices = [...document.querySelectorAll("[data-composition-slice]")];
 const compositionDetails = [...document.querySelectorAll("[data-composition-detail]")];
+const chemistryVarietySection = document.querySelector("#quimica-por-variedad");
 const fermentationSection = document.querySelector(".fermentation-section");
 const fermentationFlourish = document.querySelector("[data-fermentation-flourish]");
 const malbecProfileSection = document.querySelector(".malbec-profile-section");
+const closingToastSection = document.querySelector("[data-closing-toast]");
+const closingSection = document.querySelector(".closing-section");
 const nextStep = document.querySelector("#nextStep");
 const prevStep = document.querySelector("#prevStep");
 const radarShape = document.querySelector("#radarShape");
@@ -252,6 +261,26 @@ const productionHistoryNotes = {
   2016: "Cosecha muy baja. El clima golpea la disponibilidad de uva y reduce el volumen elaborado.",
   2020: "Pandemia. Cambian hábitos de consumo, logística y condiciones comerciales.",
   2023: "Mínimo de la serie. Una cosecha difícil deja uno de los volúmenes más bajos del período.",
+};
+
+// Narrative cards for timeline milestones. Edit these texts to adjust the story without touching the chart.
+const productionHistoryNarrativeCards = {
+  2001: {
+    label: "2001 / Crisis económica",
+    text: "La industria empieza a reconfigurarse y mirar con más fuerza hacia afuera.",
+  },
+  2016: {
+    label: "2016 / Cosecha baja",
+    text: "El clima golpea la disponibilidad de uva y reduce el volumen elaborado.",
+  },
+  2020: {
+    label: "2020 / Pandemia",
+    text: "Cambian los hábitos de compra, consumo y circulación.",
+  },
+  2023: {
+    label: "2023 / Mínimo de la serie",
+    text: "Una cosecha difícil deja uno de los volúmenes más bajos del período.",
+  },
 };
 
 function clamp(value, min, max) {
@@ -893,11 +922,10 @@ function updateIntroState() {
   const titleLine1 = 1;
   const titleLine2 = 1;
   const titleLine3 = 1;
-  const toastInProgress = smoothStep(introProgress / 0.42);
-  const toastOutProgress = smoothStep((introProgress - 0.58) / 0.52);
-  const toastX = toastInProgress * 3.2 - toastOutProgress * 30;
-  const toastY = -toastInProgress * 0.5 - toastOutProgress * 0.9;
-  const toastRotate = -toastInProgress * 1.2 - toastOutProgress * 2.4;
+  const sceneProgress = smoothStep(introProgress / 0.9);
+  const toastX = -34 * sceneProgress;
+  const toastY = -2.2 * sceneProgress;
+  const toastRotate = -1.6 * sceneProgress;
 
   root.style.setProperty("--intro-progress", introProgress.toFixed(3));
   root.style.setProperty("--intro-toast-x", `${toastX.toFixed(2)}vw`);
@@ -1172,6 +1200,149 @@ function updateArgentinaState() {
   root.classList.toggle("is-argentina-focus", isFocusedArgentina);
 }
 
+function updateNarrativeBridgeState() {
+  let chemistryBridgeActive = false;
+  let chemistryWineScale = 0.2;
+  let chemistryWineOpacity = 0;
+  let chemistryTextY = 24;
+  let chemistryTextVisible = 0;
+
+  narrativeBridgeSections.forEach((section) => {
+    const travel = Math.max(section.offsetHeight - window.innerHeight, 1);
+    const rect = section.getBoundingClientRect();
+    const progress = clamp(-rect.top / travel, 0, 1);
+    const enter = smoothStep(progress / 0.62);
+    const drift = smoothStep((progress - 0.55) / 0.45);
+    let copyOffset = `${((1 - enter) * 4 - drift * 1.4).toFixed(2)}rem`;
+    let statementOffset = `${((1 - enter) * 5 - drift * 1.6).toFixed(2)}rem`;
+    let photoYOffset = "0vh";
+    const photoX = 0;
+    const photoClip = 0;
+
+    if (section.classList.contains("narrative-bridge-opening-note")) {
+      const noteEnter = smoothStep(progress / 0.18);
+      const noteExit = smoothStep((progress - 0.76) / 0.2);
+
+      copyOffset = `${((1 - noteEnter) * 2.6 - noteExit * 2.2).toFixed(2)}rem`;
+      statementOffset = copyOffset;
+    }
+
+    if (section.classList.contains("narrative-bridge-before-history")) {
+      const photoExit = smoothStep((progress - 0.86) / 0.12);
+      const block1In = smoothStep((progress - 0.12) / 0.12);
+      const block1Out = smoothStep((progress - 0.39) / 0.12);
+      const block2In = smoothStep((progress - 0.53) / 0.12);
+      const block2Out = smoothStep((progress - 0.78) / 0.14);
+      const block1Opacity = block1In * (1 - block1Out);
+      const block2Opacity = block2In * (1 - block2Out);
+      const block1Y = lerp(18, 0, block1In) - block1Out * 34;
+      const block2Y = lerp(18, 0, block2In) - block2Out * 38;
+
+      copyOffset = "0vh";
+      statementOffset = "0vh";
+      photoYOffset = `${(-38 * photoExit).toFixed(2)}vh`;
+      section.style.setProperty("--before-history-block-1-opacity", block1Opacity.toFixed(3));
+      section.style.setProperty("--before-history-block-1-y", `${block1Y.toFixed(2)}vh`);
+      section.style.setProperty("--before-history-block-2-opacity", block2Opacity.toFixed(3));
+      section.style.setProperty("--before-history-block-2-y", `${block2Y.toFixed(2)}vh`);
+    }
+
+    if (section.classList.contains("narrative-bridge-documentary")) {
+      const blockEnter = smoothStep(progress / 0.14);
+      const blockExit = smoothStep((progress - 0.62) / 0.24);
+      const sharedOffset = `${((1 - blockEnter) * 2.4 - blockExit * 38).toFixed(2)}vh`;
+
+      copyOffset = sharedOffset;
+      statementOffset = sharedOffset;
+      photoYOffset = sharedOffset;
+    }
+
+    if (section.classList.contains("narrative-bridge-grape")) {
+      const photoExit = smoothStep((progress - 0.84) / 0.14);
+      const block1In = smoothStep((progress - 0.14) / 0.12);
+      const block1Out = smoothStep((progress - 0.43) / 0.12);
+      const block2In = smoothStep((progress - 0.56) / 0.12);
+      const block2Out = smoothStep((progress - 0.84) / 0.14);
+      const block1Opacity = block1In * (1 - block1Out);
+      const block2Opacity = block2In * (1 - block2Out);
+      const block1Y = lerp(18, 0, block1In) - block1Out * 34;
+      const block2Y = lerp(18, 0, block2In) - block2Out * 38;
+
+      copyOffset = "0vh";
+      statementOffset = "0vh";
+      photoYOffset = `${(-38 * photoExit).toFixed(2)}vh`;
+      section.style.setProperty("--grape-block-1-opacity", block1Opacity.toFixed(3));
+      section.style.setProperty("--grape-block-1-y", `${block1Y.toFixed(2)}vh`);
+      section.style.setProperty("--grape-block-2-opacity", block2Opacity.toFixed(3));
+      section.style.setProperty("--grape-block-2-y", `${block2Y.toFixed(2)}vh`);
+    }
+
+    if (section.classList.contains("narrative-bridge-after-fermentation")) {
+      const stageWindows = [
+        { enter: -0.04, hold: 0.04, exit: 0.2, gone: 0.28 },
+        { enter: 0.3, hold: 0.38, exit: 0.5, gone: 0.58 },
+        { enter: 0.6, hold: 0.68, exit: 0.78, gone: 0.86 },
+        { enter: 0.86, hold: 0.94, exit: 1.14, gone: 1.22 },
+      ];
+
+      copyOffset = "0vh";
+      statementOffset = "0vh";
+      stageWindows.forEach((stage, index) => {
+        const stageIn = smoothStep((progress - stage.enter) / (stage.hold - stage.enter));
+        const stageOut = smoothStep((progress - stage.exit) / (stage.gone - stage.exit));
+        const stageOpacity = stageIn * (1 - stageOut);
+        const stageY = lerp(16, 0, stageIn) - stageOut * 34;
+        const stageNumber = index + 1;
+
+        section.style.setProperty(`--after-fermentation-stage-${stageNumber}-opacity`, stageOpacity.toFixed(3));
+        section.style.setProperty(`--after-fermentation-stage-${stageNumber}-y`, `${stageY.toFixed(2)}vh`);
+      });
+    }
+
+    section.style.setProperty("--narrative-progress", progress.toFixed(3));
+    section.style.setProperty("--narrative-copy-y", copyOffset);
+    section.style.setProperty("--narrative-statement-y", statementOffset);
+    section.style.setProperty("--narrative-photo-x", `${photoX.toFixed(2)}vw`);
+    section.style.setProperty("--narrative-photo-y", photoYOffset);
+    section.style.setProperty("--narrative-photo-clip", `${photoClip.toFixed(2)}%`);
+
+    if (section.classList.contains("narrative-bridge-before-chemistry")) {
+      const isBridgeInView = rect.top < window.innerHeight && rect.bottom > 0;
+      const glassZoomIn = smoothStep((progress - 0.12) / 0.26);
+      const glassZoomOut = smoothStep((progress - 0.74) / 0.2);
+      const wineLayerIn = smoothStep((progress - 0.18) / 0.1);
+      const wineLayerOut = smoothStep((progress - 0.92) / 0.06);
+      const textEnter = smoothStep((progress - 0.52) / 0.08);
+      const textExit = smoothStep((progress - 0.74) / 0.14);
+      const wineScaleIn = lerp(0.34, 24, glassZoomIn);
+      const glassZoomScale = lerp(1, 6.4, glassZoomIn);
+
+      chemistryBridgeActive = isBridgeInView && progress > 0.02 && progress < 0.998;
+      chemistryWineOpacity = chemistryBridgeActive ? wineLayerIn * (1 - wineLayerOut) : 0;
+      chemistryWineScale = lerp(wineScaleIn, 0.34, glassZoomOut);
+      chemistryTextY = 0;
+      chemistryTextVisible = textEnter * (1 - textExit);
+
+      if (isBridgeInView) {
+        const glassScale = lerp(glassZoomScale, 1, glassZoomOut);
+
+        root.style.setProperty("--bridge-glass-opacity", "1");
+        root.style.setProperty("--shared-glass-opacity", "1");
+        root.style.setProperty("--bridge-glass-extra-x", "0vw");
+        root.style.setProperty("--bridge-glass-y", "0vh");
+        root.style.setProperty("--bridge-glass-scale", glassScale.toFixed(3));
+        root.style.setProperty("--bridge-glass-rotate", "0deg");
+      }
+    }
+  });
+
+  root.classList.toggle("is-chemistry-bridge-active", chemistryBridgeActive);
+  root.style.setProperty("--chemistry-wine-scale", chemistryWineScale.toFixed(3));
+  root.style.setProperty("--chemistry-wine-opacity", chemistryWineOpacity.toFixed(3));
+  root.style.setProperty("--chemistry-text-y", `${chemistryTextY.toFixed(2)}vh`);
+  root.style.setProperty("--chemistry-text-visible", chemistryTextVisible.toFixed(3));
+}
+
 function updateCalendarState() {
   if (!calendarSection || !productionHistoryTrack || !productionHistoryViewport) return;
 
@@ -1212,6 +1383,14 @@ function updateCalendarState() {
 
   if (productionHistoryActiveNote) {
     productionHistoryActiveNote.textContent = productionHistoryNotes[activeItem.year] || "";
+  }
+
+  const narrativeCard = productionHistoryNarrativeCards[activeItem.year];
+  calendarSection.classList.toggle("is-history-annotation-active", Boolean(narrativeCard));
+
+  if (narrativeCard && productionHistoryAnnotationYear && productionHistoryAnnotationText) {
+    productionHistoryAnnotationYear.textContent = narrativeCard.label;
+    productionHistoryAnnotationText.textContent = narrativeCard.text;
   }
 
   barElements.forEach((bar, index) => {
@@ -1263,21 +1442,29 @@ function updateVarietalState() {
   const sprayFadeProgress = smoothStep((varietalProgress - 0.856) / 0.028);
   const sprayOpacity = sprayProgress * (1 - sprayFadeProgress);
   const sprayDistance = 52 * sprayProgress;
-  const bottlePourProgress = smoothStep((varietalProgress - 0.858) / 0.052);
-  const streamInProgress = smoothStep((varietalProgress - 0.895) / 0.03);
-  const streamLength = smoothStep((varietalProgress - 0.9) / 0.055);
-  const bottleLiftProgress = smoothStep((varietalProgress - 0.915) / 0.05);
-  const bridgeGlassProgress = smoothStep((varietalProgress - 0.925) / 0.045);
-  const streamOutProgress = smoothStep((varietalProgress - 0.982) / 0.018);
-  const streamLiftProgress = smoothStep((varietalProgress - 0.982) / 0.018);
+  const bottlePourProgress = smoothStep((varietalProgress - 0.814) / 0.066);
+  const streamInProgress = smoothStep((varietalProgress - 0.848) / 0.032);
+  const streamLength = smoothStep((varietalProgress - 0.854) / 0.05);
+  const bottleLiftProgress = smoothStep((varietalProgress - 0.872) / 0.04);
+  const bridgeGlassProgress = smoothStep((varietalProgress - 0.85) / 0.038);
+  const streamOutProgress = smoothStep((varietalProgress - 0.886) / 0.016);
+  const streamLiftProgress = smoothStep((varietalProgress - 0.886) / 0.016);
+  const glassZoomInProgress = smoothStep((varietalProgress - 0.902) / 0.05);
+  const zoomTextInProgress = smoothStep((varietalProgress - 0.948) / 0.008);
+  const zoomTextOutProgress = smoothStep((varietalProgress - 0.976) / 0.008);
+  const glassZoomOutProgress = smoothStep((varietalProgress - 0.986) / 0.014);
+  const glassZoomProgress = glassZoomInProgress * (1 - glassZoomOutProgress);
+  const glassRightProgress = smoothStep((glassZoomOutProgress - 0.55) / 0.38);
+  const zoomTextProgress = zoomTextInProgress * (1 - zoomTextOutProgress);
   const streamOpacity = streamInProgress * (1 - streamOutProgress);
   const streamTopCut = 0;
   const streamBottomCut = Math.max((1 - streamLength) * 100, streamOutProgress * 100);
   const bridgeGlassY = (1 - bridgeGlassProgress) * 128;
   const bridgeGlassOpacity = bridgeGlassProgress;
-  const bridgeGlassScale = 1;
-  const bridgeGlassControlsScene = varietalProgress > 0.84 && varietalProgress < 0.995;
-  const bridgeFillProgress = smoothStep((varietalProgress - 0.946) / 0.036);
+  const bridgeGlassScale = lerp(1, 18, glassZoomProgress);
+  const bridgeGlassExtraX = 25 * glassRightProgress;
+  const bridgeGlassControlsScene = varietalProgress > 0.84 && varietalProgress < 0.999;
+  const bridgeFillProgress = smoothStep((varietalProgress - 0.866) / 0.036);
   const malbecIndex = varietalBottles.findIndex((bottle) =>
     bottle.classList.contains("bottle-malbec"),
   );
@@ -1303,10 +1490,14 @@ function updateVarietalState() {
   root.style.setProperty("--bridge-glass-opacity", bridgeGlassOpacity.toFixed(3));
   root.style.setProperty("--bridge-glass-y", `${bridgeGlassY.toFixed(2)}vh`);
   root.style.setProperty("--bridge-glass-scale", bridgeGlassScale.toFixed(3));
+  root.style.setProperty("--bridge-glass-origin-y", glassZoomProgress > 0.001 ? "48%" : "74%");
+  root.style.setProperty("--bridge-glass-zoom-copy-opacity", zoomTextProgress.toFixed(3));
+  root.style.setProperty("--bridge-glass-zoom-copy-y", `${((1 - zoomTextInProgress) * 1.2 - zoomTextOutProgress * 1.2).toFixed(2)}rem`);
   root.style.setProperty("--bridge-wine-fill-progress", bridgeFillProgress.toFixed(3));
+  root.classList.toggle("is-bridge-glass-zooming", glassZoomProgress > 0.001 || glassRightProgress > 0.001);
 
   if (bridgeGlassControlsScene) {
-    root.style.setProperty("--bridge-glass-extra-x", "0vw");
+    root.style.setProperty("--bridge-glass-extra-x", `${bridgeGlassExtraX.toFixed(2)}vw`);
     root.style.setProperty("--bridge-glass-rotate", "0deg");
     root.style.setProperty("--shared-glass-opacity", "1");
   }
@@ -1450,7 +1641,7 @@ function updateVarietalState() {
       const wineSurfaceRect = bridgeWineSurface?.getBoundingClientRect();
       const pourTargetRect =
         wineSurfaceRect?.width && wineSurfaceRect?.height ? wineSurfaceRect : surfaceRect;
-      const mouthWidth = clamp(Math.min(correctedMouthRect.width, correctedMouthRect.height) * 1.18, 24, 46);
+      const mouthWidth = clamp(Math.min(correctedMouthRect.width, correctedMouthRect.height) * 1.36, 30, 54);
       const surfaceEnd = {
         x: pourTargetRect.left + pourTargetRect.width / 2 - pinRect.left,
         y: pourTargetRect.top + pourTargetRect.height * 0.5 - pinRect.top,
@@ -1504,12 +1695,12 @@ function updateVarietalState() {
         end,
         (progress) => {
           const inletOpen = smoothStep(progress / 0.2);
-          const taper = fixedMouthWidth * (0.46 + inletOpen * 0.42 - progress * 0.28);
+          const taper = fixedMouthWidth * (0.5 + inletOpen * 0.44 - progress * 0.24);
           const pulse =
             Math.sin(progress * Math.PI * 2.2) * fixedMouthWidth * 0.035 +
             Math.sin(progress * Math.PI * 5.1) * fixedMouthWidth * 0.018;
-          const minWidth = fixedMouthWidth * (0.42 + inletOpen * 0.12);
-          return clamp(taper + pulse, minWidth, fixedMouthWidth * 1.02);
+          const minWidth = fixedMouthWidth * (0.48 + inletOpen * 0.12);
+          return clamp(taper + pulse, minWidth, fixedMouthWidth * 1.08);
         },
       );
       const streamCenter = buildBezierPath(start, controlStart, controlEnd, end);
@@ -1546,9 +1737,9 @@ function updateFlourishStoryState() {
   const graphFade = smoothStep((storyProgress - 0.9) / 0.055);
   const graphOpacity = 1 - graphFade;
   const baseCardSize = getStoryCardBaseSize();
-  const finalTextFade = smoothStep((storyProgress - 0.89) / 0.045);
-  const finalBoxProgress = smoothStep((storyProgress - 0.905) / 0.045);
-  const finalDoorProgress = smoothStep((storyProgress - 0.97) / 0.03);
+  const finalTextFade = smoothStep((storyProgress - 0.952) / 0.018);
+  const finalBoxProgress = smoothStep((storyProgress - 0.962) / 0.03);
+  const finalDoorProgress = smoothStep((storyProgress - 0.986) / 0.014);
   const travelDistance = window.innerHeight * 0.72;
   let storyBoxMalbecActive = false;
 
@@ -1642,6 +1833,7 @@ function updateCompositionState() {
     fermentationRect
     && fermentationRect.top <= window.innerHeight * 1.08
     && fermentationRect.bottom >= 0;
+  const isChemistryBridgeTakingGlass = root.classList.contains("is-chemistry-bridge-active");
   const focusStart = 0.21;
   const graphSequenceEnd = 0.94;
   const chartIn = smoothStep((compositionProgress - 0.04) / 0.13);
@@ -1710,7 +1902,7 @@ function updateCompositionState() {
   root.style.setProperty("--composition-copy-opacity", copyVisible.toFixed(3));
   root.style.setProperty("--composition-copy-y", `${copyY.toFixed(2)}rem`);
 
-  if (isCompositionNear && !isFermentationTakingGlass && !varietalBridgeGlassActive) {
+  if (isCompositionNear && !isFermentationTakingGlass && !varietalBridgeGlassActive && !isChemistryBridgeTakingGlass) {
     root.style.setProperty("--bridge-glass-opacity", "1");
     root.style.setProperty("--bridge-glass-extra-x", `${glassShift.toFixed(2)}vw`);
     root.style.setProperty("--bridge-glass-y", "0vh");
@@ -1770,7 +1962,7 @@ function updateFermentationState() {
   root.classList.toggle("is-fermentation-near", isFermentationNear);
   root.style.setProperty("--fermentation-progress", fermentationProgress.toFixed(3));
   root.style.setProperty("--fermentation-copy-opacity", copyVisible.toFixed(3));
-  root.style.setProperty("--fermentation-copy-x", `${(-12 * (1 - copyIn) - 12 * copyOut).toFixed(2)}vw`);
+  root.style.setProperty("--fermentation-copy-x", "0vw");
   root.style.setProperty("--fermentation-chart-opacity", chartVisible.toFixed(3));
   root.style.setProperty("--fermentation-chart-x", `${chartX.toFixed(2)}vw`);
   root.style.setProperty("--fermentation-chart-y", `${chartY.toFixed(2)}vh`);
@@ -1925,6 +2117,95 @@ function updateTastingScrollState() {
   }
 }
 
+function updateClosingState() {
+  if (!closingToastSection) return;
+
+  const travel = Math.max(closingToastSection.offsetHeight - window.innerHeight, 1);
+  const rect = closingToastSection.getBoundingClientRect();
+  const closingProgress = clamp(-rect.top / travel, 0, 1);
+  const textSettle = smoothStep(closingProgress / 0.16);
+  const leftDrop = smoothStep((closingProgress - 0.08) / 0.22);
+  const rightDrop = smoothStep((closingProgress - 0.18) / 0.22);
+  const approach = smoothStep((closingProgress - 0.42) / 0.32);
+  const clinkProgress = smoothStep((closingProgress - 0.76) / 0.12);
+  const clinkTap = Math.sin(clinkProgress * Math.PI) * 0.85;
+  const leftX = -15 + approach * 15 + clinkTap;
+  const rightX = 15 - approach * 15 - clinkTap;
+  const toastY = -1.2 * approach;
+  const leftDropY = -112 * (1 - leftDrop);
+  const rightDropY = -112 * (1 - rightDrop);
+  const leftRotate = -1.7 + approach * 1.25 + clinkTap * 0.28;
+  const rightRotate = 1.7 - approach * 1.25 - clinkTap * 0.28;
+
+  root.style.setProperty("--closing-final-text-y", `${(3 * (1 - textSettle)).toFixed(2)}vh`);
+  root.style.setProperty("--closing-left-x", `${leftX.toFixed(2)}vw`);
+  root.style.setProperty("--closing-right-x", `${rightX.toFixed(2)}vw`);
+  root.style.setProperty("--closing-toast-y", `${toastY.toFixed(2)}vh`);
+  root.style.setProperty("--closing-left-drop-y", `${leftDropY.toFixed(2)}vh`);
+  root.style.setProperty("--closing-right-drop-y", `${rightDropY.toFixed(2)}vh`);
+  root.style.setProperty("--closing-left-rotate", `${leftRotate.toFixed(2)}deg`);
+  root.style.setProperty("--closing-right-rotate", `${rightRotate.toFixed(2)}deg`);
+}
+
+function updateScaleIndexState() {
+  if (!scaleIndexLinks.length) return;
+
+  const markerY = window.innerHeight * 0.46;
+  const scaleMarkers = [
+    { scale: "personal", element: wineBuilder },
+    { scale: "global", element: argentinaSection },
+    { scale: "argentina", element: consumptionCalendarSection },
+    { scale: "argentina", element: calendarSection },
+    { scale: "varietal", element: flourishStorySection },
+    { scale: "varietal", element: varietalSection },
+    { scale: "molecular", element: compositionSection },
+    { scale: "molecular", element: chemistryVarietySection },
+    { scale: "molecular", element: fermentationSection },
+    { scale: "sensorial", element: malbecProfileSection },
+    { scale: "sensorial", element: tastingSection },
+    { scale: "sensorial", element: closingSection },
+  ].filter(({ element }) => element);
+
+  let activeScale = "";
+
+  if (argentinaSection) {
+    const rect = argentinaSection.getBoundingClientRect();
+
+    if (rect.top <= markerY && rect.bottom >= markerY) {
+      const travel = Math.max(argentinaSection.offsetHeight - window.innerHeight, 1);
+      const sectionProgress = clamp(-rect.top / travel, 0, 1);
+      activeScale = sectionProgress < 0.58 ? "global" : "argentina";
+    }
+  }
+
+  if (!activeScale) {
+    let activeMarker = null;
+
+    scaleMarkers.forEach((marker) => {
+      const rect = marker.element.getBoundingClientRect();
+
+      if (rect.top <= markerY) {
+        activeMarker = marker;
+      }
+    });
+
+    activeScale = activeMarker?.scale || "";
+  }
+
+  root.dataset.currentScale = activeScale;
+
+  scaleIndexLinks.forEach((link) => {
+    const isActive = link.dataset.scaleLink === activeScale;
+    link.classList.toggle("is-active", isActive);
+
+    if (isActive) {
+      link.setAttribute("aria-current", "true");
+    } else {
+      link.removeAttribute("aria-current");
+    }
+  });
+}
+
 function updateScrollState() {
   const scrollable = document.documentElement.scrollHeight - window.innerHeight;
   const scrollPercent = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
@@ -1933,11 +2214,13 @@ function updateScrollState() {
     progress.style.width = `${scrollPercent}%`;
   }
 
+  updateScaleIndexState();
   updatePosterCorkPosition();
   updateIntroState();
   updateWorldState();
   updateArgentinaState();
   updateTasteDetailState();
+  updateNarrativeBridgeState();
   updateCalendarState();
   updateFlourishStoryState();
   updateVarietalState();
@@ -1946,6 +2229,7 @@ function updateScrollState() {
   updateCompositionState();
   updateFermentationState();
   updateMalbecProfileState();
+  updateClosingState();
   updateCalculatedPour();
 }
 

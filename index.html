@@ -7,16 +7,23 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,700..900,35&family=IBM+Plex+Mono:wght@500;700&family=Inter:wght@400;550;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;700&family=Inter:wght@400;550;600;700;800;900&display=swap"
       rel="stylesheet"
     />
-  <link rel="stylesheet" href="styles.css?v=hand-minimal-62" />
+  <link rel="stylesheet" href="styles.css?v=zoom-text-118" />
   </head>
   <body>
     <div class="scroll-progress" aria-hidden="true"></div>
 
     <header class="site-header">
-      <a class="brand" href="#inicio">Vino en escala</a>
+      <nav class="scale-index" aria-label="Índice por escalas">
+        <a href="#arma-vino" data-scale-link="personal">Personal</a>
+        <a href="#argentina-vino" data-scale-link="global">Mundo</a>
+        <a href="#calendario-consumo" data-scale-link="argentina">Argentina</a>
+        <a href="#uvas-provincia-story" data-scale-link="varietal">Varietal</a>
+        <a href="#composicion-vino" data-scale-link="molecular">Molecular</a>
+        <a href="#perfil-malbec" data-scale-link="sensorial">Sensorial</a>
+      </nav>
     </header>
 
     <main>
@@ -31,6 +38,7 @@
 
           <div class="opener-art" aria-hidden="true">
             <div class="intro-glass-scene">
+              <img class="intro-hand-png" src="assets/intro-hand-reference.png?v=hand-grip-align-98" alt="" />
               <svg class="intro-glass-illustration" viewBox="0 0 640 520">
                 <defs>
                   <clipPath id="introBowlClip">
@@ -38,10 +46,6 @@
                   </clipPath>
                 </defs>
 
-                <g class="intro-arm">
-                  <path class="intro-index-finger" d="M322 370 C301 369 283 375 267 389 C258 397 258 408 268 413 C289 403 310 398 331 400 C343 401 351 391 347 380 C344 374 335 371 322 370Z" />
-                  <path class="intro-middle-finger" d="M318 413 C299 410 284 414 271 426 C262 434 264 444 275 448 C292 439 309 437 326 442 C339 445 349 437 347 425 C345 418 335 414 318 413Z" />
-                </g>
                 <g class="intro-glass">
                   <path class="intro-glass-base-fill" d="M156 478 C184 456 332 456 360 478 C332 501 184 501 156 478Z" />
                   <path class="intro-glass-stem-fill" d="M238 346 C253 369 254 424 242 458 C238 468 226 474 216 480 C241 489 275 489 300 480 C290 474 278 468 274 458 C262 424 263 369 278 346Z" />
@@ -60,9 +64,6 @@
                   />
                   <path class="intro-rim-front-shadow" d="M166 102 C206 117 310 117 350 102 C335 119 302 128 258 128 C214 128 181 119 166 102Z" />
                 </g>
-                <g class="intro-hand-front">
-                  <path class="intro-thumb" d="M170 421 C190 407 216 397 241 395 C256 394 265 404 261 417 C257 430 240 434 226 426 C207 416 190 424 177 436 C169 443 158 438 158 429 C158 425 162 423 170 421Z" />
-                </g>
               </svg>
             </div>
           </div>
@@ -73,10 +74,22 @@
         </div>
       </section>
 
+      <!-- NARRATIVE BRIDGE 1: editar texto o reemplazar placeholder de imagen desde esta sección. -->
+      <section class="narrative-bridge narrative-bridge-text narrative-bridge-opening-note" data-narrative-bridge aria-label="Pausa narrativa inicial">
+        <div class="narrative-bridge-pin">
+          <div class="narrative-bridge-copy">
+            <h2>Una copa parece simple</h2>
+            <p>
+              Pero detrás hay una industria, una cultura, una geografía y una historia
+              que atraviesa al país desde hace décadas.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section id="arma-vino" class="wine-builder" aria-label="Medidor de consumo de vino">
         <div class="builder-pin">
           <div class="builder-intro">
-            <p class="section-kicker">Tu relación con el vino</p>
             <h2>¿Qué tan presente está el vino en tu vida?</h2>
           </div>
 
@@ -131,7 +144,6 @@
                   <span></span>
                 </div>
               </div>
-              <p class="section-kicker">Tu perfil de consumo</p>
               <h3 id="recommendationTitle">Respondé las tres preguntas</h3>
               <p id="recommendationText">
                 El resultado aparece cuando terminás de ubicar qué lugar ocupa
@@ -196,6 +208,16 @@
                 </div>
               </div>
             </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- NARRATIVE BRIDGE 2: puente entre perfil personal y escala colectiva. -->
+      <section class="narrative-bridge narrative-bridge-text narrative-bridge-scale-intro" data-narrative-bridge aria-label="Puente hacia escala colectiva">
+        <div class="narrative-bridge-pin">
+          <div class="narrative-bridge-statement">
+            <p>Tu relación con el vino es personal. Pero el vino también tiene una escala colectiva.</p>
+            <h2>¿Qué pasa cuando dejamos de mirar una copa y miramos un país?</h2>
           </div>
         </div>
       </section>
@@ -439,7 +461,7 @@
           </div>
 
           <div class="argentina-copy">
-            <p class="section-kicker">Argentina</p>
+            <p class="section-kicker">Escala nacional</p>
             <h2>Cuando el consumo también cuenta una costumbre</h2>
             <p>
               En algunos países el vino no solo se consume: organiza comidas,
@@ -457,7 +479,7 @@
         <div class="consumption-calendar-pin">
           <div class="monthly-ritual consumption-calendar">
             <div class="monthly-ritual-copy">
-              <p class="section-kicker">Calendario de consumo argentino</p>
+              <p class="section-kicker">Escala nacional</p>
               <h2>Cuándo aparece más la copa</h2>
               <p>
                 El consumo no se reparte igual durante el año: sube con el frío,
@@ -481,10 +503,67 @@
           </div>
         </div>
       </section>
+
+      <!-- NARRATIVE BRIDGE 3: prepara el cambio desde consumo hacia producción nacional. -->
+      <section class="narrative-bridge narrative-bridge-chapter narrative-bridge-before-history narrative-bridge-landscape" data-narrative-bridge aria-label="Puente hacia producción nacional">
+        <div class="narrative-bridge-pin">
+          <div class="narrative-bridge-copy narrative-prose">
+            <div class="before-history-text-block before-history-text-block-1">
+              <p>
+                La copa que aparece en una mesa es apenas el último tramo de una cadena
+                mucho más larga. Antes hubo plantas, riego, poda, cosecha, transporte,
+                fermentación, guarda, fraccionamiento y distribución.
+              </p>
+              <p>
+                En los viñedos, cada vendimia condensa decisiones tomadas meses antes:
+                cuándo podar, cuánto cargar la planta, cuándo cosechar y cómo responder
+                a un clima que nunca se repite exactamente igual.
+              </p>
+            </div>
+            <div class="before-history-text-block before-history-text-block-2">
+              <p>
+                En las bodegas, ese trabajo se vuelve volumen. La uva entra como materia
+                prima y sale convertida en vino: un producto agrícola, industrial y
+                cultural al mismo tiempo.
+              </p>
+              <p>
+                Por eso, antes de mirar dónde se produce o qué variedades dominan, conviene
+                detenerse en la escala nacional: cuánto vino produjo Argentina año tras año.
+              </p>
+            </div>
+          </div>
+          <figure class="narrative-photo-figure narrative-photo-feature narrative-photo-territory">
+            <img src="assets/foto4.jpeg" alt="Viñedo amplio iluminado por el sol al amanecer" loading="lazy" decoding="async" />
+            <figcaption>Territorio, escala y origen: antes de la copa, el vino empieza en el paisaje.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="narrative-bridge narrative-bridge-chapter narrative-bridge-documentary" data-narrative-bridge aria-label="Pausa documental antes de la producción histórica">
+        <div class="narrative-bridge-pin">
+          <figure class="narrative-photo-figure narrative-photo-documentary-frame">
+            <img src="assets/foto%203.jpeg" alt="Viñedo en blanco y negro con filas de plantas sobre un paisaje amplio" loading="lazy" decoding="async" />
+            <figcaption>La producción también transformó el paisaje: viñedos, infraestructura y regiones enteras organizadas alrededor de la vid.</figcaption>
+          </figure>
+          <div class="narrative-bridge-copy narrative-prose">
+            <p>
+              Mirar la producción histórica no es solo seguir una serie de números.
+              También es mirar cómo una actividad agrícola fue ocupando territorio,
+              formando oficios y construyendo una industria.
+            </p>
+            <p>
+              Cada barra de la línea de tiempo resume un año de clima, cosecha,
+              decisiones de bodega y capacidad productiva. La historia aparece como
+              volumen, pero detrás de ese volumen hay paisaje y trabajo acumulado.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section id="historia-produccion" class="wine-calendar production-history-section" aria-label="Evolución histórica de la producción de vino en Argentina">
         <div class="production-history-pin">
           <div class="production-history-heading">
-            <p class="section-kicker">Producción nacional</p>
+            <p class="section-kicker">Escala nacional</p>
             <h2>Tres décadas de producción</h2>
             <p>
               Antes de mirar el mapa provincial, la serie muestra cómo cambió el
@@ -500,6 +579,12 @@
             <p data-production-active-note></p>
           </div>
 
+          <!-- NARRATIVE CARDS: textos editables para hitos dentro de la línea de tiempo. -->
+          <aside class="production-history-annotation" data-production-history-annotation aria-live="polite">
+            <span data-history-annotation-year></span>
+            <p data-history-annotation-text></p>
+          </aside>
+
           <div class="production-history-viewport" data-production-history-viewport>
             <div class="production-history-scale" data-production-history-scale aria-hidden="true"></div>
             <div class="production-history-center" aria-hidden="true"></div>
@@ -511,17 +596,56 @@
           </p>
         </div>
       </section>
+
+      <!-- NARRATIVE BRIDGE 4: respiro antes de producción por provincia y botellas. -->
+      <section class="narrative-bridge narrative-bridge-chapter narrative-bridge-variety-chapter narrative-bridge-grape" data-narrative-bridge aria-label="Puente hacia variedades argentinas">
+        <div class="narrative-bridge-pin">
+          <figure class="narrative-photo-figure narrative-photo-grape-frame">
+            <img src="assets/foto1.jpeg" alt="Racimos de uva tinta iluminados por el sol en el viñedo" loading="lazy" decoding="async" />
+            <figcaption>Antes de hablar de botellas, aparece la materia prima: la uva.</figcaption>
+          </figure>
+          <div class="narrative-bridge-copy narrative-prose">
+            <div class="grape-text-block grape-text-block-1">
+              <p>
+                La vitivinicultura argentina no nació como un fenómeno homogéneo. Creció
+                con inmigrantes, oficios, acequias, bodegas familiares, grandes empresas
+                y regiones que aprendieron a producir con climas muy distintos.
+              </p>
+              <p>
+                Mendoza se volvió el centro de gravedad por una combinación de agua de
+                deshielo, infraestructura, escala productiva y una cultura del vino que
+                atravesó generaciones. Pero alrededor de ese núcleo también se expandieron
+                otros paisajes: San Juan, Salta, Patagonia, La Rioja y nuevas zonas que
+                ensayan estilos propios.
+              </p>
+            </div>
+            <div class="grape-text-block grape-text-block-2">
+              <p>
+                Esa historia explica por qué el vino argentino no puede leerse como una
+                sola botella. El país produce volumen, pero también produce diferencias:
+                de altura, de suelo, de clima y de tradición técnica.
+              </p>
+              <p class="narrative-highlight">Argentina no produce un único vino.</p>
+              <p>
+                Produce muchas variedades. Algunas se volvieron emblemas nacionales y
+                otras construyen perfiles muy distintos dentro de la copa.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="uvas-provincia-story" class="flourish-story-section" data-slide-count="3" aria-label="Storytelling de variedades y producción por provincia">
         <div class="flourish-story-stage" data-height="86vh">
           <div class="flourish-embed flourish-chart" data-src="story/3707183"><script src="https://public.flourish.studio/resources/embed.js"></script><noscript><img src="https://public.flourish.studio/story/3707183/thumbnail" width="100%" alt="visualization" /></noscript></div>
           <div class="story-card card-1">
-            <p>Argentina produce cerca de mil millones de litros de vino en un año normal.</p>
+            <p>Cuando se mira el volumen completo, el vino argentino aparece como una actividad de escala nacional. Detrás de cada cosecha hay riego, trabajo estacional, capacidad de bodega y un mercado que necesita continuidad año tras año.</p>
           </div>
           <div class="story-card card-2">
-            <p>La producción argentina está muy concentrada: Mendoza y San Juan explican gran parte del total nacional.</p>
+            <p>Esa escala no está distribuida de manera pareja. La industria se apoya en pocos territorios con agua, infraestructura y saber técnico acumulado; por eso Mendoza y San Juan ordenan buena parte del mapa productivo.</p>
           </div>
           <div class="story-card card-3">
-            <p>Al separar la producción por varietal aparecen diferencias que no se veían en el mapa provincial. El Malbec pesa mucho, pero no ordena a todas las provincias por igual.</p>
+            <p>Las variedades abren otra lectura. No todas las uvas ocupan el mismo lugar ni responden igual a cada región: el Malbec concentra identidad y mercado, pero convive con perfiles que amplían la idea de vino argentino.</p>
           </div>
         </div>
       </section>
@@ -533,6 +657,10 @@
           <div class="bottle-transition-bg" aria-hidden="true"></div>
           <div class="bottle-transition-title" aria-hidden="true">
             <p>¿Cómo se llega a esta botella?</p>
+          </div>
+
+          <div class="bridge-glass-zoom-copy" aria-hidden="true">
+            <p>Lo que define un vino no siempre se ve.</p>
           </div>
 
           <svg class="bridge-pour-stream" id="bridgePour" preserveAspectRatio="none" aria-hidden="true">
@@ -700,6 +828,25 @@
         </div>
       </section>
 
+      <!-- NARRATIVE BRIDGE 5: conecta variedades con composición química. -->
+      <section class="narrative-bridge narrative-bridge-text narrative-bridge-before-chemistry" data-narrative-bridge aria-label="Puente hacia composición química">
+        <div class="narrative-bridge-pin">
+          <div class="chemistry-wine-zoom-layer" aria-hidden="true"></div>
+          <div class="narrative-bridge-statement narrative-prose narrative-prose-centered">
+            <h2>Las diferencias también están adentro</h2>
+            <p>
+              Entre una variedad y otra no cambia solo el nombre de la uva. Cambian los
+              componentes que construyen cuerpo, dulzor, alcohol, aromas y textura.
+            </p>
+            <p>
+              Esas diferencias no siempre se ven a simple vista. Una copa puede parecer
+              similar a otra y, sin embargo, organizar sensaciones muy distintas cuando
+              entra en contacto con la boca y la nariz.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section id="composicion-vino" class="wine-composition-section" aria-label="Composición química del vino">
         <div class="composition-pin">
           <div class="composition-layout">
@@ -740,7 +887,7 @@
             </div>
 
             <div class="composition-copy">
-              <p class="section-kicker">Composición química</p>
+              <p class="section-kicker">Escala molecular</p>
               <h2>Dentro de la copa</h2>
               <div class="composition-details" aria-live="polite">
                 <article class="composition-detail is-active" data-composition-detail="0">
@@ -792,8 +939,11 @@
       <section id="fermentacion" class="fermentation-section" aria-label="Alcohol y azúcar antes y después de la fermentación">
         <div class="fermentation-pin">
           <div class="fermentation-copy" aria-hidden="true">
-            <p class="section-kicker">Fermentación</p>
-            <h2>Composición porcentual antes y después de fermentar</h2>
+            <p class="section-kicker">Escala molecular</p>
+            <h2>
+              <span class="fermentation-title-line">Composición porcentual</span>
+              <span class="fermentation-title-line">antes y después de fermentar</span>
+            </h2>
           </div>
 
           <div class="fermentation-chart-panel fermentation-change-panel" data-fermentation-flourish-panel>
@@ -809,11 +959,55 @@
         </div>
       </section>
 
+      <!-- NARRATIVE BRIDGE 6: pausa conceptual después de fermentación. -->
+      <section class="narrative-bridge narrative-bridge-chapter narrative-bridge-stark narrative-bridge-after-fermentation" data-narrative-bridge aria-label="Puente conceptual sobre química y sabor">
+        <div class="narrative-bridge-pin">
+          <div class="narrative-bridge-statement narrative-prose after-fermentation-copy">
+            <h2>Lo que ocurre dentro de una copa no siempre se ve</h2>
+            <div class="after-fermentation-stage-track">
+              <p class="after-fermentation-stage after-fermentation-stage-1">
+                Durante la fermentación, el azúcar de la uva deja de ser solo dulzor. Las
+                levaduras lo transforman en alcohol, dióxido de carbono, calor y una serie
+                de compuestos que después van a influir en el aroma y la textura.
+              </p>
+              <p class="after-fermentation-stage after-fermentation-stage-2">
+                Ese proceso no es una línea recta. Cambian las temperaturas, cambian los
+                tiempos de contacto con pieles y semillas, y cambian las decisiones de la
+                bodega. Un mismo varietal puede ganar estructura, suavidad o intensidad
+                según cómo se conduzca esa transformación.
+              </p>
+              <p class="after-fermentation-stage after-fermentation-stage-3">
+                Los taninos aportan agarre. La acidez sostiene frescura. El alcohol da
+                volumen y calidez. Los aromas aparecen como una mezcla de fruta, flores,
+                especias, madera o notas de evolución.
+              </p>
+              <p class="after-fermentation-stage after-fermentation-stage-4">
+                Por eso, entrar en una copa también es entrar en una pequeña arquitectura
+                química: cantidades, equilibrios y tiempos que no se ven, pero ordenan lo
+                que después se siente.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- NARRATIVE BRIDGE 7: recapitulación antes del perfil sensorial. -->
+      <section class="narrative-bridge narrative-bridge-recap" data-narrative-bridge aria-label="Recapitulación antes del perfil sensorial">
+        <div class="narrative-bridge-pin">
+          <div class="narrative-bridge-statement">
+            <p>
+              Hasta ahora vimos cuánto se produce, dónde se consume, qué variedades
+              existen y qué contiene cada vino. Pero al final, todo eso termina en una experiencia.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section id="perfil-malbec" class="malbec-profile-section" aria-label="Perfil sensorial del Malbec">
         <div class="malbec-profile-pin">
           <div class="malbec-profile-layout">
             <div class="malbec-profile-copy">
-              <p class="section-kicker">Perfil sensorial</p>
+              <p class="section-kicker">Escala sensorial</p>
               <h2>El perfil sensorial del Malbec</h2>
             </div>
 
@@ -884,11 +1078,33 @@
         </div>
       </section>
 
+      <!-- NARRATIVE BRIDGE 8: entrada a la experiencia de cata. -->
+      <section class="narrative-bridge narrative-bridge-chapter narrative-bridge-before-tasting" data-narrative-bridge aria-label="Puente hacia la cata guiada">
+        <div class="narrative-bridge-pin">
+          <div class="narrative-bridge-copy narrative-prose">
+            <p>
+              Hasta acá, el recorrido fue analítico: consumo, producción, regiones,
+              variedades, componentes químicos y perfil sensorial. Cada visualización
+              separó una parte del vino para poder leerla con más claridad.
+            </p>
+            <p>
+              Pero ninguna serie de datos reemplaza el momento de acercar una copa,
+              inclinarla, olerla y probarla. La información ayuda a mirar mejor; la
+              experiencia empieza cuando esos datos vuelven al cuerpo.
+            </p>
+            <p>
+              Ahora que entendemos qué contiene el vino y cómo se construye, podemos
+              volver a la copa y aprender a leerla con los sentidos.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section id="cata" class="tasting-section" aria-label="Cata paso a paso">
         <div class="tasting-panel">
           <div class="tasting-copy-track">
             <article class="tasting-copy-panel" data-step="0">
-              <p class="section-kicker">Cata guiada</p>
+              <p class="section-kicker">Escala sensorial</p>
               <h2>Aprendamos a catar vino.</h2>
               <p>
                 Una copa y cuatro gestos para mirar el vino con más atención.
@@ -982,8 +1198,103 @@
         </div>
       </section>
 
+      <section id="cierre" class="closing-section" aria-label="Cierre del recorrido">
+        <div class="closing-toast-scroll" data-closing-toast>
+          <div class="closing-toast-pin">
+            <p class="closing-final-text">
+              Una copa parece simple, hasta que se mira todo lo que la sostiene:
+              territorio, trabajo, química y cultura.
+            </p>
+            <div class="closing-toast-stage" aria-hidden="true">
+              <div class="closing-toast-scene closing-toast-left">
+                <img class="closing-hand-png" src="assets/intro-hand-reference.png?v=hand-grip-align-98" alt="" />
+                <svg class="closing-glass-illustration" viewBox="0 0 640 520">
+                  <defs>
+                    <clipPath id="closingBowlClipLeft">
+                      <path d="M154 96 C145 139 137 183 137 227 C137 283 185 327 232 347 C247 354 269 354 284 347 C331 327 379 283 379 227 C379 183 371 139 362 96 C322 113 194 113 154 96Z" />
+                    </clipPath>
+                  </defs>
+
+                  <g class="intro-glass">
+                    <path class="intro-glass-base-fill" d="M156 478 C184 456 332 456 360 478 C332 501 184 501 156 478Z" />
+                    <path class="intro-glass-stem-fill" d="M238 346 C253 369 254 424 242 458 C238 468 226 474 216 480 C241 489 275 489 300 480 C290 474 278 468 274 458 C262 424 263 369 278 346Z" />
+                    <path class="intro-glass-bowl-fill" d="M154 96 C145 139 137 183 137 227 C137 283 185 327 232 347 C247 354 269 354 284 347 C331 327 379 283 379 227 C379 183 371 139 362 96 C322 113 194 113 154 96Z" />
+                    <g clip-path="url(#closingBowlClipLeft)">
+                      <path class="intro-wine-fill" d="M134 216 C187 198 329 198 382 216 C378 276 327 327 284 347 C269 354 247 354 232 347 C189 327 138 276 134 216Z" />
+                      <path class="intro-wine-top" d="M134 216 C187 198 329 198 382 216 C329 236 187 236 134 216Z" />
+                      <path class="intro-wine-shine intro-wine-shine-right" d="M330 252 C347 231 358 224 366 233 C374 244 348 288 318 306 C315 287 319 266 330 252Z" />
+                    </g>
+                    <path class="intro-glass-highlight" d="M190 120 C177 151 166 197 166 232 C166 244 181 248 187 236 C193 200 201 156 213 129 C219 116 197 105 190 120Z" />
+                    <path class="intro-rim-inner" d="M166 96 C166 84 207 74 258 74 C309 74 350 84 350 96 C350 108 309 118 258 118 C207 118 166 108 166 96Z" />
+                    <path
+                      class="intro-rim-ring"
+                      fill-rule="evenodd"
+                      d="M156 96 C156 78 202 64 258 64 C314 64 360 78 360 96 C360 114 314 128 258 128 C202 128 156 114 156 96Z M166 96 C166 108 207 118 258 118 C309 118 350 108 350 96 C350 84 309 74 258 74 C207 74 166 84 166 96Z"
+                    />
+                    <path class="intro-rim-front-shadow" d="M166 102 C206 117 310 117 350 102 C335 119 302 128 258 128 C214 128 181 119 166 102Z" />
+                  </g>
+                </svg>
+              </div>
+
+              <div class="closing-toast-scene closing-toast-right">
+                <img class="closing-hand-png" src="assets/intro-hand-reference.png?v=hand-grip-align-98" alt="" />
+                <svg class="closing-glass-illustration" viewBox="0 0 640 520">
+                  <defs>
+                    <clipPath id="closingBowlClipRight">
+                      <path d="M154 96 C145 139 137 183 137 227 C137 283 185 327 232 347 C247 354 269 354 284 347 C331 327 379 283 379 227 C379 183 371 139 362 96 C322 113 194 113 154 96Z" />
+                    </clipPath>
+                  </defs>
+
+                  <g class="intro-glass">
+                    <path class="intro-glass-base-fill" d="M156 478 C184 456 332 456 360 478 C332 501 184 501 156 478Z" />
+                    <path class="intro-glass-stem-fill" d="M238 346 C253 369 254 424 242 458 C238 468 226 474 216 480 C241 489 275 489 300 480 C290 474 278 468 274 458 C262 424 263 369 278 346Z" />
+                    <path class="intro-glass-bowl-fill" d="M154 96 C145 139 137 183 137 227 C137 283 185 327 232 347 C247 354 269 354 284 347 C331 327 379 283 379 227 C379 183 371 139 362 96 C322 113 194 113 154 96Z" />
+                    <g clip-path="url(#closingBowlClipRight)">
+                      <path class="intro-wine-fill" d="M134 216 C187 198 329 198 382 216 C378 276 327 327 284 347 C269 354 247 354 232 347 C189 327 138 276 134 216Z" />
+                      <path class="intro-wine-top" d="M134 216 C187 198 329 198 382 216 C329 236 187 236 134 216Z" />
+                      <path class="intro-wine-shine intro-wine-shine-right" d="M330 252 C347 231 358 224 366 233 C374 244 348 288 318 306 C315 287 319 266 330 252Z" />
+                    </g>
+                    <path class="intro-glass-highlight" d="M190 120 C177 151 166 197 166 232 C166 244 181 248 187 236 C193 200 201 156 213 129 C219 116 197 105 190 120Z" />
+                    <path class="intro-rim-inner" d="M166 96 C166 84 207 74 258 74 C309 74 350 84 350 96 C350 108 309 118 258 118 C207 118 166 108 166 96Z" />
+                    <path
+                      class="intro-rim-ring"
+                      fill-rule="evenodd"
+                      d="M156 96 C156 78 202 64 258 64 C314 64 360 78 360 96 C360 114 314 128 258 128 C202 128 156 114 156 96Z M166 96 C166 108 207 118 258 118 C309 118 350 108 350 96 C350 84 309 74 258 74 C207 74 166 84 166 96Z"
+                    />
+                    <path class="intro-rim-front-shadow" d="M166 102 C206 117 310 117 350 102 C335 119 302 128 258 128 C214 128 181 119 166 102Z" />
+                  </g>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="closing-band">
+          <div class="closing-meta" aria-label="Créditos y fuentes">
+            <section>
+              <h3>Integrantes del TP</h3>
+              <ul>
+                <li>Maia Alonso</li>
+                <li>Violeta Finck</li>
+                <li>Julieta Kovalivker</li>
+              </ul>
+            </section>
+
+            <section>
+              <h3>Fuentes</h3>
+              <ul>
+                <li>Instituto Nacional de Vitivinicultura (INV)</li>
+                <li>Organización Internacional de la Viña y el Vino (OIV)</li>
+                <li>Flourish</li>
+                <li>Fuentes complementarias utilizadas en el proyecto</li>
+              </ul>
+            </section>
+          </div>
+        </div>
+      </section>
+
     </main>
 
-  <script src="script.js?v=hand-minimal-62"></script>
+  <script src="script.js?v=zoom-text-118"></script>
   </body>
 </html>
