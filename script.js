@@ -1,25 +1,33 @@
 ﻿const root = document.documentElement;
 const progress = document.querySelector(".scroll-progress");
 const scaleIndexLinks = [...document.querySelectorAll("[data-scale-link]")];
+const creditsIrisSvg = document.querySelector(".credits-iris-svg");
+const creditsIrisPath = document.querySelector(".credits-iris-fill");
 const opener = document.querySelector(".opener");
+const culturalSequence = document.querySelector("[data-cultural-sequence]");
+const culturalFrames = [...document.querySelectorAll("[data-cultural-frame]")];
+const culturalTrackStage = document.querySelector("[data-cultural-track-stage]");
+const culturalTrack = document.querySelector("[data-cultural-track]");
+const culturalActivePhrase = document.querySelector("[data-cultural-active-phrase]");
 const posterBottle = document.querySelector(".poster-bottle");
 const posterCork = document.querySelector(".poster-cork");
 const posterBottleArt = document.querySelector(".bottle-illustration");
 const wineBuilder = document.querySelector(".wine-builder");
-const worldSection = document.querySelector(".world-consumption");
 const argentinaSection = document.querySelector(".argentina-zoom");
 const consumptionCalendarSection = document.querySelector("#calendario-consumo");
+const consumptionMonthStains = [...document.querySelectorAll("#calendario-consumo .month-stain")];
 const calendarSection = document.querySelector(".production-history-section");
+const productionBridgeSection = document.querySelector(".narrative-bridge-before-history");
+const productionDocumentarySection = document.querySelector(".narrative-bridge-documentary");
 const productionHistoryViewport = document.querySelector("[data-production-history-viewport]");
-const productionHistoryTrack = document.querySelector("[data-production-history-track]");
-const productionHistoryScale = document.querySelector("[data-production-history-scale]");
+const productionHistoryLinePath = document.querySelector("[data-production-line-path]");
+const productionHistoryMarker = document.querySelector("[data-production-line-marker]");
 const productionHistoryActiveYear = document.querySelector("[data-production-active-year]");
 const productionHistoryActiveValue = document.querySelector("[data-production-active-value]");
-const productionHistoryActiveNote = document.querySelector("[data-production-active-note]");
-const productionHistoryAnnotation = document.querySelector("[data-production-history-annotation]");
-const productionHistoryAnnotationYear = document.querySelector("[data-history-annotation-year]");
-const productionHistoryAnnotationText = document.querySelector("[data-history-annotation-text]");
+const productionHistoryReflection = document.querySelector("[data-production-history-reflection]");
 const narrativeBridgeSections = [...document.querySelectorAll("[data-narrative-bridge]")];
+const worldBridgeSection = document.querySelector(".narrative-bridge-scale-intro");
+const grapeBridgeSection = document.querySelector(".narrative-bridge-grape");
 const flourishStorySection = document.querySelector(".flourish-story-section");
 const flourishStoryCards = [...document.querySelectorAll(".story-card")];
 const varietalSection = document.querySelector(".argentine-varietals");
@@ -27,8 +35,6 @@ const varietalBottles = [...document.querySelectorAll(".bottle-lineup .varietal-
 const storyMalbecBottle = document.querySelector(".bottle-malbec");
 const storyMalbecSlot = storyMalbecBottle?.closest(".varietal-slot");
 const storyMalbecHome = storyMalbecBottle?.parentElement;
-const storyBoxCard = document.querySelector(".story-card.card-3");
-const storyBoxFlyer = document.querySelector(".story-box-flyer");
 const bridgePour = document.querySelector("#bridgePour");
 const bridgePourPath = document.querySelector("#bridgePourPath");
 const bridgePourShadow = document.querySelector("#bridgePourShadow");
@@ -37,7 +43,6 @@ const bridgeReceivingGlass = document.querySelector(".bridge-receiving-glass");
 const bridgeGlassSurface = document.querySelector(".bridge-glass-surface-anchor");
 const bridgeWineFill = document.querySelector(".bridge-wine-fill");
 const bridgeWineSurface = document.querySelector(".bridge-wine-top");
-const pourSection = document.querySelector(".pour-story");
 const landingMark = document.querySelector(".landing-mark");
 const argentinaWorldMap = document.querySelector(".argentina-world-map");
 const tasteButtons = [...document.querySelectorAll(".taste-options button")];
@@ -49,9 +54,6 @@ const tagBody = document.querySelector("#tagBody");
 const tagFlavor = document.querySelector("#tagFlavor");
 const tagAge = document.querySelector("#tagAge");
 const tastingSection = document.querySelector(".tasting-section");
-const tastingStepLabel = document.querySelector("#tastingStepLabel");
-const tastingTitle = document.querySelector("#tastingTitle");
-const tastingText = document.querySelector("#tastingText");
 const tastingCopyPanels = [...document.querySelectorAll(".tasting-copy-panel")];
 const compositionSection = document.querySelector(".wine-composition-section");
 const compositionSlices = [...document.querySelectorAll("[data-composition-slice]")];
@@ -60,18 +62,8 @@ const chemistryVarietySection = document.querySelector("#quimica-por-variedad");
 const fermentationSection = document.querySelector(".fermentation-section");
 const fermentationFlourish = document.querySelector("[data-fermentation-flourish]");
 const malbecProfileSection = document.querySelector(".malbec-profile-section");
-const closingToastSection = document.querySelector("[data-closing-toast]");
-const closingSection = document.querySelector(".closing-section");
-const nextStep = document.querySelector("#nextStep");
-const prevStep = document.querySelector("#prevStep");
-const radarShape = document.querySelector("#radarShape");
-const pourScene = document.querySelector(".pour-scene");
-const pourBottleArt = document.querySelector(".pour-bottle-art");
-const calculatedPour = document.querySelector("#calculatedPour");
-const calculatedPourPath = document.querySelector("#calculatedPourPath");
-const calculatedPourShadow = document.querySelector("#calculatedPourShadow");
-const pourGlassBowl = document.querySelector(".pour-glass-bowl");
-const pourGlassSurface = document.querySelector(".pour-glass-surface");
+const finalToastSection = document.querySelector(".final-toast-section");
+const projectCredits = document.querySelector(".project-credits");
 
 let corkPopped = false;
 let audioContext = null;
@@ -83,6 +75,9 @@ let flourishStorySlideIndex = -1;
 let fermentationFlourishSlideIndex = -1;
 let storyMalbecLineupSettled = false;
 let varietalBridgeGlassActive = false;
+const WINE_INTERIOR_GLASS_SCALE = 12;
+const WINE_INTERIOR_GLASS_X = 0;
+const WINE_SETTLED_GLASS_X = 25;
 const tasteTraitOrder = ["body", "flavor", "age"];
 const tasteProfile = {
   body: "",
@@ -140,39 +135,33 @@ const profileLabels = {
   simple: "elección simple",
   atento: "elección atenta",
 };
+const worldTooltipCountries = new Set([
+  "United States of America",
+  "France",
+  "Italy",
+  "Spain",
+  "Argentina",
+  "Chile",
+  "Australia",
+]);
 
-const tastingSteps = [
-  {
-    label: "Cata guiada",
-    title: "Aprendamos a catar vino.",
-    text: "Una copa y cuatro gestos para mirar el vino con más atención.",
-    button: "Comenzar",
-  },
-  {
-    label: "Paso 1 · Mirar",
-    title: "Mirar",
-    text: "Observá el color y la intensidad: antes de oler o probar, la copa ya empieza a contar cuerpo, edad y concentración.",
-    button: "Siguiente",
-  },
-  {
-    label: "Paso 2 · Girar",
-    title: "Girar",
-    text: "La copa gira para liberar aromas y dejar ver cómo el vino se mueve contra el vidrio.",
-    button: "Siguiente",
-  },
-  {
-    label: "Paso 3 · Oler",
-    title: "Oler",
-    text: "Acercá la nariz e identificá familias: fruta, flores, hierbas, especias o madera.",
-    button: "Siguiente",
-  },
-  {
-    label: "Paso 4 · Probar",
-    title: "Probar",
-    text: "Ahora entra la textura: acidez, alcohol, taninos, dulzor y persistencia aparecen juntos.",
-    button: "Siguiente",
-  },
-];
+if (argentinaWorldMap) {
+  argentinaWorldMap
+    .querySelectorAll("[data-country]")
+    .forEach((countryPath) => {
+      if (worldTooltipCountries.has(countryPath.dataset.country)) {
+        countryPath.classList.add("wine-highlight-country");
+      }
+    });
+
+  argentinaWorldMap
+    .querySelectorAll(".argentina-map-shape")
+    .forEach((argentinaPath) => {
+      argentinaPath.classList.add("wine-highlight-country");
+    });
+}
+
+const TASTING_STEP_COUNT = 5;
 
 if (bridgeReceivingGlass) {
   document.body.appendChild(bridgeReceivingGlass);
@@ -254,34 +243,7 @@ const productionHistoryData = [
   { year: 2025, hectoliters: 10370000 },
 ];
 
-const productionHistoryNotes = {
-  2001: "Máximo de la serie. La producción alcanza uno de sus picos antes de la crisis.",
-  2002: "Crisis económica argentina. El sector empieza a reconfigurar su perfil exportador.",
-  2009: "Caída marcada en la producción, en un contexto de menor cosecha y mercado internacional inestable.",
-  2016: "Cosecha muy baja. El clima golpea la disponibilidad de uva y reduce el volumen elaborado.",
-  2020: "Pandemia. Cambian hábitos de consumo, logística y condiciones comerciales.",
-  2023: "Mínimo de la serie. Una cosecha difícil deja uno de los volúmenes más bajos del período.",
-};
-
-// Narrative cards for timeline milestones. Edit these texts to adjust the story without touching the chart.
-const productionHistoryNarrativeCards = {
-  2001: {
-    label: "2001 / Crisis económica",
-    text: "La industria empieza a reconfigurarse y mirar con más fuerza hacia afuera.",
-  },
-  2016: {
-    label: "2016 / Cosecha baja",
-    text: "El clima golpea la disponibilidad de uva y reduce el volumen elaborado.",
-  },
-  2020: {
-    label: "2020 / Pandemia",
-    text: "Cambian los hábitos de compra, consumo y circulación.",
-  },
-  2023: {
-    label: "2023 / Mínimo de la serie",
-    text: "Una cosecha difícil deja uno de los volúmenes más bajos del período.",
-  },
-};
+let productionHistoryPointData = [];
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -292,8 +254,80 @@ function smoothStep(value) {
   return eased * eased * (3 - 2 * eased);
 }
 
+const VARIETAL_PRODUCTION_MAX_LITERS = 260000000;
+
+function getBottleProductionRatio(bottle) {
+  const liters = Number(bottle?.dataset?.productionLiters);
+  if (Number.isFinite(liters) && liters > 0) {
+    return clamp(liters / VARIETAL_PRODUCTION_MAX_LITERS, 0.08, 1);
+  }
+
+  return clamp(Number(bottle?.dataset?.productionScale) || 1, 0.08, 1);
+}
+
+const chapterMotion = {
+  fadeIn: 0.24,
+  fadeOut: 0.22,
+  fadeOutStart: 0.78,
+  titleFadeIn: 0.22,
+  titleFadeOut: 0.2,
+  titleFadeOutStart: 0.32,
+  noteFadeInStart: 0.2,
+  noteFadeOutStart: 0.56,
+  slideIn: 0.28,
+  slideOut: 0.18,
+  slideOutStart: 0.84,
+  documentarySlideOutStart: 0.66,
+  scenicSlideIn: 0.34,
+  scenicSlideOut: 0.24,
+  scenicSlideOutStart: 0.8,
+};
+
 function lerp(start, end, amount) {
   return start + (end - start) * clamp(amount, 0, 1);
+}
+
+function getCreditsWipeState() {
+  if (!projectCredits) {
+    return {
+      isActive: false,
+      wipeProgress: 0,
+      holeRadius: Math.hypot(window.innerWidth, window.innerHeight),
+      contentProgress: 0,
+    };
+  }
+
+  const rect = projectCredits.getBoundingClientRect();
+  const viewportHeight = window.innerHeight;
+  const viewportWidth = window.innerWidth;
+  const isActive = rect.top < viewportHeight && rect.bottom > 0;
+  const wipeProgress = smoothStep((viewportHeight - rect.top) / (viewportHeight * 1.62));
+  const maxRadius = Math.hypot(viewportWidth, viewportHeight) * 0.54;
+  const holeCloseProgress = smoothStep(wipeProgress / 0.94);
+  const holeRadius = holeCloseProgress >= 0.998 ? 0 : lerp(maxRadius, 0, holeCloseProgress);
+  const contentProgress = smoothStep((wipeProgress - 0.955) / 0.045);
+
+  return { isActive, wipeProgress, holeRadius, contentProgress };
+}
+
+function updateCreditsIrisPath(radius) {
+  if (!creditsIrisSvg || !creditsIrisPath) return;
+
+  const width = Math.max(window.innerWidth, 1);
+  const height = Math.max(window.innerHeight, 1);
+  const centerX = width / 2;
+  const centerY = height / 2;
+  const safeRadius = Math.max(radius, 0);
+  let path = `M0 0H${width}V${height}H0Z`;
+
+  if (safeRadius > 0.5) {
+    path += `M${centerX + safeRadius} ${centerY}`;
+    path += `A${safeRadius} ${safeRadius} 0 1 0 ${centerX - safeRadius} ${centerY}`;
+    path += `A${safeRadius} ${safeRadius} 0 1 0 ${centerX + safeRadius} ${centerY}Z`;
+  }
+
+  creditsIrisSvg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  creditsIrisPath.setAttribute("d", path);
 }
 
 function formatMillions(value) {
@@ -304,81 +338,77 @@ function getFermentationGlassShift() {
   return window.innerWidth <= 700 ? 52 : window.innerWidth <= 980 ? 38 : 35;
 }
 
-function renderProductionHistory() {
-  if (!productionHistoryTrack || productionHistoryTrack.dataset.rendered === "true") return;
+function getProductionHistoryPoints() {
+  const values = productionHistoryData.map((item) => item.hectoliters);
+  const maxValue = Math.max(...values);
+  const minValue = Math.min(...values);
+  const valueRange = Math.max(maxValue - minValue, 1);
+  const xMin = 6;
+  const xMax = 96;
+  const yMin = 16;
+  const yMax = 82;
 
-  const maxValue = Math.max(...productionHistoryData.map((item) => item.hectoliters));
-  const minValue = Math.min(...productionHistoryData.map((item) => item.hectoliters));
-  const scaleMax = Math.ceil(maxValue / 1000000) * 1000000;
-  const scaleTicks = [scaleMax, scaleMax * 0.75, scaleMax * 0.5, scaleMax * 0.25];
+  return productionHistoryData.map((item, index) => {
+    const x = lerp(xMin, xMax, index / (productionHistoryData.length - 1));
+    const y = lerp(yMax, yMin, (item.hectoliters - minValue) / valueRange);
 
-  if (productionHistoryScale) {
-    productionHistoryScale.innerHTML = scaleTicks
-      .map((tick) => `
-        <span style="--tick-ratio: ${(tick / scaleMax).toFixed(3)};">
-          <em>${formatMillions(tick)}</em>
-        </span>
-      `)
-      .join("");
-  }
+    return {
+      ...item,
+      x,
+      y,
+    };
+  });
+}
 
-  productionHistoryTrack.innerHTML = productionHistoryData
-    .map((item, index) => {
-      const height = (item.hectoliters / scaleMax) * 100;
-      const yearClass = item.year % 5 === 0 || index === 0 || index === productionHistoryData.length - 1
-        ? " is-labeled-year"
-        : "";
-      const extremeClass = item.hectoliters === maxValue
-        ? " is-max"
-        : item.hectoliters === minValue
-          ? " is-min"
-          : "";
-      const extremeLabel = item.hectoliters === maxValue
-        ? `<span class="history-extreme">Máximo</span>`
-        : item.hectoliters === minValue
-          ? `<span class="history-extreme">Mínimo</span>`
-          : "";
-      const noteLabel = productionHistoryNotes[item.year]
-        ? `<span class="history-note-marker" aria-hidden="true"></span>`
-        : "";
-
-      return `
-        <div class="history-year${yearClass}${extremeClass}" data-history-year="${item.year}" data-history-value="${item.hectoliters}" style="--bar-height: ${height.toFixed(2)}%;">
-          ${extremeLabel}
-          ${noteLabel}
-          <span class="history-bar" aria-hidden="true"></span>
-          <span class="history-year-label">${item.year}</span>
-        </div>
-      `;
+function buildProductionLinePath(points) {
+  return points
+    .map((point, index) => {
+      const command = index === 0 ? "M" : "L";
+      return `${command} ${point.x.toFixed(3)} ${point.y.toFixed(3)}`;
     })
-    .join("");
+    .join(" ");
+}
 
-  productionHistoryTrack.dataset.rendered = "true";
+function renderProductionHistory() {
+  if (!productionHistoryLinePath || productionHistoryLinePath.dataset.rendered === "true") return;
+
+  productionHistoryPointData = getProductionHistoryPoints();
+  productionHistoryLinePath.setAttribute("d", buildProductionLinePath(productionHistoryPointData));
+
+  productionHistoryLinePath.dataset.rendered = "true";
+}
+
+function getProductionHistoryStoryPosition(progressValue) {
+  return {
+    index: lerp(0, productionHistoryData.length - 1, clamp(progressValue, 0, 1)),
+  };
+}
+
+function getProductionHistoryInterpolatedPoint(indexValue) {
+  if (!productionHistoryPointData.length) return productionHistoryData[0];
+
+  const lowerIndex = clamp(Math.floor(indexValue), 0, productionHistoryPointData.length - 1);
+  const upperIndex = clamp(Math.ceil(indexValue), 0, productionHistoryPointData.length - 1);
+  const lowerPoint = productionHistoryPointData[lowerIndex];
+  const upperPoint = productionHistoryPointData[upperIndex];
+  const amount = indexValue - lowerIndex;
+
+  return {
+    x: lerp(lowerPoint.x, upperPoint.x, amount),
+    y: lerp(lowerPoint.y, upperPoint.y, amount),
+  };
 }
 
 function getStoryCardBaseSize() {
   const isMobile = window.innerWidth <= 700;
   const width = isMobile
     ? Math.min(window.innerWidth * 0.84, 420)
-    : Math.min(window.innerWidth * 0.52, 560);
+    : clamp(window.innerWidth * 0.27, 300, 420);
   const height = isMobile
     ? clamp(window.innerHeight * 0.24, 150, 240)
-    : clamp(window.innerHeight * 0.28, 170, 280);
+    : clamp(window.innerHeight * 0.16, 118, 172);
 
   return { width, height };
-}
-
-function getStoryBoxSize() {
-  const isMobile = window.innerWidth <= 700;
-
-  return {
-    width: isMobile
-      ? clamp(window.innerWidth * 0.62, 220, 300)
-      : clamp(window.innerWidth * 0.18, 250, 340),
-    height: isMobile
-      ? clamp(window.innerHeight * 0.58, 360, 500)
-      : clamp(window.innerHeight * 0.68, 430, 620),
-  };
 }
 
 function getVarietalBottleMetrics() {
@@ -393,31 +423,19 @@ function getVarietalBottleMetrics() {
   };
 }
 
-function getStoryBoxMalbecTarget(boxWidth, boxHeight, cardX = 0, cardY = 0) {
-  const metrics = getVarietalBottleMetrics();
+function getStoryMorphMalbecTarget() {
   const isMobile = window.innerWidth <= 700;
-  const bottleHeight = boxHeight * (isMobile ? 0.72 : 0.74);
-  const scale = clamp(bottleHeight / metrics.height, 0.42, 0.82);
+  const width = isMobile
+    ? clamp(window.innerWidth * 0.18, 64, 86)
+    : clamp(window.innerWidth * 0.1, 118, 185);
+  const height = Math.min(window.innerHeight * (isMobile ? 0.62 : 0.66), width * 2.96);
 
   return {
-    left: isMobile ? 41 : 38,
-    top: 53,
-    width: metrics.width * scale,
-    height: metrics.height * scale,
+    x: 0,
+    y: 0,
+    width,
+    height,
     scale: 1,
-  };
-}
-
-function getStoryBoxViewportMalbecTarget() {
-  const boxSize = getStoryBoxSize();
-  const boxTarget = getStoryBoxMalbecTarget(boxSize.width, boxSize.height);
-
-  return {
-    x: ((boxTarget.left - 50) / 100) * boxSize.width,
-    y: ((boxTarget.top - 50) / 100) * boxSize.height,
-    width: boxTarget.width,
-    height: boxTarget.height,
-    scale: boxTarget.scale,
   };
 }
 
@@ -466,73 +484,46 @@ function addLineupRiseToTarget(target, lineupProgress) {
   };
 }
 
-function applyStoryBoxMalbec(target, opacity = 1) {
-  if (!storyMalbecBottle || !storyBoxCard || !target) return;
-
-  if (storyMalbecBottle.parentElement !== storyBoxCard) {
-    storyBoxCard.appendChild(storyMalbecBottle);
-  }
-
-  storyMalbecSlot?.classList.add("is-box-bottle-source");
-  storyMalbecBottle.classList.remove("is-traveling-to-lineup");
-  storyMalbecBottle.classList.add("is-inside-story-box");
-  storyMalbecBottle.style.setProperty("--story-box-bottle-opacity", opacity.toFixed(3));
-  storyMalbecBottle.style.setProperty("--story-box-bottle-clip-right", "0%");
-  storyMalbecBottle.style.setProperty("--story-box-bottle-left", `${target.left.toFixed(2)}%`);
-  storyMalbecBottle.style.setProperty("--story-box-bottle-top", `${target.top.toFixed(2)}%`);
-  storyMalbecBottle.style.setProperty("--story-box-bottle-width", `${target.width.toFixed(2)}px`);
-  storyMalbecBottle.style.setProperty("--story-box-bottle-height", `${target.height.toFixed(2)}px`);
-  storyMalbecBottle.style.setProperty("--varietal-bottle-width", `${target.width.toFixed(2)}px`);
-  storyMalbecBottle.style.setProperty("--varietal-bottle-height", `${target.height.toFixed(2)}px`);
-  storyMalbecBottle.style.setProperty("--story-box-bottle-scale", target.scale.toFixed(3));
-}
-
-function applyTravelingMalbec(target, opacity = 1) {
+function applyTravelingMalbec(target, opacity = 1, detailOpacity = 1, shapeProgress = 1) {
   if (!storyMalbecBottle || !target) return;
 
   if (storyMalbecBottle.parentElement !== document.body) {
     document.body.appendChild(storyMalbecBottle);
   }
 
-  storyMalbecSlot?.classList.add("is-box-bottle-source");
-  storyMalbecBottle.classList.remove("is-inside-story-box");
+  storyMalbecSlot?.classList.add("is-traveling-bottle-source");
   storyMalbecBottle.classList.add("is-traveling-to-lineup");
-  storyMalbecBottle.style.setProperty("--story-box-bottle-opacity", opacity.toFixed(3));
-  storyMalbecBottle.style.setProperty("--story-box-bottle-clip-right", "0%");
-  storyMalbecBottle.style.setProperty("--story-box-bottle-x", `${target.x.toFixed(2)}px`);
-  storyMalbecBottle.style.setProperty("--story-box-bottle-y", `${target.y.toFixed(2)}px`);
-  storyMalbecBottle.style.setProperty("--story-box-bottle-width", `${target.width.toFixed(2)}px`);
-  storyMalbecBottle.style.setProperty("--story-box-bottle-height", `${target.height.toFixed(2)}px`);
+  const shape = clamp(shapeProgress, 0, 1);
+  const bodyRadiusXTop = lerp(6, 46, shape);
+  const bodyRadiusYTop = lerp(6, 30, shape);
+  const bodyRadiusXBottom = lerp(6, 12, shape);
+  const bodyRadiusYBottom = lerp(6, 8, shape);
+  const neckShape = smoothStep((shape - 0.46) / 0.54);
+
+  storyMalbecBottle.style.setProperty("--traveling-bottle-opacity", opacity.toFixed(3));
+  storyMalbecBottle.style.setProperty("--traveling-bottle-detail-opacity", detailOpacity.toFixed(3));
+  storyMalbecBottle.style.setProperty("--traveling-bottle-shape-progress", shape.toFixed(3));
+  storyMalbecBottle.style.setProperty("--traveling-bottle-body-height", `${lerp(100, 76, shape).toFixed(2)}%`);
+  storyMalbecBottle.style.setProperty(
+    "--traveling-bottle-body-radius",
+    `${bodyRadiusXTop.toFixed(2)}% ${bodyRadiusXTop.toFixed(2)}% ${bodyRadiusXBottom.toFixed(2)}% ${bodyRadiusXBottom.toFixed(2)}% / ${bodyRadiusYTop.toFixed(2)}% ${bodyRadiusYTop.toFixed(2)}% ${bodyRadiusYBottom.toFixed(2)}% ${bodyRadiusYBottom.toFixed(2)}%`,
+  );
+  storyMalbecBottle.style.setProperty("--traveling-bottle-neck-opacity", neckShape.toFixed(3));
+  storyMalbecBottle.style.setProperty("--traveling-bottle-neck-y", `${lerp(20, 0, neckShape).toFixed(2)}%`);
+  storyMalbecBottle.style.setProperty("--traveling-bottle-neck-scale-y", lerp(0.22, 1, neckShape).toFixed(3));
+  storyMalbecBottle.style.setProperty("--traveling-bottle-x", `${target.x.toFixed(2)}px`);
+  storyMalbecBottle.style.setProperty("--traveling-bottle-y", `${target.y.toFixed(2)}px`);
+  storyMalbecBottle.style.setProperty("--traveling-bottle-width", `${target.width.toFixed(2)}px`);
+  storyMalbecBottle.style.setProperty("--traveling-bottle-height", `${target.height.toFixed(2)}px`);
   storyMalbecBottle.style.setProperty("--varietal-bottle-width", `${target.width.toFixed(2)}px`);
   storyMalbecBottle.style.setProperty("--varietal-bottle-height", `${target.height.toFixed(2)}px`);
-  storyMalbecBottle.style.setProperty("--story-box-bottle-scale", target.scale.toFixed(3));
+  storyMalbecBottle.style.setProperty("--traveling-bottle-scale", target.scale.toFixed(3));
 }
 
-function updateStoryBoxFlyer(exitProgress = 0, opacity = 0) {
-  if (!storyBoxFlyer) return;
-
-  const boxSize = getStoryBoxSize();
-  const exitAmount = clamp(exitProgress, 0, 1);
-
-  storyBoxFlyer.style.setProperty("--story-box-flyer-width", `${boxSize.width.toFixed(2)}px`);
-  storyBoxFlyer.style.setProperty("--story-box-flyer-height", `${boxSize.height.toFixed(2)}px`);
-  storyBoxFlyer.style.setProperty("--story-box-flyer-y", `${(-window.innerHeight * 1.18 * exitAmount).toFixed(2)}px`);
-  storyBoxFlyer.style.setProperty("--story-box-flyer-opacity", opacity.toFixed(3));
-}
-
-function hideStoryBoxFlyer() {
-  updateStoryBoxFlyer(0, 0);
-}
-
-function setCalculatedPourReady(isReady) {
-  root.style.setProperty("--calculated-pour-ready", isReady ? "1" : "0");
-}
-
-function clearStoryBoxMalbec() {
+function clearTravelingMalbec() {
   if (!storyMalbecBottle) return;
 
-  storyMalbecSlot?.classList.remove("is-box-bottle-source");
-  storyMalbecBottle.classList.remove("is-inside-story-box");
+  storyMalbecSlot?.classList.remove("is-traveling-bottle-source");
   storyMalbecBottle.classList.remove("is-traveling-to-lineup");
 
   if (storyMalbecHome && storyMalbecBottle.parentElement !== storyMalbecHome) {
@@ -540,15 +531,19 @@ function clearStoryBoxMalbec() {
   }
 
   [
-    "--story-box-bottle-opacity",
-    "--story-box-bottle-clip-right",
-    "--story-box-bottle-left",
-    "--story-box-bottle-top",
-    "--story-box-bottle-x",
-    "--story-box-bottle-y",
-    "--story-box-bottle-width",
-    "--story-box-bottle-height",
-    "--story-box-bottle-scale",
+    "--traveling-bottle-opacity",
+    "--traveling-bottle-x",
+    "--traveling-bottle-y",
+    "--traveling-bottle-width",
+    "--traveling-bottle-height",
+    "--traveling-bottle-scale",
+    "--traveling-bottle-detail-opacity",
+    "--traveling-bottle-shape-progress",
+    "--traveling-bottle-neck-opacity",
+    "--traveling-bottle-body-height",
+    "--traveling-bottle-body-radius",
+    "--traveling-bottle-neck-y",
+    "--traveling-bottle-neck-scale-y",
     "--varietal-bottle-width",
     "--varietal-bottle-height",
   ].forEach((property) => storyMalbecBottle.style.removeProperty(property));
@@ -696,16 +691,6 @@ function buildBezierPath(start, controlA, controlB, end) {
   ].join(" ");
 }
 
-function svgPointToClient(svg, x, y) {
-  const ctm = svg?.getScreenCTM?.();
-  if (!ctm) return null;
-
-  return {
-    x: ctm.a * x + ctm.c * y + ctm.e,
-    y: ctm.b * x + ctm.d * y + ctm.f,
-  };
-}
-
 function updatePosterCorkPosition() {
   if (!posterBottle || !posterCork || !posterBottleArt) return;
 
@@ -732,129 +717,6 @@ function updatePosterCorkPosition() {
   posterCork.style.setProperty("--poster-cork-height", `${corkHeight.toFixed(2)}px`);
   posterCork.style.setProperty("--poster-cork-pop-x", `${(-corkWidth * 0.84).toFixed(2)}px`);
   posterCork.style.setProperty("--poster-cork-pop-y", `${(-corkHeight * 3.94).toFixed(2)}px`);
-}
-
-function updateCalculatedPour() {
-  if (
-    !pourScene ||
-    !pourBottleArt ||
-    !calculatedPour ||
-    !calculatedPourPath ||
-    !calculatedPourShadow ||
-    !pourGlassBowl ||
-    !pourGlassSurface
-  ) {
-    setCalculatedPourReady(false);
-    return;
-  }
-
-  const sceneRect = pourScene.getBoundingClientRect();
-  const bowlRect = pourGlassBowl.getBoundingClientRect();
-  const surfaceRect = pourGlassSurface.getBoundingClientRect();
-  const mouthClient = svgPointToClient(pourBottleArt, 18, 118);
-  const mouthDirectionClient = svgPointToClient(pourBottleArt, -48, 118);
-
-  if (
-    !sceneRect.width ||
-    !sceneRect.height ||
-    !bowlRect.width ||
-    !surfaceRect.width ||
-    !mouthClient ||
-    !mouthDirectionClient
-  ) {
-    setCalculatedPourReady(false);
-    return;
-  }
-
-  const sceneLeft = sceneRect.left;
-  const sceneTop = sceneRect.top;
-  const start = {
-    x: mouthClient.x - sceneLeft,
-    y: mouthClient.y - sceneTop,
-  };
-  const mouthDirection = {
-    x: mouthDirectionClient.x - mouthClient.x,
-    y: mouthDirectionClient.y - mouthClient.y,
-  };
-  const end = {
-    x: surfaceRect.left + surfaceRect.width * 0.5 - sceneLeft,
-    y: surfaceRect.top + surfaceRect.height * 0.32 - sceneTop,
-  };
-
-  const delta = {
-    x: end.x - start.x,
-    y: end.y - start.y,
-  };
-  const distance = Math.hypot(delta.x, delta.y);
-  const geometrySizesReady = [
-    sceneRect.width,
-    sceneRect.height,
-    bowlRect.width,
-    bowlRect.height,
-    surfaceRect.width,
-    surfaceRect.height,
-    distance,
-  ].every((value) => Number.isFinite(value) && value > 0);
-  const geometryCoordinatesReady = [
-    start.x,
-    start.y,
-    end.x,
-    end.y,
-  ].every((value) => Number.isFinite(value));
-
-  if (!geometrySizesReady || !geometryCoordinatesReady || distance < sceneRect.width * 0.08) {
-    setCalculatedPourReady(false);
-    return;
-  }
-
-  const exitVector = normalizeVector(mouthDirection);
-  const waveVector = normalizeVector({ x: -delta.y, y: delta.x });
-  const waveSize = clamp(sceneRect.width * 0.05, 24, 84);
-  const startHandleMax = Math.min(270, Math.max(64, sceneRect.width * 0.18));
-  const startHandle = clamp(distance * 0.16, 64, startHandleMax);
-  const endHandle = clamp(distance * 0.18, 160, 520);
-  const pointAt = (progress, wave = 0) => ({
-    x: start.x + delta.x * progress + waveVector.x * wave,
-    y: start.y + delta.y * progress + waveVector.y * wave,
-  });
-  const between = (from, to, progress, wave = 0) => ({
-    x: from.x + (to.x - from.x) * progress + waveVector.x * wave,
-    y: from.y + (to.y - from.y) * progress + waveVector.y * wave,
-  });
-  const waveIn = pointAt(0.36, waveSize);
-  const waveOut = pointAt(0.66, -waveSize * 0.72);
-  const controlStart = {
-    x: start.x + exitVector.x * startHandle,
-    y: start.y + exitVector.y * startHandle,
-  };
-  const controlToWaveIn = between(start, waveIn, 0.66, waveSize * 0.18);
-  const controlFromWaveIn = between(waveIn, waveOut, 0.28, -waveSize * 0.32);
-  const controlToWaveOut = between(waveIn, waveOut, 0.72, waveSize * 0.22);
-  const controlFromWaveOut = between(waveOut, end, 0.26, -waveSize * 0.2);
-  const controlEnd = {
-    x: end.x,
-    y: end.y - endHandle,
-  };
-  const path = [
-    `M ${start.x.toFixed(2)} ${start.y.toFixed(2)}`,
-    `C ${controlStart.x.toFixed(2)} ${controlStart.y.toFixed(2)}`,
-    `${controlToWaveIn.x.toFixed(2)} ${controlToWaveIn.y.toFixed(2)}`,
-    `${waveIn.x.toFixed(2)} ${waveIn.y.toFixed(2)}`,
-    `C ${controlFromWaveIn.x.toFixed(2)} ${controlFromWaveIn.y.toFixed(2)}`,
-    `${controlToWaveOut.x.toFixed(2)} ${controlToWaveOut.y.toFixed(2)}`,
-    `${waveOut.x.toFixed(2)} ${waveOut.y.toFixed(2)}`,
-    `C ${controlFromWaveOut.x.toFixed(2)} ${controlFromWaveOut.y.toFixed(2)}`,
-    `${controlEnd.x.toFixed(2)} ${controlEnd.y.toFixed(2)}`,
-    `${end.x.toFixed(2)} ${end.y.toFixed(2)}`,
-  ].join(" ");
-
-  calculatedPour.setAttribute(
-    "viewBox",
-    `0 0 ${Math.ceil(sceneRect.width)} ${Math.ceil(sceneRect.height)}`,
-  );
-  calculatedPourPath.setAttribute("d", path);
-  calculatedPourShadow.setAttribute("d", path);
-  setCalculatedPourReady(true);
 }
 
 function playCorkPop() {
@@ -923,7 +785,7 @@ function updateIntroState() {
   const titleLine2 = 1;
   const titleLine3 = 1;
   const sceneProgress = smoothStep(introProgress / 0.9);
-  const toastX = -34 * sceneProgress;
+  const toastX = 28 * sceneProgress;
   const toastY = -2.2 * sceneProgress;
   const toastRotate = -1.6 * sceneProgress;
 
@@ -931,6 +793,7 @@ function updateIntroState() {
   root.style.setProperty("--intro-toast-x", `${toastX.toFixed(2)}vw`);
   root.style.setProperty("--intro-toast-y", `${toastY.toFixed(2)}vh`);
   root.style.setProperty("--intro-toast-rotate", `${toastRotate.toFixed(2)}deg`);
+  root.style.setProperty("--opener-title-fill-x", `${(44 + introProgress * 18).toFixed(2)}%`);
   root.style.setProperty("--title-progress", titleProgress.toFixed(3));
   root.style.setProperty("--title-line-1", titleLine1.toFixed(3));
   root.style.setProperty("--title-line-2", titleLine2.toFixed(3));
@@ -938,6 +801,108 @@ function updateIntroState() {
   root.style.setProperty("--title-line-1-clip", `${((1 - titleLine1) * 100).toFixed(2)}%`);
   root.style.setProperty("--title-line-2-clip", `${((1 - titleLine2) * 100).toFixed(2)}%`);
   root.style.setProperty("--title-line-3-clip", `${((1 - titleLine3) * 100).toFixed(2)}%`);
+}
+
+function updateCulturalSequenceState() {
+  if (!culturalSequence) return;
+
+  const travel = Math.max(culturalSequence.offsetHeight - window.innerHeight, 1);
+  const rect = culturalSequence.getBoundingClientRect();
+  const progress = clamp(-rect.top / travel, 0, 1);
+  const frameCount = culturalFrames.length;
+  const gallerySteps = Math.max(frameCount - 1, 0);
+  const galleryStart = 1.12;
+  const frameHold = 0.62;
+  const frameMove = 0.5;
+  const frameSpan = frameHold + frameMove;
+  const galleryEnd = galleryStart + gallerySteps * frameSpan + 1.08;
+  const segmentCount = galleryEnd + 1.9;
+  const rawProgress = progress * segmentCount;
+
+  const introOut = smoothStep((rawProgress - 0.68) / 0.42);
+  const introOpacity = 1 - introOut;
+  const introY = lerp(0, -1.4, introOut);
+  const galleryOpacity =
+    smoothStep((rawProgress - 0.94) / 0.34) * (1 - smoothStep((rawProgress - galleryEnd) / 0.34));
+  const meaningLocal = rawProgress - (galleryEnd + 0.32);
+  const meaningOpacity =
+    smoothStep(meaningLocal / 0.36) * (1 - smoothStep((meaningLocal - 1.08) / 0.36));
+  const meaningY =
+    lerp(1.8, 0, smoothStep(meaningLocal / 0.36))
+    - smoothStep((meaningLocal - 1.08) / 0.36) * 1.4;
+
+  culturalSequence.style.setProperty("--cultural-intro-opacity", introOpacity.toFixed(3));
+  culturalSequence.style.setProperty("--cultural-intro-y", `${introY.toFixed(2)}rem`);
+  culturalSequence.style.setProperty("--cultural-gallery-opacity", galleryOpacity.toFixed(3));
+  culturalSequence.style.setProperty("--cultural-meaning-opacity", meaningOpacity.toFixed(3));
+  culturalSequence.style.setProperty("--cultural-meaning-y", `${meaningY.toFixed(2)}rem`);
+
+  if (!frameCount) return;
+
+  const galleryRaw = clamp(rawProgress - galleryStart, 0, gallerySteps * frameSpan);
+  const baseIndex = Math.min(Math.floor(galleryRaw / frameSpan), gallerySteps);
+  const localProgress = galleryRaw - baseIndex * frameSpan;
+  const advance =
+    baseIndex >= gallerySteps ? 0 : smoothStep((localProgress - frameHold) / frameMove);
+  const trackIndex = Math.min(baseIndex + advance, gallerySteps);
+  const trackBaseIndex = Math.min(Math.floor(trackIndex), gallerySteps);
+  const trackFraction = trackIndex - trackBaseIndex;
+  const activeIndex = clamp(
+    trackBaseIndex + (trackFraction > 0.86 ? 1 : 0),
+    0,
+    gallerySteps,
+  );
+  const activeFrame = culturalFrames[activeIndex];
+  const activePhrase = activeFrame?.dataset.culturalPhrase || "";
+  const activeDistance = Math.abs(activeIndex - trackIndex);
+  const copyFocus = 1 - smoothStep(activeDistance / 0.58);
+  const copyOpacity = galleryOpacity * (0.62 + copyFocus * 0.38);
+
+  if (culturalActivePhrase && culturalActivePhrase.textContent !== activePhrase) {
+    culturalActivePhrase.textContent = activePhrase;
+  }
+
+  culturalSequence.dataset.culturalActiveIndex = String(activeIndex);
+  culturalSequence.style.setProperty("--cultural-copy-opacity", copyOpacity.toFixed(3));
+
+  if (culturalTrack && culturalTrackStage) {
+    const stageWidth = culturalTrackStage.clientWidth || window.innerWidth;
+    const currentIndex = Math.min(Math.floor(trackIndex), gallerySteps);
+    const nextIndex = Math.min(currentIndex + 1, gallerySteps);
+    const currentFrame = culturalFrames[currentIndex];
+    const nextFrame = culturalFrames[nextIndex];
+    const currentCenter = currentFrame.offsetLeft + currentFrame.offsetWidth / 2;
+    const nextCenter = nextFrame.offsetLeft + nextFrame.offsetWidth / 2;
+    const between = trackIndex - currentIndex;
+    const targetCenter = lerp(currentCenter, nextCenter, between);
+    const trackX = stageWidth / 2 - targetCenter;
+    const stageRect = culturalTrackStage.getBoundingClientRect();
+    const pinRect = culturalSequence.querySelector(".cultural-sequence-pin")?.getBoundingClientRect() || stageRect;
+    const activeCenter =
+      activeFrame.offsetLeft + activeFrame.offsetWidth / 2 + trackX + stageRect.left - pinRect.left;
+
+    culturalSequence.style.setProperty("--cultural-track-x", `${trackX.toFixed(2)}px`);
+    culturalSequence.style.setProperty("--cultural-copy-x", `${activeCenter.toFixed(2)}px`);
+  }
+
+  culturalFrames.forEach((frame, index) => {
+    const distance = Math.abs(index - trackIndex);
+    const focus = 1 - smoothStep(distance / 0.68);
+    const frameOpacity = 0.24 + focus * 0.76;
+    const frameScale = 0.935 + focus * 0.085;
+    const frameBlur = 0.82 * (1 - focus);
+    const frameSaturate = 0.62 + focus * 0.48;
+    const frameContrast = 0.88 + focus * 0.16;
+    const frameShadowOpacity = 0.04 + focus * 0.18;
+
+    frame.style.setProperty("--frame-opacity", frameOpacity.toFixed(3));
+    frame.style.setProperty("--frame-scale", frameScale.toFixed(3));
+    frame.style.setProperty("--frame-blur", `${frameBlur.toFixed(2)}px`);
+    frame.style.setProperty("--frame-saturate", frameSaturate.toFixed(3));
+    frame.style.setProperty("--frame-contrast", frameContrast.toFixed(3));
+    frame.style.setProperty("--frame-shadow-opacity", frameShadowOpacity.toFixed(3));
+    frame.classList.toggle("is-active", index === activeIndex);
+  });
 }
 
 function updateTasteFlow() {
@@ -975,18 +940,18 @@ function updateTasteDetailState() {
   const isResultResetting = Date.now() < tasteResultResetUntil;
   const chartPeekProgress = isComplete
     && !isResultResetting
-    ? smoothStep((sectionProgress - 0.12) / 0.14)
+    ? smoothStep((sectionProgress - 0.1) / 0.12)
     : 0;
   const slideProgress = isComplete
     && !isResultResetting
-    ? smoothStep((sectionProgress - 0.3) / 0.38)
+    ? smoothStep((sectionProgress - 0.24) / 0.32)
     : 0;
   const profileShift = -118 * slideProgress;
   const chartShift = clamp(118 - chartPeekProgress * 36 - slideProgress * 82, 0, 118);
   const chartOpacity = Math.max(chartPeekProgress, slideProgress);
   const profileScale = 1;
   const detailTextProgress = isComplete ? 1 : 0;
-  const detailTextY = 10 * (1 - detailTextProgress);
+  const detailTextY = 0;
 
   root.style.setProperty("--taste-detail-progress", slideProgress.toFixed(3));
   root.style.setProperty("--profile-slide-x", `${profileShift.toFixed(2)}vw`);
@@ -1040,16 +1005,10 @@ function updateTasteRecommendation() {
     return;
   }
 
-  updateRadar();
-
   if (!recommendationShown) {
     recommendationShown = true;
     tasteResultResetUntil = Date.now() + 760;
     updateTasteDetailState();
-    window.setTimeout(() => {
-      wineBuilder?.scrollIntoView({ behavior: "smooth", block: "start" });
-      updateTasteDetailState();
-    }, 40);
     window.setTimeout(() => {
       tasteResultResetUntil = 0;
       updateTasteDetailState();
@@ -1057,55 +1016,14 @@ function updateTasteRecommendation() {
   }
 }
 
-function getRadarValues() {
-  return {
-    body: tasteProfile.body === "seguido" ? 0.86 : 0.48,
-    aroma: tasteProfile.flavor === "mesa" ? 0.76 : 0.58,
-    finish: tasteProfile.age === "atento" ? 0.88 : 0.5,
-    acidity: tasteProfile.body === "poco" ? 0.72 : 0.52,
-    fruit: tasteProfile.flavor === "ocasiones" ? 0.66 : 0.82,
-  };
-}
-
-function updateRadar() {
-  if (!radarShape) return;
-
-  const values = getRadarValues();
-  const center = { x: 130, y: 130 };
-  const axes = [
-    { x: 130, y: 24, value: values.body },
-    { x: 230, y: 94, value: values.aroma },
-    { x: 192, y: 216, value: values.finish },
-    { x: 68, y: 216, value: values.acidity },
-    { x: 30, y: 94, value: values.fruit },
-  ];
-  const points = axes.map((axis) => {
-    const x = center.x + (axis.x - center.x) * axis.value;
-    const y = center.y + (axis.y - center.y) * axis.value;
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
-  });
-
-  radarShape.setAttribute("points", points.join(" "));
-}
-
 function renderTastingStep() {
-  const step = tastingSteps[currentTastingStep];
-  if (!step || !tastingSection) return;
+  if (!tastingSection) return;
 
   tastingSection.dataset.step = String(currentTastingStep);
   root.dataset.tastingStep = String(currentTastingStep);
   tastingCopyPanels.forEach((panel) => {
     panel.classList.toggle("is-current", Number(panel.dataset.step) === currentTastingStep);
   });
-  if (tastingStepLabel) tastingStepLabel.textContent = step.label;
-  if (tastingTitle) tastingTitle.textContent = step.title;
-  if (tastingText) tastingText.textContent = step.text;
-  if (nextStep) nextStep.textContent = step.button;
-  if (prevStep) {
-    prevStep.disabled = currentTastingStep === 0;
-    prevStep.hidden = currentTastingStep === 0;
-  }
-  updateRadar();
 }
 
 function projectMapPoint(lat, lon) {
@@ -1115,55 +1033,36 @@ function projectMapPoint(lat, lon) {
   };
 }
 
-function updateWorldState() {
-  if (!worldSection) return;
-
-  const travel = Math.max(worldSection.offsetHeight - window.innerHeight, 1);
-  const rect = worldSection.getBoundingClientRect();
-  const worldProgress = clamp(-rect.top / travel, 0, 1);
-  const questionOpacity = worldProgress < 0.38 ? 1 : 0;
-  const noteIn = clamp((worldProgress - 0.18) * 4, 0, 1);
-  const noteOut = clamp((worldProgress - 0.55) * 4, 0, 1);
-  const noteOpacity = worldProgress >= 0.18 && worldProgress < 0.55 ? 1 : 0;
-  const mapProgress = clamp((worldProgress - 0.58) * 2.6, 0, 1);
-
-  root.style.setProperty("--world-progress", worldProgress.toFixed(3));
-  root.style.setProperty("--world-question-opacity", questionOpacity.toFixed(3));
-  root.style.setProperty("--world-note-in", noteIn.toFixed(3));
-  root.style.setProperty("--world-note-out", noteOut.toFixed(3));
-  root.style.setProperty("--world-note-opacity", noteOpacity.toFixed(3));
-  root.style.setProperty("--world-map-progress", mapProgress.toFixed(3));
-}
-
 function updateArgentinaState() {
   if (!argentinaSection) return;
 
   const travel = Math.max(argentinaSection.offsetHeight - window.innerHeight, 1);
   const rect = argentinaSection.getBoundingClientRect();
-  const argProgress = clamp(-rect.top / travel, 0, 1);
+  const rawArgProgress = clamp(-rect.top / travel, 0, 1);
+  const ARGENTINA_FINAL_HOLD_START = 0.9;
+  const argProgress = clamp(rawArgProgress / ARGENTINA_FINAL_HOLD_START, 0, 1);
   const isMobileArgentina = window.innerWidth <= 700;
   const setArgentinaVar = (name, value) => {
     root.style.setProperty(name, value);
     argentinaSection.style.setProperty(name, value);
   };
 
-  // Tramos: mapa completo -> popups narrativos -> salida del mundo -> zoom por viewBox.
+  // Tramos: mapa completo quieto -> contexto mundial -> zoom documental por viewBox.
   const mapIn = smoothStep((window.innerHeight - rect.top) / (window.innerHeight * 0.5));
-  const popupIn = smoothStep((argProgress - 0.12) / 0.06);
-  const popupOut = smoothStep((argProgress - 0.35) / 0.15);
+  const popupIn = smoothStep((argProgress - 0.24) / 0.08);
+  const popupOut = smoothStep((argProgress - 0.48) / 0.14);
   const popupOpacity = popupIn * (1 - popupOut);
-  const finalProgress = clamp((argProgress - 0.5) / 0.5, 0, 1);
-  const worldExit = smoothStep((finalProgress - 0.1) / 0.28);
-  const argZoomProgress = smoothStep((finalProgress - 0.38) / 0.28);
-  const copyIn = smoothStep((finalProgress - 0.72) / 0.18);
-  const worldY = worldExit * (isMobileArgentina ? -260 : -420);
-  const worldOpacity = mapIn * (1 - worldExit);
-  const targetViewBoxWidth = isMobileArgentina ? 265 : 270;
+  const argZoomProgress = smoothStep((argProgress - 0.56) / 0.4);
+  const worldFocus = smoothStep((argZoomProgress - 0.58) / 0.34);
+  const copyIn = smoothStep((argZoomProgress - 0.86) / 0.14);
+  const worldOpacity = mapIn * lerp(1, 0.14, worldFocus);
+  const worldBlur = lerp(0, isMobileArgentina ? 0.65 : 1.1, worldFocus);
+  const targetViewBoxWidth = isMobileArgentina ? 300 : 315;
   const targetViewBoxHeight = targetViewBoxWidth * 0.52;
   const argentinaCenter = { x: 324, y: 371 };
   const argentinaScreenFocus = {
-    x: isMobileArgentina ? 0.5 : 0.2,
-    y: isMobileArgentina ? 0.51 : 0.38,
+    x: isMobileArgentina ? 0.48 : 0.215,
+    y: isMobileArgentina ? 0.49 : 0.365,
   };
   const targetViewBoxX = clamp(
     argentinaCenter.x - targetViewBoxWidth * argentinaScreenFocus.x,
@@ -1180,8 +1079,8 @@ function updateArgentinaState() {
   const viewBoxWidth = 1000 + (targetViewBoxWidth - 1000) * argZoomProgress;
   const viewBoxHeight = 520 + (targetViewBoxHeight - 520) * argZoomProgress;
   const argentinaOnlyScale = 1000 / viewBoxWidth;
-  const mapMetaOpacity = mapIn * (1 - smoothStep((finalProgress - 0.08) / 0.2));
-  const isFocusedArgentina = worldExit > 0.72 || argZoomProgress > 0.12;
+  const mapMetaOpacity = mapIn * (1 - smoothStep((argProgress - 0.44) / 0.24));
+  const isFocusedArgentina = popupOpacity > 0.2 || argZoomProgress > 0.08;
 
   argentinaWorldMap?.setAttribute(
     "viewBox",
@@ -1190,8 +1089,8 @@ function updateArgentinaState() {
   setArgentinaVar("--arg-progress", argProgress.toFixed(3));
   setArgentinaVar("--arg-map-stage-opacity", mapIn.toFixed(3));
   setArgentinaVar("--arg-map-meta-opacity", mapMetaOpacity.toFixed(3));
-  setArgentinaVar("--arg-world-y", `${worldY.toFixed(1)}px`);
   setArgentinaVar("--arg-world-opacity", worldOpacity.toFixed(3));
+  setArgentinaVar("--arg-world-blur", `${worldBlur.toFixed(2)}px`);
   setArgentinaVar("--argentina-only-scale", argentinaOnlyScale.toFixed(3));
   setArgentinaVar("--argentina-only-x", `${viewBoxX.toFixed(1)}px`);
   setArgentinaVar("--argentina-only-y", `${viewBoxY.toFixed(1)}px`);
@@ -1200,56 +1099,68 @@ function updateArgentinaState() {
   root.classList.toggle("is-argentina-focus", isFocusedArgentina);
 }
 
-function updateNarrativeBridgeState() {
-  let chemistryBridgeActive = false;
-  let chemistryWineScale = 0.2;
-  let chemistryWineOpacity = 0;
-  let chemistryTextY = 24;
-  let chemistryTextVisible = 0;
+function updateConsumptionCalendarStains() {
+  if (!consumptionCalendarSection || !consumptionMonthStains.length) return;
 
+  const travel = Math.max(consumptionCalendarSection.offsetHeight - window.innerHeight, 1);
+  const rect = consumptionCalendarSection.getBoundingClientRect();
+  const sectionProgress = clamp(-rect.top / travel, 0, 1);
+  const monthTilt = [-1.2, 0.8, -0.7, 1, -0.9, 0.6, -0.55, 0.75, -0.8, 0.9, -0.45, 0.65];
+
+  consumptionMonthStains.forEach((stain, index) => {
+    const start = 0.08 + index * 0.06;
+    const reveal = smoothStep((sectionProgress - start) / 0.1);
+    const settle = smoothStep((reveal - 0.72) / 0.28);
+    const bloom = smoothStep(reveal / 0.72);
+    const scale = lerp(0.84, 1.035, bloom) - settle * 0.035;
+    const spread = lerp(2, 86, reveal);
+    const opacity = smoothStep(reveal / 0.42);
+    const blur = lerp(1.1, 0, reveal);
+    const saturation = lerp(0.86, 1, reveal);
+    const rotate = monthTilt[index % monthTilt.length] * (1 - reveal);
+
+    stain.style.setProperty("--stain-reveal", opacity.toFixed(3));
+    stain.style.setProperty("--stain-scale", scale.toFixed(3));
+    stain.style.setProperty("--stain-spread", `${spread.toFixed(2)}%`);
+    stain.style.setProperty("--stain-blur", `${blur.toFixed(2)}px`);
+    stain.style.setProperty("--stain-saturation", saturation.toFixed(3));
+    stain.style.setProperty("--stain-rotate", `${rotate.toFixed(3)}deg`);
+  });
+}
+
+function updateNarrativeBridgeState() {
   narrativeBridgeSections.forEach((section) => {
     const travel = Math.max(section.offsetHeight - window.innerHeight, 1);
     const rect = section.getBoundingClientRect();
     const progress = clamp(-rect.top / travel, 0, 1);
-    const enter = smoothStep(progress / 0.62);
-    const drift = smoothStep((progress - 0.55) / 0.45);
-    let copyOffset = `${((1 - enter) * 4 - drift * 1.4).toFixed(2)}rem`;
-    let statementOffset = `${((1 - enter) * 5 - drift * 1.6).toFixed(2)}rem`;
+    const enter = smoothStep(progress / chapterMotion.fadeIn);
+    const exit = smoothStep((progress - chapterMotion.fadeOutStart) / chapterMotion.fadeOut);
+    let copyOffset = `${((1 - enter) * 4 - exit * 1.4).toFixed(2)}rem`;
+    let statementOffset = `${((1 - enter) * 5 - exit * 1.6).toFixed(2)}rem`;
     let photoYOffset = "0vh";
     const photoX = 0;
     const photoClip = 0;
 
-    if (section.classList.contains("narrative-bridge-opening-note")) {
-      const noteEnter = smoothStep(progress / 0.18);
-      const noteExit = smoothStep((progress - 0.76) / 0.2);
-
-      copyOffset = `${((1 - noteEnter) * 2.6 - noteExit * 2.2).toFixed(2)}rem`;
-      statementOffset = copyOffset;
-    }
-
     if (section.classList.contains("narrative-bridge-before-history")) {
-      const photoExit = smoothStep((progress - 0.86) / 0.12);
-      const block1In = smoothStep((progress - 0.12) / 0.12);
-      const block1Out = smoothStep((progress - 0.39) / 0.12);
-      const block2In = smoothStep((progress - 0.53) / 0.12);
-      const block2Out = smoothStep((progress - 0.78) / 0.14);
-      const block1Opacity = block1In * (1 - block1Out);
-      const block2Opacity = block2In * (1 - block2Out);
-      const block1Y = lerp(18, 0, block1In) - block1Out * 34;
-      const block2Y = lerp(18, 0, block2In) - block2Out * 38;
+      const sceneIn = smoothStep(progress / chapterMotion.scenicSlideIn);
+      const sceneOut = smoothStep((progress - 0.66) / 0.22);
+      const sideEntryDistance = window.innerWidth < 760 ? 24 : 38;
+      const sideExitDistance = window.innerWidth < 760 ? 32 : 48;
+      const copyX = lerp(-sideEntryDistance, 0, sceneIn) - sceneOut * sideExitDistance;
+      const visualX = lerp(sideEntryDistance, 0, sceneIn) + sceneOut * sideExitDistance;
+      const sceneOpacity = Math.max(sceneIn * (1 - sceneOut), 0);
 
       copyOffset = "0vh";
       statementOffset = "0vh";
-      photoYOffset = `${(-38 * photoExit).toFixed(2)}vh`;
-      section.style.setProperty("--before-history-block-1-opacity", block1Opacity.toFixed(3));
-      section.style.setProperty("--before-history-block-1-y", `${block1Y.toFixed(2)}vh`);
-      section.style.setProperty("--before-history-block-2-opacity", block2Opacity.toFixed(3));
-      section.style.setProperty("--before-history-block-2-y", `${block2Y.toFixed(2)}vh`);
+      photoYOffset = "0vh";
+      section.style.setProperty("--before-history-copy-x", `${copyX.toFixed(2)}vw`);
+      section.style.setProperty("--before-history-visual-x", `${visualX.toFixed(2)}vw`);
+      section.style.setProperty("--before-history-scene-opacity", sceneOpacity.toFixed(3));
     }
 
     if (section.classList.contains("narrative-bridge-documentary")) {
-      const blockEnter = smoothStep(progress / 0.14);
-      const blockExit = smoothStep((progress - 0.62) / 0.24);
+      const blockEnter = smoothStep(progress / chapterMotion.fadeIn);
+      const blockExit = smoothStep((progress - chapterMotion.documentarySlideOutStart) / chapterMotion.scenicSlideOut);
       const sharedOffset = `${((1 - blockEnter) * 2.4 - blockExit * 38).toFixed(2)}vh`;
 
       copyOffset = sharedOffset;
@@ -1258,45 +1169,20 @@ function updateNarrativeBridgeState() {
     }
 
     if (section.classList.contains("narrative-bridge-grape")) {
-      const photoExit = smoothStep((progress - 0.84) / 0.14);
-      const block1In = smoothStep((progress - 0.14) / 0.12);
-      const block1Out = smoothStep((progress - 0.43) / 0.12);
-      const block2In = smoothStep((progress - 0.56) / 0.12);
-      const block2Out = smoothStep((progress - 0.84) / 0.14);
-      const block1Opacity = block1In * (1 - block1Out);
-      const block2Opacity = block2In * (1 - block2Out);
-      const block1Y = lerp(18, 0, block1In) - block1Out * 34;
-      const block2Y = lerp(18, 0, block2In) - block2Out * 38;
+      const sceneIn = smoothStep(progress / chapterMotion.fadeIn);
+      const sceneOut = smoothStep((progress - chapterMotion.fadeOutStart) / chapterMotion.fadeOut);
+      const sideEntryDistance = window.innerWidth < 760 ? 24 : 38;
+      const sideExitDistance = window.innerWidth < 760 ? 32 : 48;
+      const photoX = lerp(-sideEntryDistance, 0, sceneIn) - sceneOut * sideExitDistance;
+      const copyX = lerp(sideEntryDistance, 0, sceneIn) + sceneOut * sideExitDistance;
+      const sceneOpacity = Math.max(sceneIn * (1 - sceneOut), 0);
 
       copyOffset = "0vh";
       statementOffset = "0vh";
-      photoYOffset = `${(-38 * photoExit).toFixed(2)}vh`;
-      section.style.setProperty("--grape-block-1-opacity", block1Opacity.toFixed(3));
-      section.style.setProperty("--grape-block-1-y", `${block1Y.toFixed(2)}vh`);
-      section.style.setProperty("--grape-block-2-opacity", block2Opacity.toFixed(3));
-      section.style.setProperty("--grape-block-2-y", `${block2Y.toFixed(2)}vh`);
-    }
-
-    if (section.classList.contains("narrative-bridge-after-fermentation")) {
-      const stageWindows = [
-        { enter: -0.04, hold: 0.04, exit: 0.2, gone: 0.28 },
-        { enter: 0.3, hold: 0.38, exit: 0.5, gone: 0.58 },
-        { enter: 0.6, hold: 0.68, exit: 0.78, gone: 0.86 },
-        { enter: 0.86, hold: 0.94, exit: 1.14, gone: 1.22 },
-      ];
-
-      copyOffset = "0vh";
-      statementOffset = "0vh";
-      stageWindows.forEach((stage, index) => {
-        const stageIn = smoothStep((progress - stage.enter) / (stage.hold - stage.enter));
-        const stageOut = smoothStep((progress - stage.exit) / (stage.gone - stage.exit));
-        const stageOpacity = stageIn * (1 - stageOut);
-        const stageY = lerp(16, 0, stageIn) - stageOut * 34;
-        const stageNumber = index + 1;
-
-        section.style.setProperty(`--after-fermentation-stage-${stageNumber}-opacity`, stageOpacity.toFixed(3));
-        section.style.setProperty(`--after-fermentation-stage-${stageNumber}-y`, `${stageY.toFixed(2)}vh`);
-      });
+      photoYOffset = "0vh";
+      section.style.setProperty("--grape-photo-x", `${photoX.toFixed(2)}vw`);
+      section.style.setProperty("--grape-copy-x", `${copyX.toFixed(2)}vw`);
+      section.style.setProperty("--grape-scene-opacity", sceneOpacity.toFixed(3));
     }
 
     section.style.setProperty("--narrative-progress", progress.toFixed(3));
@@ -1306,45 +1192,11 @@ function updateNarrativeBridgeState() {
     section.style.setProperty("--narrative-photo-y", photoYOffset);
     section.style.setProperty("--narrative-photo-clip", `${photoClip.toFixed(2)}%`);
 
-    if (section.classList.contains("narrative-bridge-before-chemistry")) {
-      const isBridgeInView = rect.top < window.innerHeight && rect.bottom > 0;
-      const glassZoomIn = smoothStep((progress - 0.12) / 0.26);
-      const glassZoomOut = smoothStep((progress - 0.74) / 0.2);
-      const wineLayerIn = smoothStep((progress - 0.18) / 0.1);
-      const wineLayerOut = smoothStep((progress - 0.92) / 0.06);
-      const textEnter = smoothStep((progress - 0.52) / 0.08);
-      const textExit = smoothStep((progress - 0.74) / 0.14);
-      const wineScaleIn = lerp(0.34, 24, glassZoomIn);
-      const glassZoomScale = lerp(1, 6.4, glassZoomIn);
-
-      chemistryBridgeActive = isBridgeInView && progress > 0.02 && progress < 0.998;
-      chemistryWineOpacity = chemistryBridgeActive ? wineLayerIn * (1 - wineLayerOut) : 0;
-      chemistryWineScale = lerp(wineScaleIn, 0.34, glassZoomOut);
-      chemistryTextY = 0;
-      chemistryTextVisible = textEnter * (1 - textExit);
-
-      if (isBridgeInView) {
-        const glassScale = lerp(glassZoomScale, 1, glassZoomOut);
-
-        root.style.setProperty("--bridge-glass-opacity", "1");
-        root.style.setProperty("--shared-glass-opacity", "1");
-        root.style.setProperty("--bridge-glass-extra-x", "0vw");
-        root.style.setProperty("--bridge-glass-y", "0vh");
-        root.style.setProperty("--bridge-glass-scale", glassScale.toFixed(3));
-        root.style.setProperty("--bridge-glass-rotate", "0deg");
-      }
-    }
   });
-
-  root.classList.toggle("is-chemistry-bridge-active", chemistryBridgeActive);
-  root.style.setProperty("--chemistry-wine-scale", chemistryWineScale.toFixed(3));
-  root.style.setProperty("--chemistry-wine-opacity", chemistryWineOpacity.toFixed(3));
-  root.style.setProperty("--chemistry-text-y", `${chemistryTextY.toFixed(2)}vh`);
-  root.style.setProperty("--chemistry-text-visible", chemistryTextVisible.toFixed(3));
 }
 
 function updateCalendarState() {
-  if (!calendarSection || !productionHistoryTrack || !productionHistoryViewport) return;
+  if (!calendarSection || !productionHistoryViewport || !productionHistoryLinePath || !productionHistoryMarker) return;
 
   renderProductionHistory();
   const travel = Math.max(calendarSection.offsetHeight - window.innerHeight, 1);
@@ -1353,25 +1205,29 @@ function updateCalendarState() {
     calendarSection.style.setProperty(name, value);
   };
   const historyProgress = clamp(-rect.top / travel, 0, 1);
-  const copyMotion = smoothStep(historyProgress / 0.16);
-  const copyVisible = historyProgress > 0.015 ? 1 : 0;
-  const chartVisible = historyProgress > 0.075 ? 1 : 0;
-  const timelineProgress = clamp((historyProgress - 0.14) / 0.72, 0, 1);
-  const trackMaxShift = Math.max(
-    productionHistoryTrack.scrollWidth - productionHistoryViewport.clientWidth,
-    0,
-  );
-  const trackX = -trackMaxShift * timelineProgress;
-  const barElements = [...productionHistoryTrack.querySelectorAll(".history-year")];
-  const activeIndex = Math.round(timelineProgress * (productionHistoryData.length - 1));
+  const HISTORY_REFLECTION_START = 0.82;
+  const HISTORY_SLIDE_OUT_START = 0.91;
+  const HISTORY_SLIDE_OUT_DURATION = 0.09;
+  const sceneIn = smoothStep(historyProgress / chapterMotion.slideIn);
+  const sceneOut = smoothStep((historyProgress - HISTORY_SLIDE_OUT_START) / HISTORY_SLIDE_OUT_DURATION);
+  const sceneY = lerp(56, 0, sceneIn) - sceneOut * 112;
+  const timelineProgress = clamp((historyProgress - 0.27) / 0.55, 0, 1);
+  const storyPosition = getProductionHistoryStoryPosition(timelineProgress);
+  const activeIndex = clamp(Math.round(storyPosition.index), 0, productionHistoryData.length - 1);
   const activeItem = productionHistoryData[activeIndex] || productionHistoryData[0];
+  const markerPoint = getProductionHistoryInterpolatedPoint(storyPosition.index);
+  const reflectionActive = historyProgress > HISTORY_REFLECTION_START;
 
   setHistoryVar("--history-progress", historyProgress.toFixed(3));
-  setHistoryVar("--history-copy-opacity", copyVisible.toFixed(3));
-  setHistoryVar("--history-copy-y", `${(1.8 * (1 - copyMotion)).toFixed(2)}rem`);
-  setHistoryVar("--history-chart-opacity", chartVisible.toFixed(3));
-  setHistoryVar("--history-track-x", `${trackX.toFixed(2)}px`);
-  setHistoryVar("--history-readout-opacity", chartVisible.toFixed(3));
+  setHistoryVar("--history-scene-y", `${sceneY.toFixed(2)}vh`);
+  setHistoryVar("--history-copy-opacity", "1");
+  setHistoryVar("--history-copy-y", "0rem");
+  setHistoryVar("--history-chart-opacity", "1");
+  setHistoryVar("--history-readout-opacity", "1");
+  setHistoryVar("--history-marker-x", `${markerPoint.x.toFixed(3)}%`);
+  setHistoryVar("--history-marker-y", `${markerPoint.y.toFixed(3)}%`);
+  setHistoryVar("--history-reflection-opacity", "1");
+  setHistoryVar("--history-reflection-y", "0rem");
 
   if (productionHistoryActiveYear) {
     productionHistoryActiveYear.textContent = String(activeItem.year);
@@ -1381,24 +1237,10 @@ function updateCalendarState() {
     productionHistoryActiveValue.textContent = formatMillions(activeItem.hectoliters);
   }
 
-  if (productionHistoryActiveNote) {
-    productionHistoryActiveNote.textContent = productionHistoryNotes[activeItem.year] || "";
-  }
-
-  const narrativeCard = productionHistoryNarrativeCards[activeItem.year];
-  calendarSection.classList.toggle("is-history-annotation-active", Boolean(narrativeCard));
-
-  if (narrativeCard && productionHistoryAnnotationYear && productionHistoryAnnotationText) {
-    productionHistoryAnnotationYear.textContent = narrativeCard.label;
-    productionHistoryAnnotationText.textContent = narrativeCard.text;
-  }
-
-  barElements.forEach((bar, index) => {
-    const distance = Math.abs(index - activeIndex);
-
-    bar.classList.toggle("is-active", distance === 0);
-    bar.style.setProperty("--year-focus", Math.max(0, 1 - distance / 4).toFixed(3));
-  });
+  calendarSection.classList.toggle(
+    "is-history-reflection-active",
+    Boolean(productionHistoryReflection && reflectionActive),
+  );
 }
 
 function updateVarietalState() {
@@ -1406,65 +1248,291 @@ function updateVarietalState() {
 
   const travel = Math.max(varietalSection.offsetHeight - window.innerHeight, 1);
   const rect = varietalSection.getBoundingClientRect();
-  const varietalProgress = clamp(-rect.top / travel, 0, 1);
+  const rawVarietalProgress = clamp(-rect.top / travel, 0, 1);
+  const isVarietalSceneInView = rect.top <= window.innerHeight && rect.bottom >= 0;
+  const MALBEC_MORPH_START = 0.052;
+  const MALBEC_MORPH_END = 0.112;
+  const MALBEC_LABEL_START = 0.104;
+  const MALBEC_TRAVEL_START = 0.108;
+  const MALBEC_TRAVEL_END = 0.148;
+  const LINEUP_REVEAL_START = 0.136;
+  const LINEUP_REVEAL_END = 0.172;
+  const LINEUP_TURN_START = 0.17;
+  const LINEUP_TURN_END = 0.42;
+  const PRODUCTION_BAR_START = LINEUP_TURN_END + 0.025;
+  const PRODUCTION_BAR_END = PRODUCTION_BAR_START + 0.055;
+  const PRODUCTION_AXIS_START = PRODUCTION_BAR_END + 0.014;
+  const PRODUCTION_AXIS_END = PRODUCTION_AXIS_START + 0.045;
+  const PRODUCTION_HOLD_END = PRODUCTION_AXIS_END + 0.052;
+  const PRODUCTION_CHART_EXIT_START = PRODUCTION_HOLD_END - 0.02;
+  const PRODUCTION_CHART_EXIT_END = PRODUCTION_HOLD_END + 0.055;
+  const OTHER_BOTTLES_EXIT_START = PRODUCTION_CHART_EXIT_END + 0.012;
+  const OTHER_BOTTLES_EXIT_END = OTHER_BOTTLES_EXIT_START + 0.06;
+  const MALBEC_LABEL_FADE_START = OTHER_BOTTLES_EXIT_END + 0.006;
+  const MALBEC_LABEL_FADE_END = MALBEC_LABEL_FADE_START + 0.04;
+  const MALBEC_ROTATE_START = OTHER_BOTTLES_EXIT_END + 0.018;
+  const MALBEC_ROTATE_END = MALBEC_ROTATE_START + 0.065;
+  const MALBEC_CENTER_HOLD_START = MALBEC_ROTATE_END;
+  const MALBEC_CENTER_HOLD_END = 0.905;
+  const QUESTION_START = 0.846;
+  const QUESTION_END = 0.918;
+  const QUESTION_FADE_IN_DURATION = 0.018;
+  const QUESTION_FADE_OUT_DURATION = 0.014;
+  const BOTTLE_PULLBACK_START = 0.92;
+  const BOTTLE_PULLBACK_END = 0.932;
+  const BOTTLE_PULLBACK_1_START = BOTTLE_PULLBACK_START;
+  const BOTTLE_PULLBACK_1_END = BOTTLE_PULLBACK_END;
+  const CORK_START = 0.928;
+  const CORK_END = 0.936;
+  const BOTTLE_PULLBACK_2_START = 0.936;
+  const BOTTLE_PULLBACK_2_END = 0.95;
+  const BOTTLE_TILT_START = 0.94;
+  const BOTTLE_TILT_END = 0.952;
+  const STREAM_START = 0.946;
+  const BOTTLE_LIFT_START = 0.95;
+  const BOTTLE_LIFT_END = 0.963;
+  const GLASS_ENTER_START = 0.965;
+  const GLASS_ENTER_END = 0.975;
+  const GLASS_FILL_START = GLASS_ENTER_END;
+  const GLASS_FILL_END = 0.986;
+  const STREAM_CUT_START = GLASS_FILL_END;
+  const STREAM_CUT_END = 0.988;
+  const GLASS_CENTER_START = STREAM_CUT_END;
+  const GLASS_CENTER_END = 0.99;
+  const GLASS_ZOOM_IN_START = GLASS_CENTER_END;
+  const GLASS_ZOOM_IN_END = 0.99975;
+  const GLASS_ZOOM_HOLD_START = GLASS_ZOOM_IN_END;
+  const GLASS_ZOOM_HOLD_END = 0.99993;
+  const GLASS_ZOOM_OUT_START = GLASS_ZOOM_HOLD_END;
+  const GLASS_ZOOM_OUT_END = 0.99997;
+  const GLASS_SETTLE_RIGHT_START = GLASS_ZOOM_OUT_END;
+  const GLASS_SETTLE_RIGHT_END = 0.99999;
+  const GLASS_ZOOM_START = GLASS_ZOOM_IN_START;
+  const GLASS_ZOOM_END = GLASS_ZOOM_IN_END;
+  const POUR_START = BOTTLE_TILT_START;
+  const POUR_END = BOTTLE_TILT_END;
+  const STREAM_END = STREAM_CUT_START;
+  const STREAM_FADE_END = STREAM_CUT_END;
+  const BOTTLE_EXIT_START = BOTTLE_LIFT_START;
+  const BOTTLE_EXIT_END = BOTTLE_LIFT_END;
+  const GLASS_APPEAR_START = GLASS_ENTER_START;
+  const GLASS_APPEAR_END = GLASS_ENTER_END;
+  const GLASS_RELEASE_END = 1;
+  const GLASS_ENTRY_START_Y = 58;
+  const POUR_MOUTH_TARGET_RATIO = 0.72;
+  const POUR_STREAM_TARGET_RATIO = 0.54;
+  const STILL_BOTTLE_CUT_START = MALBEC_ROTATE_END + 0.012;
+  const STILL_BOTTLE_CUT_END = QUESTION_START - 0.006;
+  const STILL_BOTTLE_CUT_SIZE = Math.max(STILL_BOTTLE_CUT_END - STILL_BOTTLE_CUT_START, 0);
+  const RETAINED_VARIETAL_TIMELINE = 1 - STILL_BOTTLE_CUT_SIZE;
+  const varietalTimelineCursor = rawVarietalProgress * RETAINED_VARIETAL_TIMELINE;
+  const varietalProgress = varietalTimelineCursor >= STILL_BOTTLE_CUT_START
+    ? varietalTimelineCursor + STILL_BOTTLE_CUT_SIZE
+    : varietalTimelineCursor;
+  const TITLE_FADE_IN_START = 0.006;
+  const TITLE_FADE_IN_DURATION = 0.018;
+  const TEXT_SHRINK_START = 0.025;
+  const TEXT_SHRINK_END = MALBEC_MORPH_START;
+  const GREEN_RECT_REVEAL_START = TEXT_SHRINK_START + (TEXT_SHRINK_END - TEXT_SHRINK_START) * 0.58;
+  const GREEN_RECT_REVEAL_END = TEXT_SHRINK_END - 0.001;
+  const TEXT_EXIT_START = GREEN_RECT_REVEAL_START + 0.004;
+  const BOTTLE_SHAPE_START = TEXT_SHRINK_END + 0.002;
   const hasStoryBridge = Boolean(
     flourishStorySection &&
-    storyBoxCard &&
     storyMalbecBottle &&
     storyMalbecSlot,
   );
   const storyFinished = !flourishStorySection ||
     flourishStorySection.getBoundingClientRect().bottom <= window.innerHeight + 2;
   const bridgeActive = hasStoryBridge && storyFinished;
-  const malbecTravelProgress = bridgeActive
-    ? smoothStep((varietalProgress - 0.17) / 0.12)
+  const storyMorphTarget = getStoryMorphMalbecTarget();
+  const titleIntroProgress = bridgeActive
+    ? smoothStep((varietalProgress - TITLE_FADE_IN_START) / TITLE_FADE_IN_DURATION)
+    : 0;
+  const titleSquashProgress = bridgeActive
+    ? smoothStep((varietalProgress - TEXT_SHRINK_START) / (TEXT_SHRINK_END - TEXT_SHRINK_START))
     : 1;
+  const titleTextExitProgress = bridgeActive
+    ? smoothStep((varietalProgress - TEXT_EXIT_START) / 0.014)
+    : 1;
+  const titleMorphProgress = bridgeActive
+    ? smoothStep((varietalProgress - BOTTLE_SHAPE_START) / (MALBEC_MORPH_END - BOTTLE_SHAPE_START))
+    : 1;
+  const titleFadeProgress = bridgeActive
+    ? smoothStep((varietalProgress - (MALBEC_MORPH_END - 0.012)) / 0.044)
+    : 1;
+  const titleBaseWidth = Math.min(window.innerWidth * 0.82, 1120);
+  const titleBaseHeight = clamp(window.innerHeight * 0.16, 112, 168);
+  const thinMorphWidth = clamp(window.innerWidth * 0.012, 12, 24);
+  const thinMorphHeight = titleBaseHeight;
+  const bottleRevealProgress = bridgeActive
+    ? smoothStep((varietalProgress - GREEN_RECT_REVEAL_START) / (GREEN_RECT_REVEAL_END - GREEN_RECT_REVEAL_START))
+    : 1;
+  const bottleShapeProgress = bridgeActive
+    ? smoothStep((varietalProgress - BOTTLE_SHAPE_START) / (MALBEC_MORPH_END - BOTTLE_SHAPE_START))
+    : 1;
+  const bottleDetailProgress = bridgeActive
+    ? smoothStep((varietalProgress - MALBEC_LABEL_START) / (MALBEC_TRAVEL_END - MALBEC_LABEL_START))
+    : 1;
+  const malbecTravelProgress = bridgeActive
+    ? smoothStep((varietalProgress - MALBEC_TRAVEL_START) / (MALBEC_TRAVEL_END - MALBEC_TRAVEL_START))
+    : 1;
+  const morphTitleOpacity = titleIntroProgress * (1 - titleFadeProgress);
+  const morphTextOpacity = titleIntroProgress * (1 - titleTextExitProgress);
+  const morphShapeOpacity = 0;
+  const morphWidth = lerp(
+    lerp(titleBaseWidth, thinMorphWidth, titleSquashProgress),
+    storyMorphTarget.width,
+    titleMorphProgress,
+  );
+  const morphHeight = lerp(
+    lerp(titleBaseHeight, thinMorphHeight, titleSquashProgress),
+    storyMorphTarget.height,
+    titleMorphProgress,
+  );
+  const morphTextScaleX = lerp(1, 0.018, titleSquashProgress);
+  const morphTitleScale = 1;
   const copyOpacity = 1 - clamp((varietalProgress - 0.02) / 0.18, 0, 1);
   const lineupOpacity = bridgeActive
-    ? smoothStep((varietalProgress - 0.31) / 0.09)
+    ? smoothStep((varietalProgress - LINEUP_REVEAL_START) / (LINEUP_REVEAL_END - LINEUP_REVEAL_START))
     : clamp((varietalProgress - 0.2) / 0.12, 0, 1);
   const turnProgress = clamp(
-    (varietalProgress - (bridgeActive ? 0.44 : 0.24)) / (bridgeActive ? 0.18 : 0.34),
+    (varietalProgress - (bridgeActive ? LINEUP_TURN_START : 0.24)) /
+      (bridgeActive ? LINEUP_TURN_END - LINEUP_TURN_START : 0.34),
     0,
     1,
   );
-  const transitionProgress = smoothStep((varietalProgress - 0.58) / 0.16);
-  const labelClearProgress = smoothStep((varietalProgress - 0.58) / 0.07);
-  const heroProgress = smoothStep((varietalProgress - 0.62) / 0.13);
-  const questionInProgress = smoothStep((varietalProgress - 0.67) / 0.07);
-  const questionOutProgress = smoothStep((varietalProgress - 0.805) / 0.035);
+  const productionAxisInProgress = bridgeActive
+    ? smoothStep((varietalProgress - PRODUCTION_AXIS_START) / (PRODUCTION_AXIS_END - PRODUCTION_AXIS_START))
+    : 0;
+  const productionBarInProgress = bridgeActive
+    ? smoothStep((varietalProgress - PRODUCTION_BAR_START) / (PRODUCTION_BAR_END - PRODUCTION_BAR_START))
+    : 0;
+  const productionChartExitProgress = bridgeActive
+    ? smoothStep((varietalProgress - PRODUCTION_CHART_EXIT_START) / (PRODUCTION_CHART_EXIT_END - PRODUCTION_CHART_EXIT_START))
+    : 1;
+  const productionBottleResetProgress = bridgeActive
+    ? smoothStep((varietalProgress - OTHER_BOTTLES_EXIT_END) / (MALBEC_ROTATE_START - OTHER_BOTTLES_EXIT_END))
+    : 1;
+  const productionChartProgress = productionBarInProgress * (1 - productionBottleResetProgress);
+  const productionAxisOpacity = productionAxisInProgress * (1 - productionChartExitProgress);
+  const productionAxisY = -2.6 * productionChartProgress;
+  const transitionProgress = bridgeActive
+    ? smoothStep((varietalProgress - OTHER_BOTTLES_EXIT_START) / (OTHER_BOTTLES_EXIT_END - OTHER_BOTTLES_EXIT_START))
+    : smoothStep((varietalProgress - 0.54) / 0.14);
+  const labelClearProgress = bridgeActive
+    ? smoothStep((varietalProgress - MALBEC_LABEL_FADE_START) / (MALBEC_LABEL_FADE_END - MALBEC_LABEL_FADE_START))
+    : smoothStep((varietalProgress - 0.55) / 0.07);
+  const heroProgress = bridgeActive
+    ? smoothStep((varietalProgress - MALBEC_ROTATE_START) / (MALBEC_ROTATE_END - MALBEC_ROTATE_START))
+    : smoothStep((varietalProgress - 0.58) / 0.16);
+  const bottlePullback1Progress = bridgeActive
+    ? smoothStep((varietalProgress - BOTTLE_PULLBACK_1_START) / (BOTTLE_PULLBACK_1_END - BOTTLE_PULLBACK_1_START))
+    : 0;
+  const bottlePullback2Progress = bridgeActive
+    ? smoothStep((varietalProgress - BOTTLE_PULLBACK_2_START) / (BOTTLE_PULLBACK_2_END - BOTTLE_PULLBACK_2_START))
+    : 0;
+  const questionInProgress = bridgeActive
+    ? smoothStep((varietalProgress - QUESTION_START) / QUESTION_FADE_IN_DURATION)
+    : smoothStep((varietalProgress - 0.67) / 0.07);
+  const questionOutProgress = bridgeActive
+    ? smoothStep((varietalProgress - (QUESTION_END - QUESTION_FADE_OUT_DURATION)) / QUESTION_FADE_OUT_DURATION)
+    : smoothStep((varietalProgress - 0.82) / 0.045);
   const questionProgress = questionInProgress * (1 - questionOutProgress);
-  const backgroundProgress = smoothStep((varietalProgress - 0.61) / 0.12);
-  const corkProgress = smoothStep((varietalProgress - 0.805) / 0.06);
-  const corkFadeProgress = smoothStep((varietalProgress - 0.858) / 0.026);
+  const backgroundProgress = bridgeActive
+    ? smoothStep((varietalProgress - MALBEC_ROTATE_START) / (MALBEC_CENTER_HOLD_START - MALBEC_ROTATE_START))
+    : smoothStep((varietalProgress - 0.58) / 0.12);
+  const corkProgress = bridgeActive
+    ? smoothStep((varietalProgress - CORK_START) / (CORK_END - CORK_START))
+    : smoothStep((varietalProgress - 0.79) / 0.065);
+  const corkFadeProgress = bridgeActive
+    ? smoothStep((varietalProgress - CORK_END) / (POUR_START - CORK_END))
+    : smoothStep((varietalProgress - 0.87) / 0.045);
   const corkOpacity = (heroProgress > 0.985 ? 1 : 0) * (1 - corkFadeProgress);
-  const sprayProgress = smoothStep((varietalProgress - 0.815) / 0.05);
-  const sprayFadeProgress = smoothStep((varietalProgress - 0.856) / 0.028);
+  const sprayProgress = bridgeActive
+    ? smoothStep((varietalProgress - CORK_START) / (CORK_END - CORK_START))
+    : smoothStep((varietalProgress - 0.8) / 0.065);
+  const sprayFadeProgress = bridgeActive
+    ? smoothStep((varietalProgress - CORK_END) / (POUR_START - CORK_END))
+    : smoothStep((varietalProgress - 0.885) / 0.045);
   const sprayOpacity = sprayProgress * (1 - sprayFadeProgress);
   const sprayDistance = 52 * sprayProgress;
-  const bottlePourProgress = smoothStep((varietalProgress - 0.814) / 0.066);
-  const streamInProgress = smoothStep((varietalProgress - 0.848) / 0.032);
-  const streamLength = smoothStep((varietalProgress - 0.854) / 0.05);
-  const bottleLiftProgress = smoothStep((varietalProgress - 0.872) / 0.04);
-  const bridgeGlassProgress = smoothStep((varietalProgress - 0.85) / 0.038);
-  const streamOutProgress = smoothStep((varietalProgress - 0.886) / 0.016);
-  const streamLiftProgress = smoothStep((varietalProgress - 0.886) / 0.016);
-  const glassZoomInProgress = smoothStep((varietalProgress - 0.902) / 0.05);
-  const zoomTextInProgress = smoothStep((varietalProgress - 0.948) / 0.008);
-  const zoomTextOutProgress = smoothStep((varietalProgress - 0.976) / 0.008);
-  const glassZoomOutProgress = smoothStep((varietalProgress - 0.986) / 0.014);
-  const glassZoomProgress = glassZoomInProgress * (1 - glassZoomOutProgress);
-  const glassRightProgress = smoothStep((glassZoomOutProgress - 0.55) / 0.38);
-  const zoomTextProgress = zoomTextInProgress * (1 - zoomTextOutProgress);
+  const bottlePourProgress = bridgeActive
+    ? smoothStep((varietalProgress - BOTTLE_TILT_START) / (BOTTLE_TILT_END - BOTTLE_TILT_START))
+    : smoothStep((varietalProgress - 0.825) / 0.105);
+  const bottleServiceLiftProgress = bridgeActive
+    ? smoothStep((varietalProgress - BOTTLE_LIFT_START) / (BOTTLE_LIFT_END - BOTTLE_LIFT_START))
+    : 0;
+  const bottleExitForGlassProgress = bridgeActive
+    ? smoothStep((varietalProgress - BOTTLE_EXIT_START) / (BOTTLE_EXIT_END - BOTTLE_EXIT_START))
+    : 0;
+  const bridgeGlassProgress = bridgeActive
+    ? smoothStep((varietalProgress - GLASS_ENTER_START) / (GLASS_ENTER_END - GLASS_ENTER_START))
+    : smoothStep((varietalProgress - 0.958) / 0.055);
+  const streamInProgress = bridgeActive
+    ? smoothStep((varietalProgress - STREAM_START) / (GLASS_ENTER_START - STREAM_START))
+    : smoothStep((varietalProgress - 0.945) / 0.035);
+  const streamLength = bridgeActive
+    ? smoothStep((varietalProgress - STREAM_START) / (GLASS_FILL_END - STREAM_START))
+    : smoothStep((varietalProgress - 0.952) / 0.04);
+  const streamOutProgress = bridgeActive
+    ? smoothStep((varietalProgress - STREAM_CUT_START) / (STREAM_CUT_END - STREAM_CUT_START))
+    : smoothStep((varietalProgress - 0.992) / 0.018);
+  const bottleLiftProgress = bridgeActive
+    ? smoothStep((varietalProgress - BOTTLE_EXIT_START) / (BOTTLE_EXIT_END - BOTTLE_EXIT_START))
+    : smoothStep((varietalProgress - 0.965) / 0.07);
+  const glassZoomInProgress = bridgeActive
+    ? smoothStep((varietalProgress - GLASS_ZOOM_IN_START) / (GLASS_ZOOM_IN_END - GLASS_ZOOM_IN_START))
+    : smoothStep((varietalProgress - 0.992) / 0.04);
+  const glassZoomOutProgress = bridgeActive
+    ? 0
+    : smoothStep((varietalProgress - 1.05) / 0.02);
+  const glassSettleRightProgress = bridgeActive
+    ? 0
+    : 0;
+  const glassReleaseProgress = bridgeActive
+    ? smoothStep((varietalProgress - GLASS_SETTLE_RIGHT_END) / (GLASS_RELEASE_END - GLASS_SETTLE_RIGHT_END))
+    : 0;
+  const glassZoomProgress = bridgeActive
+    ? glassZoomInProgress * (1 - glassZoomOutProgress)
+    : glassZoomInProgress * (1 - glassZoomOutProgress);
+  const glassRightProgress = bridgeActive
+    ? glassSettleRightProgress
+    : smoothStep((varietalProgress - 1.05) / 0.02);
+  const glassPourX = bridgeActive
+    ? window.innerWidth <= 700
+      ? 10
+      : window.innerWidth <= 980
+        ? 7.5
+        : 5.8
+    : 0;
+  const glassCenterProgress = bridgeActive
+    ? smoothStep((varietalProgress - GLASS_CENTER_START) / (GLASS_CENTER_END - GLASS_CENTER_START))
+    : 1;
   const streamOpacity = streamInProgress * (1 - streamOutProgress);
   const streamTopCut = 0;
   const streamBottomCut = Math.max((1 - streamLength) * 100, streamOutProgress * 100);
-  const bridgeGlassY = (1 - bridgeGlassProgress) * 128;
+  const bridgeGlassEntryY = bridgeActive ? GLASS_ENTRY_START_Y : 128;
+  const bridgeGlassY = (1 - bridgeGlassProgress) * bridgeGlassEntryY;
   const bridgeGlassOpacity = bridgeGlassProgress;
-  const bridgeGlassScale = lerp(1, 18, glassZoomProgress);
-  const bridgeGlassExtraX = 25 * glassRightProgress;
-  const bridgeGlassControlsScene = varietalProgress > 0.84 && varietalProgress < 0.999;
-  const bridgeFillProgress = smoothStep((varietalProgress - 0.866) / 0.036);
+  const bridgeGlassVisible = bridgeGlassOpacity > 0.001;
+  const bridgeGlassScale = lerp(1, WINE_INTERIOR_GLASS_SCALE, glassZoomProgress);
+  const bridgeGlassOriginY = lerp(74, 48, glassZoomProgress);
+  const bridgeGlassExtraX = bridgeActive
+    ? lerp(glassPourX, WINE_INTERIOR_GLASS_X, glassCenterProgress)
+    : WINE_SETTLED_GLASS_X * glassRightProgress;
+  const bridgeGlassControlsScene = isVarietalSceneInView && (bridgeActive
+    ? varietalProgress >= GLASS_APPEAR_START && varietalProgress < 1
+    : varietalProgress > 0.94 && varietalProgress < 0.998);
+  const bridgeGlassOwnsScene = isVarietalSceneInView && (bridgeActive
+    ? varietalProgress >= GLASS_APPEAR_START && varietalProgress <= GLASS_RELEASE_END
+    : bridgeGlassControlsScene);
+  const bridgeGlassPreEntry = isVarietalSceneInView && bridgeActive &&
+    varietalProgress >= STREAM_START &&
+    varietalProgress < GLASS_ENTER_START;
+  const bridgeFillProgress = bridgeActive
+    ? smoothStep((varietalProgress - GLASS_FILL_START) / (GLASS_FILL_END - GLASS_FILL_START))
+    : smoothStep((varietalProgress - 0.972) / 0.035);
   const malbecIndex = varietalBottles.findIndex((bottle) =>
     bottle.classList.contains("bottle-malbec"),
   );
@@ -1472,13 +1540,23 @@ function updateVarietalState() {
     ? malbecIndex
     : Math.floor(varietalBottles.length / 2);
 
-  if (!bridgeActive || varietalProgress < 0.34) {
+  if (!bridgeActive || varietalProgress < LINEUP_REVEAL_END) {
     storyMalbecLineupSettled = false;
   }
 
   root.style.setProperty("--varietal-progress", varietalProgress.toFixed(3));
   root.style.setProperty("--varietal-copy-opacity", copyOpacity.toFixed(3));
   root.style.setProperty("--varietal-lineup-opacity", lineupOpacity.toFixed(3));
+  root.style.setProperty("--varietal-production-axis-opacity", productionAxisOpacity.toFixed(3));
+  root.style.setProperty("--varietal-production-axis-y", `${productionAxisY.toFixed(2)}vh`);
+  root.style.setProperty("--varietal-morph-title-opacity", morphTitleOpacity.toFixed(3));
+  root.style.setProperty("--varietal-morph-text-opacity", morphTextOpacity.toFixed(3));
+  root.style.setProperty("--varietal-morph-shape-opacity", morphShapeOpacity.toFixed(3));
+  root.style.setProperty("--varietal-morph-bottle-progress", titleMorphProgress.toFixed(3));
+  root.style.setProperty("--varietal-morph-text-scale-x", morphTextScaleX.toFixed(3));
+  root.style.setProperty("--varietal-morph-title-scale", morphTitleScale.toFixed(3));
+  root.style.setProperty("--varietal-morph-width", `${morphWidth.toFixed(2)}px`);
+  root.style.setProperty("--varietal-morph-height", `${morphHeight.toFixed(2)}px`);
   root.style.setProperty("--bottle-transition-bg-opacity", backgroundProgress.toFixed(3));
   root.style.setProperty("--bottle-question-opacity", questionProgress.toFixed(3));
   root.style.setProperty("--bridge-stream-opacity", streamOpacity.toFixed(3));
@@ -1486,45 +1564,67 @@ function updateVarietalState() {
   root.style.setProperty("--bridge-stream-cut", `${streamBottomCut.toFixed(2)}%`);
   root.style.setProperty("--bridge-stream-top-cut", `${streamTopCut.toFixed(2)}%`);
   root.style.setProperty("--bridge-stream-bottom-cut", `${streamBottomCut.toFixed(2)}%`);
-  root.style.setProperty("--bridge-stream-y", `${(-30 * streamLiftProgress).toFixed(2)}vh`);
-  root.style.setProperty("--bridge-glass-opacity", bridgeGlassOpacity.toFixed(3));
-  root.style.setProperty("--bridge-glass-y", `${bridgeGlassY.toFixed(2)}vh`);
-  root.style.setProperty("--bridge-glass-scale", bridgeGlassScale.toFixed(3));
-  root.style.setProperty("--bridge-glass-origin-y", glassZoomProgress > 0.001 ? "48%" : "74%");
-  root.style.setProperty("--bridge-glass-zoom-copy-opacity", zoomTextProgress.toFixed(3));
-  root.style.setProperty("--bridge-glass-zoom-copy-y", `${((1 - zoomTextInProgress) * 1.2 - zoomTextOutProgress * 1.2).toFixed(2)}rem`);
-  root.style.setProperty("--bridge-wine-fill-progress", bridgeFillProgress.toFixed(3));
-  root.classList.toggle("is-bridge-glass-zooming", glassZoomProgress > 0.001 || glassRightProgress > 0.001);
-
-  if (bridgeGlassControlsScene) {
+  root.style.setProperty("--bridge-stream-y", "0vh");
+  if (bridgeGlassOwnsScene) {
+    root.style.setProperty("--bridge-glass-opacity", bridgeGlassOpacity.toFixed(3));
+    root.style.setProperty("--bridge-glass-y", `${bridgeGlassY.toFixed(2)}vh`);
+    root.style.setProperty("--bridge-glass-scale", bridgeGlassScale.toFixed(3));
+    root.style.setProperty("--bridge-glass-origin-y", `${bridgeGlassOriginY.toFixed(2)}%`);
+    root.style.setProperty("--bridge-wine-fill-progress", bridgeFillProgress.toFixed(3));
+    root.classList.toggle("is-bridge-glass-zooming", bridgeGlassVisible && glassZoomProgress > 0.001);
     root.style.setProperty("--bridge-glass-extra-x", `${bridgeGlassExtraX.toFixed(2)}vw`);
     root.style.setProperty("--bridge-glass-rotate", "0deg");
     root.style.setProperty("--shared-glass-opacity", "1");
+  } else if (bridgeGlassPreEntry) {
+    root.style.setProperty("--bridge-glass-opacity", "0");
+    root.style.setProperty("--bridge-glass-y", `${GLASS_ENTRY_START_Y.toFixed(2)}vh`);
+    root.style.setProperty("--bridge-glass-scale", "1");
+    root.style.setProperty("--bridge-glass-origin-y", "74%");
+    root.style.setProperty("--bridge-wine-fill-progress", "0");
+    root.style.setProperty("--bridge-glass-extra-x", `${glassPourX.toFixed(2)}vw`);
+    root.style.setProperty("--bridge-glass-rotate", "0deg");
+    root.style.setProperty("--shared-glass-opacity", "1");
+    root.classList.remove("is-bridge-glass-zooming");
+  } else if (isVarietalSceneInView && !bridgeGlassOwnsScene) {
+    root.style.setProperty("--bridge-glass-opacity", "0");
+    root.style.setProperty("--bridge-glass-y", "148vh");
+    root.style.setProperty("--bridge-glass-scale", "1");
+    root.style.setProperty("--bridge-glass-origin-y", "74%");
+    root.style.setProperty("--bridge-wine-fill-progress", "0");
+    root.style.setProperty("--bridge-glass-extra-x", "0vw");
+    root.style.setProperty("--bridge-glass-rotate", "0deg");
+    root.style.setProperty("--shared-glass-opacity", "1");
+    root.classList.remove("is-bridge-glass-zooming");
   }
+  root.classList.toggle(
+    "is-varietal-pour-scene",
+    bridgeGlassOwnsScene && glassZoomProgress <= 0.001,
+  );
 
-  const bridgeCard = bridgeActive ? flourishStoryCards[flourishStoryCards.length - 1] : null;
-  if (bridgeCard && !storyMalbecLineupSettled) {
-    const boxExit = smoothStep((varietalProgress - 0.02) / 0.2);
-    const flyerOpacity = 1 - smoothStep((boxExit - 0.88) / 0.12);
-    const fromTarget = getStoryBoxViewportMalbecTarget();
-    const toTarget = addLineupRiseToTarget(getFinalMalbecTarget(), lineupOpacity);
+  if (bridgeActive && !storyMalbecLineupSettled) {
+    storyMalbecSlot?.classList.add("is-traveling-bottle-source");
+    const fromTarget = {
+      ...storyMorphTarget,
+      width: morphWidth,
+      height: morphHeight,
+    };
+    const toTarget = getFinalMalbecTarget();
     const travelTarget = interpolateMalbecTarget(fromTarget, toTarget, malbecTravelProgress);
-    const malbecReadyForLineup = storyMalbecLineupSettled || varietalProgress >= 0.43;
-
-    updateStoryBoxFlyer(boxExit, flyerOpacity);
-    bridgeCard.style.setProperty("--story-card-opacity", "0");
-    bridgeCard.style.setProperty("--story-card-text-opacity", "0");
-    bridgeCard.style.setProperty("--story-card-y", "0px");
+    const malbecReadyForLineup = varietalProgress >= LINEUP_REVEAL_END;
 
     if (!malbecReadyForLineup) {
-      applyTravelingMalbec(travelTarget, 1);
+      applyTravelingMalbec(
+        travelTarget,
+        bottleRevealProgress,
+        bottleDetailProgress,
+        bottleShapeProgress,
+      );
     } else {
       storyMalbecLineupSettled = true;
-      clearStoryBoxMalbec();
-      hideStoryBoxFlyer();
+      clearTravelingMalbec();
     }
-  } else {
-    hideStoryBoxFlyer();
+  } else if (!bridgeActive) {
+    clearTravelingMalbec();
   }
 
   varietalBridgeGlassActive = bridgeGlassControlsScene;
@@ -1533,31 +1633,87 @@ function updateVarietalState() {
   bridgeWineFill?.setAttribute("d", bridgeWineLevel.fill);
   bridgeWineSurface?.setAttribute("d", bridgeWineLevel.top);
 
+  const productionChartSlotOffsets = [];
+  const lineupElement = varietalBottles[0]?.closest(".bottle-lineup");
+  if (lineupElement && varietalBottles.length) {
+    const bottleBodyWidthRatio = 0.91;
+    const bottleChartWidths = varietalBottles.map((lineupBottle) => {
+      const targetScaleValue = getBottleProductionRatio(lineupBottle);
+      return Math.max(lineupBottle.offsetWidth * targetScaleValue * bottleBodyWidthRatio, 1);
+    });
+    const chartWidthTotal = bottleChartWidths.reduce((sum, width) => sum + width, 0);
+    const lineupWidth = lineupElement.clientWidth || window.innerWidth;
+    const leftAxisReserve = clamp(window.innerWidth * 0.078, 90, 150);
+    const rightReserve = clamp(window.innerWidth * 0.018, 24, 54);
+    const availableSpan = Math.max(lineupWidth - leftAxisReserve - rightReserve, chartWidthTotal);
+    const idealGap = clamp(lineupWidth * 0.052, 62, 104);
+    const availableGap = varietalBottles.length > 1
+      ? (availableSpan - chartWidthTotal) / (varietalBottles.length - 1)
+      : 0;
+    const equalGap = varietalBottles.length > 1
+      ? Math.max(10, Math.min(idealGap, availableGap))
+      : 0;
+    const chartSpan = chartWidthTotal + equalGap * Math.max(varietalBottles.length - 1, 0);
+    const maxLeftEdge = Math.max(leftAxisReserve, lineupWidth - rightReserve - chartSpan);
+    const centeredLeftEdge = (lineupWidth - chartSpan) / 2;
+    const chartLeftEdge = Math.max(0, Math.min(Math.max(leftAxisReserve, centeredLeftEdge), maxLeftEdge));
+    let chartCursor = chartLeftEdge;
+
+    varietalBottles.forEach((lineupBottle, lineupIndex) => {
+      const slot = lineupBottle.closest(".varietal-slot");
+      const baseCenter = slot ? slot.offsetLeft + slot.offsetWidth / 2 : 0;
+      const targetCenter = chartCursor + bottleChartWidths[lineupIndex] / 2;
+      productionChartSlotOffsets[lineupIndex] = targetCenter - baseCenter;
+      chartCursor += bottleChartWidths[lineupIndex] + equalGap;
+    });
+  }
+
   varietalBottles.forEach((bottle, index) => {
     const slot = bottle.closest(".varietal-slot");
     const isHeroBottle = index === heroIndex;
-    const bottleProgress = smoothStep((turnProgress * varietalBottles.length - index) / 0.86);
-    const sideProgress = Math.sin(bottleProgress * Math.PI);
+    const turnCycleProgress = smoothStep(turnProgress * varietalBottles.length - index);
+    const turnToBackProgress = smoothStep(turnCycleProgress / 0.28);
+    const turnToFrontProgress = smoothStep((turnCycleProgress - 0.75) / 0.25);
+    const bottleTurnAngle = 180 * turnToBackProgress + 180 * turnToFrontProgress;
+    const sideProgress = Math.abs(Math.sin((bottleTurnAngle * Math.PI) / 180));
     const cylinderProgress = clamp(sideProgress, 0, 1);
-    const frontExit = clamp(bottleProgress / 0.5, 0, 1);
-    const backEnter = clamp((bottleProgress - 0.5) / 0.5, 0, 1);
-    const frontOffset = -frontExit * 96;
-    const backOffset = (1 - backEnter) * 96;
+    const isCompletingTurn = turnToFrontProgress > 0.001;
+    const labelTurnOffset = 110;
+    const frontOffset = isCompletingTurn
+      ? (1 - turnToFrontProgress) * labelTurnOffset
+      : -turnToBackProgress * labelTurnOffset;
+    const backOffset = isCompletingTurn
+      ? -turnToFrontProgress * labelTurnOffset
+      : (1 - turnToBackProgress) * labelTurnOffset;
     const edgeOpacity = 0.08 + cylinderProgress * 0.38;
     const labelEdgeOpacity = 0.06 + cylinderProgress * 0.34;
-    const shineLeft = 26 + bottleProgress * 48;
-    const backLabelOpacity = smoothStep((bottleProgress - 0.62) / 0.18);
-    const frontLabelOpacity = 1 - smoothStep((bottleProgress - 0.38) / 0.18);
+    const shineLeft = 26 + (bottleTurnAngle / 360) * 48;
     const labelFade = 1 - labelClearProgress;
+    const targetBottleScale = getBottleProductionRatio(bottle);
+    const bottleChartProgress = isHeroBottle
+      ? productionBarInProgress * (1 - heroProgress)
+      : productionChartProgress;
+    const bottleChartScale = lerp(1, targetBottleScale, bottleChartProgress);
+    const bottleOriginY = lerp(56, 100, bottleChartProgress);
+    const lineupCenterIndex = (varietalBottles.length - 1) / 2;
+    const distanceFromCenter = index - lineupCenterIndex;
+    const chartSlotTargetX = Number.isFinite(productionChartSlotOffsets[index])
+      ? productionChartSlotOffsets[index]
+      : -distanceFromCenter * window.innerWidth * 0.052;
+    const chartSlotX = chartSlotTargetX * bottleChartProgress;
+    const chartSlotY = -2.6 * bottleChartProgress;
 
     if (slot) {
+      slot.style.setProperty("--slot-chart-x", `${chartSlotX.toFixed(2)}px`);
+      slot.style.setProperty("--slot-chart-y", `${chartSlotY.toFixed(2)}vh`);
+      slot.style.setProperty("--slot-value-top", `${((1 - targetBottleScale) * 100).toFixed(2)}%`);
       if (isHeroBottle) {
         slot.style.setProperty("--slot-exit-x", "0vw");
         slot.style.setProperty("--slot-exit-y", "0vh");
         slot.style.setProperty("--slot-exit-opacity", "1");
       } else {
         const distanceFromHero = index - heroIndex;
-        const exitOpacity = 1 - smoothStep((transitionProgress - 0.54) / 0.4);
+        const exitOpacity = 1 - transitionProgress;
         slot.style.setProperty("--slot-exit-x", `${(distanceFromHero * 3.2 * transitionProgress).toFixed(2)}vw`);
         slot.style.setProperty("--slot-exit-y", `${(-128 * transitionProgress).toFixed(2)}vh`);
         slot.style.setProperty("--slot-exit-opacity", exitOpacity.toFixed(3));
@@ -1565,12 +1721,19 @@ function updateVarietalState() {
     }
 
     if (isHeroBottle) {
-      const heroScale = 1 + heroProgress * 1.18 - bottlePourProgress * 0.44;
+      const pullbackScale = bottlePullback1Progress * 0.22 + bottlePullback2Progress * 0.04;
+      const pullbackY = bottlePullback1Progress * 9 + bottlePullback2Progress * 1.8;
+      const serviceLiftY = bottleServiceLiftProgress * 34;
+      const serviceLiftScale = bottleServiceLiftProgress * 0.14;
+      const heroOpacity = 1 - bottleExitForGlassProgress;
+      const baseHeroScale = 1 + heroProgress * 1.18 - pullbackScale - serviceLiftScale - bottlePourProgress * 0.24;
+      const heroScale = baseHeroScale * bottleChartScale;
       const pourCoverY = 4.5 * bottlePourProgress * (1 - bottleLiftProgress);
       bottle.style.setProperty("--hero-x", "0px");
-      bottle.style.setProperty("--hero-y", `${(-8 * heroProgress + pourCoverY - 118 * bottleLiftProgress).toFixed(2)}vh`);
+      bottle.style.setProperty("--hero-y", `${(-8 * heroProgress - pullbackY - serviceLiftY + pourCoverY - 118 * bottleLiftProgress).toFixed(2)}vh`);
       bottle.style.setProperty("--hero-rotate", `${(-90 * heroProgress - 15 * bottlePourProgress).toFixed(2)}deg`);
       bottle.style.setProperty("--hero-scale", heroScale.toFixed(3));
+      bottle.style.setProperty("--hero-opacity", heroOpacity.toFixed(3));
       bottle.style.setProperty("--hero-z", heroProgress > 0.01 ? "10" : "0");
       bottle.style.setProperty("--bridge-cork-progress", corkProgress.toFixed(3));
       bottle.style.setProperty("--bridge-cork-opacity", corkOpacity.toFixed(3));
@@ -1581,7 +1744,8 @@ function updateVarietalState() {
       bottle.style.setProperty("--hero-x", "0px");
       bottle.style.setProperty("--hero-y", "0vh");
       bottle.style.setProperty("--hero-rotate", "0deg");
-      bottle.style.setProperty("--hero-scale", "1");
+      bottle.style.setProperty("--hero-scale", bottleChartScale.toFixed(3));
+      bottle.style.setProperty("--hero-opacity", "1");
       bottle.style.setProperty("--hero-z", "0");
       bottle.style.setProperty("--bridge-cork-progress", "0");
       bottle.style.setProperty("--bridge-cork-opacity", "0");
@@ -1590,7 +1754,7 @@ function updateVarietalState() {
       bottle.style.setProperty("--bridge-spray-distance", "0px");
     }
 
-    bottle.style.setProperty("--bottle-turn", `${(bottleProgress * 180).toFixed(2)}deg`);
+    bottle.style.setProperty("--bottle-turn", `${bottleTurnAngle.toFixed(2)}deg`);
     bottle.style.setProperty("--varietal-active", cylinderProgress.toFixed(3));
     bottle.style.setProperty("--bottle-edge-opacity", edgeOpacity.toFixed(3));
     bottle.style.setProperty("--front-label-offset", `${frontOffset.toFixed(2)}%`);
@@ -1598,8 +1762,9 @@ function updateVarietalState() {
     bottle.style.setProperty("--label-edge-opacity", labelEdgeOpacity.toFixed(3));
     bottle.style.setProperty("--label-spine-opacity", cylinderProgress.toFixed(3));
     bottle.style.setProperty("--bottle-shine-left", `${shineLeft.toFixed(1)}%`);
-    bottle.style.setProperty("--front-label-opacity", (frontLabelOpacity * labelFade).toFixed(3));
-    bottle.style.setProperty("--back-label-opacity", (backLabelOpacity * labelFade).toFixed(3));
+    bottle.style.setProperty("--front-label-opacity", labelFade.toFixed(3));
+    bottle.style.setProperty("--back-label-opacity", labelFade.toFixed(3));
+    bottle.style.setProperty("--bottle-origin-y", `${bottleOriginY.toFixed(2)}%`);
   });
 
   const heroBottle = varietalBottles[heroIndex];
@@ -1619,8 +1784,10 @@ function updateVarietalState() {
 
       if (mouthRect.width && surfaceRect.width) {
         const centeredMouthX = mouthRect.left + mouthRect.width / 2 + heroCorrection;
-        const targetMouthX = surfaceRect.left + surfaceRect.width / 2 - mouthRect.width * 0.16;
-        const pourAlignmentProgress = smoothStep((varietalProgress - 0.82) / 0.07);
+        const targetMouthX = surfaceRect.left + surfaceRect.width * POUR_MOUTH_TARGET_RATIO;
+        const pourAlignmentProgress = bridgeActive
+          ? smoothStep((varietalProgress - BOTTLE_PULLBACK_START) / (BOTTLE_PULLBACK_END - BOTTLE_PULLBACK_START))
+          : heroProgress;
         const mouthCorrection = targetMouthX - centeredMouthX;
         heroCorrection += mouthCorrection * pourAlignmentProgress;
       }
@@ -1641,14 +1808,15 @@ function updateVarietalState() {
       const wineSurfaceRect = bridgeWineSurface?.getBoundingClientRect();
       const pourTargetRect =
         wineSurfaceRect?.width && wineSurfaceRect?.height ? wineSurfaceRect : surfaceRect;
-      const mouthWidth = clamp(Math.min(correctedMouthRect.width, correctedMouthRect.height) * 1.36, 30, 54);
+      const mouthWidth = clamp(Math.min(correctedMouthRect.width, correctedMouthRect.height) * 1.55, 36, 62);
       const surfaceEnd = {
-        x: pourTargetRect.left + pourTargetRect.width / 2 - pinRect.left,
+        x: pourTargetRect.left + pourTargetRect.width * POUR_STREAM_TARGET_RATIO - pinRect.left,
         y: pourTargetRect.top + pourTargetRect.height * 0.5 - pinRect.top,
       };
       const fixedMouthWidth = mouthWidth;
       const streamX = surfaceEnd.x;
-      const sourceX = streamX + fixedMouthWidth * 0.16;
+      const sourceX =
+        correctedMouthRect.left + correctedMouthRect.width * 0.52 - pinRect.left;
       const start = {
         x: sourceX,
         y: correctedMouthRect.top + correctedMouthRect.height * 0.54 - pinRect.top,
@@ -1725,23 +1893,18 @@ function updateFlourishStoryState() {
   const storyProgress = clamp(-rect.top / travel, 0, 1);
   const storyFinished = rect.bottom <= window.innerHeight + 2;
   const cardTimelines = [
-    { start: 0.14, enter: 0.07, hold: 0.11, exit: 0.08 },
-    { start: 0.5, enter: 0.07, hold: 0.11, exit: 0.08 },
-    { start: 0.84, enter: 0.07, hold: 1, exit: 0 },
+    { start: 0.44, enter: 0.045, hold: 0.18, exit: 0.055 },
+    { start: 0.875, enter: 0.045, hold: 0.065, exit: 0.02 },
   ];
-  const slideIndex = storyProgress >= 0.8
+  const firstReorderStart = 0.16;
+  const secondReorderStart = 0.72;
+  const slideIndex = storyProgress >= secondReorderStart
     ? Math.min(slideCount - 1, 2)
-    : storyProgress >= 0.44
+    : storyProgress >= firstReorderStart
       ? Math.min(slideCount - 1, 1)
       : 0;
-  const graphFade = smoothStep((storyProgress - 0.9) / 0.055);
-  const graphOpacity = 1 - graphFade;
+  const graphOpacity = 1;
   const baseCardSize = getStoryCardBaseSize();
-  const finalTextFade = smoothStep((storyProgress - 0.952) / 0.018);
-  const finalBoxProgress = smoothStep((storyProgress - 0.962) / 0.03);
-  const finalDoorProgress = smoothStep((storyProgress - 0.986) / 0.014);
-  const travelDistance = window.innerHeight * 0.72;
-  let storyBoxMalbecActive = false;
 
   flourishStorySection.style.setProperty("--story-graph-opacity", graphOpacity.toFixed(3));
 
@@ -1753,37 +1916,35 @@ function updateFlourishStoryState() {
       ? smoothStep((storyProgress - exitStart) / timeline.exit)
       : 0;
     const cardOpacity = clamp(enterProgress - exitProgress, 0, 1);
-    let cardX = 0;
-    let cardY = travelDistance * (1 - enterProgress) - travelDistance * exitProgress;
+    const entryLift = 14 * (1 - enterProgress) - 8 * exitProgress;
+    let cardX = index === 0 ? -180 : -255;
+    let cardY = (index === 0 ? -130 : 118) + entryLift;
     let cardWidth = baseCardSize.width;
     let cardHeight = baseCardSize.height;
-    const cardScale = 0.98 + cardOpacity * 0.02;
+    const cardScale = 0.965 + cardOpacity * 0.035;
     let cardRadius = "6px";
     let textOpacity = 1;
     let cardVisualOpacity = cardOpacity;
 
-    if (index === flourishStoryCards.length - 1) {
-      const boxSize = getStoryBoxSize();
-      const boxWidth = boxSize.width;
-      const boxHeight = boxSize.height;
-      cardWidth = lerp(baseCardSize.width, boxWidth, finalBoxProgress);
-      cardHeight = lerp(baseCardSize.height, boxHeight, finalBoxProgress);
-      cardRadius = `${lerp(6, 8, finalBoxProgress).toFixed(1)}px`;
-      textOpacity = 1 - finalTextFade;
-      cardVisualOpacity = cardOpacity;
-      const boxBottleOpacity = finalBoxProgress * cardOpacity;
+    cardWidth = clamp(window.innerWidth * 0.18, 230, 290);
+    cardHeight = clamp(window.innerHeight * 0.12, 118, 156);
 
-      if (boxBottleOpacity > 0.001 && !storyFinished && !storyMalbecLineupSettled) {
-        applyStoryBoxMalbec(
-          getStoryBoxMalbecTarget(cardWidth, cardHeight, cardX, cardY),
-          boxBottleOpacity,
-        );
-        storyBoxMalbecActive = true;
+    if (window.innerWidth > 760) {
+      if (index === 0) {
+        cardX = Math.min(window.innerWidth * 0.08, 140);
+        cardY = -Math.min(window.innerHeight * 0.16, 132) + entryLift;
+      } else if (index === 1) {
+        cardX = -Math.min(window.innerWidth * 0.2, 300);
+        cardY = Math.min(window.innerHeight * 0.145, 122) + entryLift;
+      } else {
+        cardX = Math.min(window.innerWidth * 0.2, 300);
+        cardY = entryLift;
       }
-
-      card.style.setProperty("--story-box-progress", finalBoxProgress.toFixed(3));
-      card.style.setProperty("--story-door-progress", finalDoorProgress.toFixed(3));
-      card.style.setProperty("--story-box-interior-progress", (finalBoxProgress * finalDoorProgress).toFixed(3));
+    } else {
+      cardX = 0;
+      cardY = (index === 0 ? -150 : 145) + entryLift;
+      cardWidth = clamp(window.innerWidth * 0.78, 260, 360);
+      cardHeight = clamp(window.innerHeight * 0.12, 112, 150);
     }
 
     card.style.setProperty("--story-card-opacity", cardVisualOpacity.toFixed(3));
@@ -1797,10 +1958,6 @@ function updateFlourishStoryState() {
     card.style.setProperty("--story-card-scale", cardScale.toFixed(3));
   });
 
-  if (!storyBoxMalbecActive && (!storyFinished || storyMalbecLineupSettled)) {
-    clearStoryBoxMalbec();
-  }
-
   const iframe = flourishStorySection.querySelector(".flourish-embed iframe");
   if (!iframe || !iframe.src) return;
 
@@ -1810,16 +1967,6 @@ function updateFlourishStoryState() {
   iframe.src = iframe.src.replace(/#slide-\d+$/, "") + `#slide-${slideIndex}`;
 }
 
-function updatePourState() {
-  if (!pourSection) return;
-
-  const travel = Math.max(pourSection.offsetHeight - window.innerHeight, 1);
-  const rect = pourSection.getBoundingClientRect();
-  const pourProgress = clamp(-rect.top / travel, 0, 1);
-
-  root.style.setProperty("--pour-progress", pourProgress.toFixed(3));
-}
-
 function updateCompositionState() {
   if (!compositionSection) return;
 
@@ -1827,40 +1974,40 @@ function updateCompositionState() {
   const rect = compositionSection.getBoundingClientRect();
   const fermentationRect = fermentationSection?.getBoundingClientRect();
   const compositionProgress = clamp(-rect.top / travel, 0, 1);
+  const isCompactComposition = window.innerWidth <= 700;
   const isCompositionActive = rect.top <= window.innerHeight && rect.bottom >= 0;
   const isCompositionNear = rect.top <= window.innerHeight * 1.15 && rect.bottom >= 0;
   const isFermentationTakingGlass =
     fermentationRect
     && fermentationRect.top <= window.innerHeight * 1.08
     && fermentationRect.bottom >= 0;
-  const isChemistryBridgeTakingGlass = root.classList.contains("is-chemistry-bridge-active");
-  const focusStart = 0.21;
+  const compositionControlsGlass =
+    isCompositionNear
+    && !isFermentationTakingGlass
+    && !varietalBridgeGlassActive;
+  const focusStart = 0.14;
   const graphSequenceEnd = 0.94;
-  const chartIn = smoothStep((compositionProgress - 0.04) / 0.13);
+  const wineZoomProgress = smoothStep((compositionProgress - 0.14) / 0.42);
+  const wineRecedeProgress = smoothStep((compositionProgress - 0.66) / 0.16);
+  const chartIn = smoothStep((compositionProgress - 0.04) / 0.18);
   const chartOut = smoothStep((compositionProgress - 0.97) / 0.03);
-  const chartVisible = chartIn > 0.04 && chartOut < 0.98 ? 1 : 0;
-  const chartX = -42 * (1 - chartIn) - 42 * chartOut;
-  const chartScale = 0.94 + chartIn * 0.06 - chartOut * 0.04;
-  const copyIn = smoothStep((compositionProgress - 0.12) / 0.12);
+  const chartVisible = chartIn * (1 - chartOut);
+  const chartX = -4 * (1 - chartIn) - 22 * chartOut;
+  const chartScale = 0.72 + chartIn * 0.28 - chartOut * 0.04;
+  const copyIn = smoothStep((compositionProgress - 0.12) / 0.14);
   const copyOut = smoothStep((compositionProgress - 0.96) / 0.035);
-  const copyVisible = copyIn > 0.04 && copyOut < 0.98 ? 1 : 0;
-  const copyY = 0;
-  const glassEntryProgress = smoothStep(
-    (window.innerHeight * 1.05 - rect.top) / (window.innerHeight * 0.42),
-  );
-  const glassShift = 25 * glassEntryProgress;
+  const copyVisible = copyIn * (1 - copyOut);
+  const copyY = (1 - copyIn) * 0.85;
+  const glassShift = WINE_INTERIOR_GLASS_X;
+  const glassScale = WINE_INTERIOR_GLASS_SCALE;
+  const glassOpacity = 1;
   const focusEnd = graphSequenceEnd;
   const focusProgress = clamp(
     (compositionProgress - focusStart) / (focusEnd - focusStart),
     0,
     0.999,
   );
-  const segmentWeights = compositionSlices.map((_, index) => {
-    if (index === compositionSlices.length - 1) return 1.72;
-    if (index >= compositionSlices.length - 2) return 1.3;
-    if (index === 1) return 1.08;
-    return 1;
-  });
+  const segmentWeights = compositionSlices.map(() => 1);
   const totalSegmentWeight = segmentWeights.reduce((sum, weight) => sum + weight, 0);
   let activeSliceIndex = -1;
   let activeSliceProgress = 0;
@@ -1889,12 +2036,16 @@ function updateCompositionState() {
   }
   const sliceFocus =
     activeSliceIndex >= 0
-      ? smoothStep(activeSliceProgress / 0.18)
-        * (1 - smoothStep((activeSliceProgress - 0.82) / 0.18))
+      ? smoothStep(activeSliceProgress / 0.12)
+        * (1 - smoothStep((activeSliceProgress - 0.88) / 0.12))
       : 0;
 
   root.classList.toggle("is-composition-active", isCompositionActive);
   root.classList.toggle("is-composition-near", isCompositionNear);
+  root.classList.toggle(
+    "is-composition-glass-zooming",
+    compositionControlsGlass,
+  );
   root.style.setProperty("--composition-progress", compositionProgress.toFixed(3));
   root.style.setProperty("--composition-chart-x", `${chartX.toFixed(2)}vw`);
   root.style.setProperty("--composition-chart-opacity", chartVisible.toFixed(3));
@@ -1902,13 +2053,15 @@ function updateCompositionState() {
   root.style.setProperty("--composition-copy-opacity", copyVisible.toFixed(3));
   root.style.setProperty("--composition-copy-y", `${copyY.toFixed(2)}rem`);
 
-  if (isCompositionNear && !isFermentationTakingGlass && !varietalBridgeGlassActive && !isChemistryBridgeTakingGlass) {
+  if (compositionControlsGlass) {
+    root.classList.add("is-bridge-glass-zooming");
     root.style.setProperty("--bridge-glass-opacity", "1");
     root.style.setProperty("--bridge-glass-extra-x", `${glassShift.toFixed(2)}vw`);
     root.style.setProperty("--bridge-glass-y", "0vh");
-    root.style.setProperty("--bridge-glass-scale", "1");
+    root.style.setProperty("--bridge-glass-scale", glassScale.toFixed(3));
     root.style.setProperty("--bridge-glass-rotate", "0deg");
-    root.style.setProperty("--shared-glass-opacity", "1");
+    root.style.setProperty("--bridge-glass-origin-y", "48%");
+    root.style.setProperty("--shared-glass-opacity", glassOpacity.toFixed(3));
   }
 
   compositionSlices.forEach((slice, index) => {
@@ -1926,12 +2079,49 @@ function updateCompositionState() {
   });
 
   compositionDetails.forEach((detail, index) => {
-    const detailFocus = index === activeSliceIndex ? sliceFocus : 0;
+    const detailFocus =
+      index === activeSliceIndex
+        ? smoothStep(activeSliceProgress / 0.1)
+          * (1 - smoothStep((activeSliceProgress - 0.9) / 0.1))
+        : 0;
 
     detail.classList.toggle("is-active", detailFocus > 0.02);
     detail.style.setProperty("--detail-opacity", detailFocus.toFixed(3));
     detail.style.setProperty("--detail-y", "0rem");
   });
+}
+
+function updateChemistryVarietyState() {
+  if (!chemistryVarietySection) return;
+
+  const travel = Math.max(chemistryVarietySection.offsetHeight - window.innerHeight, 1);
+  const rect = chemistryVarietySection.getBoundingClientRect();
+  const chemistryProgress = clamp(-rect.top / travel, 0, 1);
+  const isChemistryActive = rect.top <= window.innerHeight && rect.bottom >= 0;
+  const headingIn = smoothStep(chemistryProgress / 0.16);
+  const linkIn = smoothStep((chemistryProgress - 0.14) / 0.18);
+  const frameIn = smoothStep((chemistryProgress - 0.36) / 0.28);
+  const sectionOut = smoothStep((chemistryProgress - 0.9) / 0.08);
+  const headingVisible = headingIn * (1 - sectionOut);
+  const frameVisible = frameIn * (1 - sectionOut);
+  const linkVisible = linkIn * (1 - sectionOut);
+  const frameScale = 0.965 + frameIn * 0.035 - sectionOut * 0.015;
+  const frameClip = 100 - frameIn * 100;
+
+  root.classList.toggle("is-chemistry-variety-active", isChemistryActive);
+  root.style.setProperty("--chemistry-heading-opacity", headingVisible.toFixed(3));
+  root.style.setProperty(
+    "--chemistry-heading-y",
+    `${((1 - headingIn) * 1.2 - sectionOut * 1.4).toFixed(2)}rem`,
+  );
+  root.style.setProperty("--chemistry-link-progress", linkVisible.toFixed(3));
+  root.style.setProperty("--chemistry-frame-opacity", frameVisible.toFixed(3));
+  root.style.setProperty(
+    "--chemistry-frame-y",
+    `${((1 - frameIn) * 2.2 - sectionOut * 1.6).toFixed(2)}rem`,
+  );
+  root.style.setProperty("--chemistry-frame-scale", frameScale.toFixed(3));
+  root.style.setProperty("--chemistry-frame-clip", `${frameClip.toFixed(2)}%`);
 }
 
 function updateFermentationState() {
@@ -1942,24 +2132,32 @@ function updateFermentationState() {
   const fermentationProgress = clamp(-rect.top / travel, 0, 1);
   const isFermentationActive = rect.top <= window.innerHeight && rect.bottom >= 0;
   const isFermentationNear = rect.top <= window.innerHeight * 1.08 && rect.bottom >= 0;
-  const copyIn = smoothStep((fermentationProgress - 0.1) / 0.14);
-  const copyOut = smoothStep((fermentationProgress - 0.84) / 0.1);
-  const chartIn = smoothStep((fermentationProgress - 0.14) / 0.3);
-  const chartOut = smoothStep((fermentationProgress - 0.86) / 0.12);
-  const copyVisible = copyIn > 0.04 && copyOut < 0.98 ? 1 : 0;
-  const chartVisible = chartIn > 0.04 && chartOut < 0.98 ? 1 : 0;
-  const chartX = -52 * (1 - chartIn) - 52 * chartOut;
-  const chartY = -1.5 * chartIn - 2 * chartOut;
+  const copyIn = smoothStep((fermentationProgress - 0.06) / 0.12);
+  const copyOut = smoothStep((fermentationProgress - 0.86) / 0.1);
+  const chartIn = smoothStep((fermentationProgress - 0.1) / 0.24);
+  const chartOut = smoothStep((fermentationProgress - 0.88) / 0.1);
+  const copyVisible = copyIn * (1 - copyOut);
+  const chartVisible = chartIn * (1 - chartOut);
+  const chartX = -12 * (1 - chartIn) - 32 * chartOut;
+  const chartY = -0.8 * chartIn - 2 * chartOut;
   const chartScale = 0.98 + chartIn * 0.02 - chartOut * 0.02;
-  const glassCarryShift = 25;
   const glassTargetShift = getFermentationGlassShift();
   const glassTargetScale = window.innerWidth <= 700 ? 0.82 : window.innerWidth <= 980 ? 0.92 : 1;
-  const glassEntryProgress = smoothStep(fermentationProgress / 0.2);
-  const glassShift = lerp(glassCarryShift, glassTargetShift, glassEntryProgress);
-  const glassScale = lerp(1, glassTargetScale, glassEntryProgress);
+  const glassZoomOutProgress = smoothStep((fermentationProgress - 0.88) / 0.12);
+  const glassSettleRightProgress = smoothStep((fermentationProgress - 0.96) / 0.04);
+  const glassShift = lerp(WINE_INTERIOR_GLASS_X, glassTargetShift, glassSettleRightProgress);
+  const glassScale = lerp(WINE_INTERIOR_GLASS_SCALE, glassTargetScale, glassZoomOutProgress);
+  const glassOriginY = glassZoomOutProgress < 0.985 ? "48%" : "74%";
 
   root.classList.toggle("is-fermentation-active", isFermentationActive);
   root.classList.toggle("is-fermentation-near", isFermentationNear);
+  root.classList.toggle(
+    "is-fermentation-glass-revealing",
+    isFermentationNear && glassZoomOutProgress > 0.001,
+  );
+  if (isFermentationNear) {
+    root.classList.toggle("is-bridge-glass-zooming", glassZoomOutProgress < 0.985);
+  }
   root.style.setProperty("--fermentation-progress", fermentationProgress.toFixed(3));
   root.style.setProperty("--fermentation-copy-opacity", copyVisible.toFixed(3));
   root.style.setProperty("--fermentation-copy-x", "0vw");
@@ -1974,6 +2172,7 @@ function updateFermentationState() {
     root.style.setProperty("--bridge-glass-extra-x", `${glassShift.toFixed(2)}vw`);
     root.style.setProperty("--bridge-glass-y", "0vh");
     root.style.setProperty("--bridge-glass-scale", glassScale.toFixed(3));
+    root.style.setProperty("--bridge-glass-origin-y", glassOriginY);
     root.style.setProperty("--bridge-glass-rotate", "0deg");
     root.style.setProperty("--shared-glass-opacity", "1");
   }
@@ -1996,6 +2195,58 @@ function updateFermentationFlourishSlide(fermentationProgress) {
   iframe.src = iframe.src.replace(/#slide-\d+$/, "") + `#slide-${slideIndex}`;
 }
 
+function updateInsideWineState() {
+  const viewportHeight = window.innerHeight;
+  let insideWineOpacity = 0;
+
+  const getProgress = (section) => {
+    if (!section) return 0;
+
+    const travel = Math.max(section.offsetHeight - viewportHeight, 1);
+    const rect = section.getBoundingClientRect();
+    return clamp(-rect.top / travel, 0, 1);
+  };
+
+  const getPresence = (section, lead = 0.08) => {
+    if (!section) return 0;
+
+    const rect = section.getBoundingClientRect();
+    if (rect.top >= viewportHeight * (1 + lead) || rect.bottom <= 0) return 0;
+    return 1;
+  };
+
+  if (varietalSection) {
+    const rect = varietalSection.getBoundingClientRect();
+    const progress = getProgress(varietalSection);
+
+    if (rect.top < viewportHeight && rect.bottom > 0) {
+      insideWineOpacity = Math.max(
+        insideWineOpacity,
+        smoothStep((progress - 0.99) / 0.009),
+      );
+    }
+  }
+
+  insideWineOpacity = Math.max(
+    insideWineOpacity,
+    getPresence(compositionSection, 0.14),
+    getPresence(chemistryVarietySection, 0.12),
+  );
+
+  if (fermentationSection) {
+    const fermentationPresence = getPresence(fermentationSection, 0.12);
+    const fermentationProgress = getProgress(fermentationSection);
+    const fermentationExit = smoothStep((fermentationProgress - 0.96) / 0.04);
+
+    insideWineOpacity = Math.max(
+      insideWineOpacity,
+      fermentationPresence * (1 - fermentationExit),
+    );
+  }
+
+  root.classList.toggle("is-inside-wine", insideWineOpacity > 0.01);
+}
+
 function updateMalbecProfileState() {
   if (!malbecProfileSection) return;
 
@@ -2010,6 +2261,7 @@ function updateMalbecProfileState() {
   const radarVisible = radarProgress > 0.04 ? 1 : 0;
   const shapeProgress = smoothStep((profileProgress - 0.64) / 0.16);
   const shapeFill = smoothStep((profileProgress - 0.72) / 0.1);
+  const barProgress = smoothStep((profileProgress - 0.36) / 0.22);
   const glassScale = window.innerWidth <= 700 ? 0.82 : window.innerWidth <= 980 ? 0.92 : 1;
 
   root.classList.toggle("is-malbec-profile-active", isProfileActive);
@@ -2023,6 +2275,7 @@ function updateMalbecProfileState() {
   root.style.setProperty("--malbec-profile-grid-opacity", (radarProgress * 0.82).toFixed(3));
   root.style.setProperty("--malbec-profile-shape-progress", shapeProgress.toFixed(3));
   root.style.setProperty("--malbec-profile-shape-fill", shapeFill.toFixed(3));
+  root.style.setProperty("--malbec-profile-bar-progress", barProgress.toFixed(3));
 
   for (let index = 0; index < 5; index += 1) {
     const axisProgress = smoothStep((profileProgress - (0.26 + index * 0.055)) / 0.07);
@@ -2033,12 +2286,13 @@ function updateMalbecProfileState() {
   }
 
   if (isProfileActive && !varietalBridgeGlassActive) {
+    root.classList.remove("is-bridge-glass-zooming");
     root.style.setProperty("--bridge-glass-opacity", "1");
     root.style.setProperty("--bridge-glass-extra-x", `${getFermentationGlassShift().toFixed(2)}vw`);
     root.style.setProperty("--bridge-glass-y", "0vh");
     root.style.setProperty("--bridge-glass-scale", glassScale.toFixed(3));
     root.style.setProperty("--bridge-glass-rotate", "0deg");
-    root.style.setProperty("--shared-glass-opacity", "0.82");
+    root.style.setProperty("--shared-glass-opacity", "1");
   }
 }
 
@@ -2047,68 +2301,89 @@ function updateTastingScrollState() {
 
   const travel = Math.max(tastingSection.offsetHeight - window.innerHeight, 1);
   const rect = tastingSection.getBoundingClientRect();
-  const tastingProgress = clamp(-rect.top / travel, 0, 1);
-  const isTastingActive = rect.top <= window.innerHeight && rect.bottom >= 0;
-  const isTastingNear = rect.top <= window.innerHeight * 1.08 && rect.bottom >= 0;
+  const creditsWipeState = getCreditsWipeState();
+  const rawTastingProgress = clamp(-rect.top / travel, 0, 1);
+  const creditsTastingFreezeProgress = 0.92;
+  const tastingProgress = creditsWipeState.isActive
+    ? creditsTastingFreezeProgress
+    : Math.min(rawTastingProgress, creditsTastingFreezeProgress);
+  const isTastingActive = creditsWipeState.isActive || (rect.top <= window.innerHeight && rect.bottom >= 0);
+  const isTastingNear = creditsWipeState.isActive || (rect.top <= window.innerHeight * 1.08 && rect.bottom >= 0);
+  const TASTING_GLASS_ENTRY_END = 0.28;
+  const TASTING_EFFECT_START = 0.32;
+  const TASTING_GUIDE_END = 0.96;
   const entryProgress = 1;
-  const copyY = 12 - tastingProgress * 24;
-  const copyVisible = tastingProgress > 0.025 && tastingProgress < 0.985 ? 1 : 0;
-  const tastingGlassEntry = smoothStep(tastingProgress / 0.28);
+  const copyY = creditsWipeState.isActive ? 0 : 12 - tastingProgress * 24;
+  const copyVisible = tastingProgress > 0.025 ? 1 : 0;
+  const tastingGlassEntry = smoothStep(tastingProgress / TASTING_GLASS_ENTRY_END);
+  const tastingEffectsReady = tastingProgress >= TASTING_EFFECT_START;
   const glassCarryShift = getFermentationGlassShift();
   const glassTargetShift = 22;
   const glassShift = isTastingActive
     ? lerp(glassCarryShift, glassTargetShift, tastingGlassEntry)
     : glassCarryShift;
-  const discoverGlassFade = smoothStep((tastingProgress - 0.8) / 0.1);
+  const discoverGlassFade = 0;
   const sharedGlassOpacity =
     isTastingActive ? 1 - discoverGlassFade : rect.top > window.innerHeight ? 1 : 0;
-  const slideProgress = clamp((tastingProgress - 0.035) / 0.93, 0, 0.999);
-  const stepCount = tastingSteps.length;
-  const stepFloat = slideProgress * stepCount;
-  const phaseIndex = Math.min(stepCount - 1, Math.floor(stepFloat));
-  const phaseProgress = stepFloat - phaseIndex;
-  const enterEnd = 0.18;
-  const holdEnd = 0.68;
-  const exitEnd = 0.84;
-  const activeTextIndex = phaseProgress < exitEnd ? phaseIndex : -1;
-  const activeEffectStep = phaseProgress >= exitEnd ? 0 : phaseIndex;
+  const guideProgress = clamp(
+    (tastingProgress - TASTING_EFFECT_START) / (TASTING_GUIDE_END - TASTING_EFFECT_START),
+    0,
+    0.999,
+  );
+  const guideStepCount = Math.max(TASTING_STEP_COUNT - 1, 1);
+  const guideFloat = guideProgress * guideStepCount;
+  const activeTextIndex = tastingEffectsReady
+    ? 1 + Math.min(guideStepCount - 1, Math.floor(guideFloat))
+    : 0;
+  const activeEffectStep = activeTextIndex;
   const nextTastingStep = activeEffectStep;
 
-  root.classList.toggle("is-tasting-active", isTastingActive);
+  root.classList.toggle("is-tasting-active", isTastingActive && tastingEffectsReady);
   root.style.setProperty("--tasting-progress", tastingProgress.toFixed(3));
   root.style.setProperty("--tasting-entry-progress", entryProgress.toFixed(3));
   root.style.setProperty("--tasting-copy-y", `${copyY.toFixed(2)}vh`);
   root.style.setProperty("--tasting-copy-opacity", copyVisible.toFixed(3));
   root.style.setProperty("--tasting-glass-drop-y", "0vh");
   if (isTastingNear && !varietalBridgeGlassActive) {
+    root.classList.remove("is-bridge-glass-zooming");
+    root.style.setProperty("--bridge-glass-opacity", "1");
+    root.style.setProperty("--bridge-glass-y", "0vh");
+    root.style.setProperty("--bridge-glass-scale", "1");
+    root.style.setProperty("--bridge-glass-origin-y", "74%");
     root.style.setProperty("--bridge-glass-extra-x", `${glassShift.toFixed(2)}vw`);
+    root.style.setProperty("--bridge-glass-rotate", activeEffectStep === 4 ? "-6deg" : "0deg");
     root.style.setProperty("--shared-glass-opacity", sharedGlassOpacity.toFixed(3));
   }
   tastingCopyPanels.forEach((panel, index) => {
-    let panelOpacity = 0;
-    let panelY = 68;
-    let panelScale = 0.985;
+    const isMenuPanel = Boolean(panel.closest(".tasting-menu"));
+    const panelStep = Number(panel.dataset.step || index);
+    const isActiveMenuStep = isMenuPanel && panelStep === activeTextIndex;
+    let panelOpacity = copyVisible;
+    let panelY = 0;
+    let panelScale = isActiveMenuStep ? 1.012 : 1;
+    let panelWrite = 1;
 
-    if (index < phaseIndex) {
-      panelY = -68;
-    } else if (index === activeTextIndex) {
-      panelOpacity = copyVisible;
-      panelScale = 1;
-
-      if (phaseProgress < enterEnd) {
-        const enterProgress = smoothStep(phaseProgress / enterEnd);
-        panelY = (1 - enterProgress) * 68;
-      } else if (phaseProgress < holdEnd) {
-        panelY = 0;
-      } else {
-        const exitProgress = smoothStep((phaseProgress - holdEnd) / (exitEnd - holdEnd));
-        panelY = -exitProgress * 68;
-      }
+    if (!isMenuPanel) {
+      panelOpacity = panelStep === activeTextIndex ? copyVisible : 0;
+      panelY = panelStep < activeTextIndex ? -68 : 68;
+      panelScale = panelStep === activeTextIndex ? 1 : 0.985;
+      panelWrite = panelStep === activeTextIndex ? 1 : 0;
     }
 
     panel.style.setProperty("--panel-opacity", panelOpacity.toFixed(3));
-    panel.style.setProperty("--panel-y", `${panelY.toFixed(2)}vh`);
+    panel.style.setProperty("--panel-y", `${panelY.toFixed(2)}${isMenuPanel ? "rem" : "vh"}`);
     panel.style.setProperty("--panel-scale", panelScale.toFixed(3));
+    panel.style.setProperty("--panel-write", panelWrite.toFixed(3));
+    panel.classList.toggle("is-current", panelStep === activeTextIndex);
+    panel
+      .querySelectorAll("h2, h3, .tasting-menu-eyebrow, .tasting-menu-intro, .tasting-menu-step-label, .tasting-menu-step-text")
+      .forEach((target, targetIndex) => {
+        const targetWrite = isMenuPanel
+          ? panelWrite
+          : smoothStep((panelWrite - targetIndex * 0.07) / 0.2);
+        target.style.setProperty("--line-write", targetWrite.toFixed(3));
+        target.style.setProperty("--line-clip", `${((1 - targetWrite) * 100).toFixed(2)}%`);
+      });
   });
 
   if (nextTastingStep !== currentTastingStep) {
@@ -2117,34 +2392,61 @@ function updateTastingScrollState() {
   }
 }
 
-function updateClosingState() {
-  if (!closingToastSection) return;
+function updateFinalToastState() {
+  if (!finalToastSection) return;
 
-  const travel = Math.max(closingToastSection.offsetHeight - window.innerHeight, 1);
-  const rect = closingToastSection.getBoundingClientRect();
-  const closingProgress = clamp(-rect.top / travel, 0, 1);
-  const textSettle = smoothStep(closingProgress / 0.16);
-  const leftDrop = smoothStep((closingProgress - 0.08) / 0.22);
-  const rightDrop = smoothStep((closingProgress - 0.18) / 0.22);
-  const approach = smoothStep((closingProgress - 0.42) / 0.32);
-  const clinkProgress = smoothStep((closingProgress - 0.76) / 0.12);
-  const clinkTap = Math.sin(clinkProgress * Math.PI) * 0.85;
-  const leftX = -15 + approach * 15 + clinkTap;
-  const rightX = 15 - approach * 15 - clinkTap;
-  const toastY = -1.2 * approach;
-  const leftDropY = -112 * (1 - leftDrop);
-  const rightDropY = -112 * (1 - rightDrop);
-  const leftRotate = -1.7 + approach * 1.25 + clinkTap * 0.28;
-  const rightRotate = 1.7 - approach * 1.25 - clinkTap * 0.28;
+  const travel = Math.max(finalToastSection.offsetHeight - window.innerHeight, 1);
+  const rect = finalToastSection.getBoundingClientRect();
+  const toastProgress = clamp(-rect.top / travel, 0, 1);
+  const entryProgress = smoothStep((toastProgress - 0.02) / 0.24);
+  const impactProgress = clamp((toastProgress - 0.23) / 0.18, 0, 1);
+  const impactPeak = Math.sin(impactProgress * Math.PI);
+  const clinkVisible =
+    smoothStep((toastProgress - 0.2) / 0.08) *
+    (1 - smoothStep((toastProgress - 0.68) / 0.14));
+  const copyProgress = smoothStep((toastProgress - 0.38) / 0.16);
+  const soundProgress =
+    smoothStep((toastProgress - 0.25) / 0.09) *
+    (1 - smoothStep((toastProgress - 0.76) / 0.12));
 
-  root.style.setProperty("--closing-final-text-y", `${(3 * (1 - textSettle)).toFixed(2)}vh`);
-  root.style.setProperty("--closing-left-x", `${leftX.toFixed(2)}vw`);
-  root.style.setProperty("--closing-right-x", `${rightX.toFixed(2)}vw`);
-  root.style.setProperty("--closing-toast-y", `${toastY.toFixed(2)}vh`);
-  root.style.setProperty("--closing-left-drop-y", `${leftDropY.toFixed(2)}vh`);
-  root.style.setProperty("--closing-right-drop-y", `${rightDropY.toFixed(2)}vh`);
-  root.style.setProperty("--closing-left-rotate", `${leftRotate.toFixed(2)}deg`);
-  root.style.setProperty("--closing-right-rotate", `${rightRotate.toFixed(2)}deg`);
+  const leftX = lerp(-24, -4.6, entryProgress) - impactPeak * 0.85;
+  const rightX = lerp(24, 4.6, entryProgress) + impactPeak * 0.85;
+  const glassY = lerp(1.4, 0, entryProgress) - impactPeak * 0.55;
+  const leftRotate = lerp(-14, -5.4, entryProgress) + impactPeak * 5;
+  const rightRotate = lerp(14, 5.4, entryProgress) - impactPeak * 5;
+
+  finalToastSection.style.setProperty("--final-toast-progress", toastProgress.toFixed(3));
+  finalToastSection.style.setProperty("--final-toast-copy-opacity", copyProgress.toFixed(3));
+  finalToastSection.style.setProperty("--final-toast-copy-y", `${((1 - copyProgress) * 0.75).toFixed(2)}rem`);
+  finalToastSection.style.setProperty("--final-toast-halo-opacity", (0.2 + toastProgress * 0.26).toFixed(3));
+  finalToastSection.style.setProperty("--final-toast-halo-scale", (0.86 + toastProgress * 0.2).toFixed(3));
+  finalToastSection.style.setProperty("--toast-left-x", `${leftX.toFixed(2)}vw`);
+  finalToastSection.style.setProperty("--toast-left-y", `${glassY.toFixed(2)}vh`);
+  finalToastSection.style.setProperty("--toast-left-rotate", `${leftRotate.toFixed(2)}deg`);
+  finalToastSection.style.setProperty("--toast-right-x", `${rightX.toFixed(2)}vw`);
+  finalToastSection.style.setProperty("--toast-right-y", `${glassY.toFixed(2)}vh`);
+  finalToastSection.style.setProperty("--toast-right-rotate", `${rightRotate.toFixed(2)}deg`);
+  finalToastSection.style.setProperty("--toast-clink-opacity", clinkVisible.toFixed(3));
+  finalToastSection.style.setProperty("--toast-clink-scale", (0.8 + impactPeak * 0.38).toFixed(3));
+  finalToastSection.style.setProperty("--toast-sound-opacity", soundProgress.toFixed(3));
+  finalToastSection.style.setProperty("--toast-sound-y", `${((1 - soundProgress) * 0.8).toFixed(2)}rem`);
+}
+
+function updateCreditsState() {
+  if (!projectCredits) return;
+
+  const { isActive, wipeProgress, holeRadius, contentProgress } = getCreditsWipeState();
+
+  root.classList.toggle("is-credits-wipe-active", isActive);
+  root.style.setProperty("--credits-wipe-progress", wipeProgress.toFixed(3));
+  root.style.setProperty("--credits-wipe-opacity", isActive ? "1" : "0");
+  root.style.setProperty("--credits-hole-radius", `${holeRadius.toFixed(2)}px`);
+  updateCreditsIrisPath(holeRadius);
+  projectCredits.style.setProperty("--credits-content-opacity", contentProgress.toFixed(3));
+  projectCredits.style.setProperty(
+    "--credits-content-y",
+    `${((1 - contentProgress) * 1.35).toFixed(2)}rem`,
+  );
 }
 
 function updateScaleIndexState() {
@@ -2152,18 +2454,25 @@ function updateScaleIndexState() {
 
   const markerY = window.innerHeight * 0.46;
   const scaleMarkers = [
-    { scale: "personal", element: wineBuilder },
-    { scale: "global", element: argentinaSection },
-    { scale: "argentina", element: consumptionCalendarSection },
-    { scale: "argentina", element: calendarSection },
+    { scale: "intro", element: opener },
+    { scale: "intro", element: culturalSequence },
+    { scale: "intro", element: wineBuilder },
+    { scale: "mundial", element: worldBridgeSection },
+    { scale: "mundial", element: argentinaSection },
+    { scale: "nacional", element: consumptionCalendarSection },
+    { scale: "nacional", element: productionBridgeSection },
+    { scale: "nacional", element: productionDocumentarySection },
+    { scale: "nacional", element: calendarSection },
+    { scale: "varietal", element: grapeBridgeSection },
     { scale: "varietal", element: flourishStorySection },
     { scale: "varietal", element: varietalSection },
     { scale: "molecular", element: compositionSection },
     { scale: "molecular", element: chemistryVarietySection },
     { scale: "molecular", element: fermentationSection },
-    { scale: "sensorial", element: malbecProfileSection },
-    { scale: "sensorial", element: tastingSection },
-    { scale: "sensorial", element: closingSection },
+    { scale: "cata", element: malbecProfileSection },
+    { scale: "cata", element: tastingSection },
+    { scale: "cata", element: finalToastSection },
+    { scale: "cata", element: projectCredits },
   ].filter(({ element }) => element);
 
   let activeScale = "";
@@ -2174,7 +2483,7 @@ function updateScaleIndexState() {
     if (rect.top <= markerY && rect.bottom >= markerY) {
       const travel = Math.max(argentinaSection.offsetHeight - window.innerHeight, 1);
       const sectionProgress = clamp(-rect.top / travel, 0, 1);
-      activeScale = sectionProgress < 0.58 ? "global" : "argentina";
+      activeScale = sectionProgress < 0.58 ? "mundial" : "nacional";
     }
   }
 
@@ -2217,20 +2526,22 @@ function updateScrollState() {
   updateScaleIndexState();
   updatePosterCorkPosition();
   updateIntroState();
-  updateWorldState();
+  updateCulturalSequenceState();
   updateArgentinaState();
+  updateConsumptionCalendarStains();
   updateTasteDetailState();
   updateNarrativeBridgeState();
   updateCalendarState();
   updateFlourishStoryState();
   updateVarietalState();
-  updatePourState();
+  updateCreditsState();
   updateTastingScrollState();
   updateCompositionState();
+  updateChemistryVarietyState();
   updateFermentationState();
+  updateInsideWineState();
   updateMalbecProfileState();
-  updateClosingState();
-  updateCalculatedPour();
+  updateFinalToastState();
 }
 
 function queueLayoutRefresh() {
@@ -2256,17 +2567,6 @@ tasteButtons.forEach((button) => {
 
     updateTasteRecommendation();
   });
-});
-
-nextStep?.addEventListener("click", () => {
-  currentTastingStep =
-    currentTastingStep === tastingSteps.length - 1 ? 0 : currentTastingStep + 1;
-  renderTastingStep();
-});
-
-prevStep?.addEventListener("click", () => {
-  currentTastingStep = Math.max(0, currentTastingStep - 1);
-  renderTastingStep();
 });
 
 renderCompositionPie();
