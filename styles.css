@@ -12307,12 +12307,14 @@ main > section,
 .narrative-bridge-before-history .before-history-text-block {
   position: relative !important;
   top: auto !important;
-  width: min(100%, 520px) !important;
+  width: 100% !important;
+  max-width: none !important;
   transform: none !important;
 }
 
 .narrative-bridge-before-history .before-history-text-block p {
-  max-width: 500px !important;
+    width: 100% !important;
+  max-width: none !important;
   font-size: clamp(1.05rem, 1.18vw, 1.26rem) !important;
   line-height: 1.5 !important;
 }
@@ -12896,4 +12898,174 @@ main > section,
   height: 100%;
   display: block;
   border-radius: 12px;
+}
+
+/* ======================================================================
+   REDISEÑO: collage de producción full-width con 4 fotos + texto abajo
+   (sobrescribe el layout anterior "texto izq / collage der" a 2 columnas)
+   ====================================================================== */
+
+/* El contenedor ahora es una sola columna: arriba el collage, abajo el texto */
+.narrative-bridge-before-history .narrative-bridge-pin {
+  grid-template-columns: 1fr !important;
+  grid-template-rows: auto auto !important;
+  width: min(94vw, 1600px) !important;
+  max-width: min(94vw, 1600px) !important;
+  gap: clamp(2rem, 4.2vw, 3.4rem) !important;
+  align-items: start !important;
+}
+
+/* El collage va primero (fila 1), ocupando todo el ancho disponible */
+.production-essay-visual {
+  grid-row: 1 !important;
+  grid-column: 1 / -1 !important;
+  display: grid !important;
+  grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+  grid-template-rows: clamp(230px, 30vw, 380px) !important;
+  gap: clamp(0.7rem, 1vw, 1.1rem) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Foto grande: ocupa la mitad izquierda, altura completa del collage */
+.production-essay-visual .narrative-photo-figure {
+  grid-column: 1 / 7 !important;
+  grid-row: 1 !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  border-radius: 8px !important;
+}
+
+/* Mitad derecha: contiene las 3 fotos chicas en su propio mini-grid */
+.production-process-collage {
+  grid-column: 7 / -1 !important;
+  grid-row: 1 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: clamp(0.7rem, 1vw, 1.1rem) !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.production-process-collage .production-process-card {
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  border-radius: 8px !important;
+  margin: 0 !important;
+}
+
+/* Foto 2 (arriba-izq del mini-grid) y foto 3 (arriba-der) */
+.production-process-card-fermentation {
+  grid-column: 1 / 2 !important;
+  grid-row: 1 / 2 !important;
+}
+
+.production-process-card-cellar {
+  grid-column: 2 / 3 !important;
+  grid-row: 1 / 2 !important;
+}
+
+/* Foto 4 (nueva): ocupa todo el ancho de la fila de abajo del mini-grid */
+.production-process-card-cuarta {
+  grid-column: 1 / 3 !important;
+  grid-row: 2 / 3 !important;
+}
+
+.production-essay-visual img,
+.production-process-card img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: inherit !important;
+  filter: saturate(0.95) contrast(1.04) brightness(0.92) !important;
+}
+
+.production-process-card-cellar img {
+  filter: sepia(0.08) saturate(0.86) contrast(1.04) brightness(0.93) !important;
+}
+
+/* Si querés mostrar el texto de abajo del collage, cambiá a "block" */
+.production-collage-caption {
+  display: none !important;
+}
+
+/* El texto va en la fila 2, a todo el ancho, en una sola columna */
+.narrative-bridge-before-history .narrative-bridge-copy {
+  grid-row: 2 !important;
+  grid-column: 1 / -1 !important;
+  display: block !important;
+  align-self: start !important;
+  min-height: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.narrative-bridge-before-history .before-history-text-block {
+  position: relative !important;
+  top: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  transform: none !important;
+}
+
+.narrative-bridge-before-history .before-history-text-block p {
+  max-width: 100% !important;
+}
+
+.narrative-bridge-before-history .before-history-text-block strong {
+  max-width: 100%;
+}
+
+@media (max-width: 980px) {
+  .narrative-bridge-before-history .narrative-bridge-pin {
+    width: min(92vw, 900px) !important;
+  }
+
+  .production-essay-visual {
+    grid-template-rows: clamp(200px, 42vw, 320px) !important;
+  }
+
+  .narrative-bridge-before-history .narrative-bridge-copy {
+    grid-template-columns: 1fr !important;
+    gap: clamp(1.4rem, 3.6svh, 2.2rem) !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .narrative-bridge-before-history .narrative-bridge-pin {
+    width: min(92vw, 720px) !important;
+  }
+
+  /* En mobile el collage se apila: grande arriba, 3 chicas abajo en fila */
+  .production-essay-visual {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: clamp(220px, 55vw, 300px) clamp(200px, 46vw, 260px) !important;
+  }
+
+  .production-essay-visual .narrative-photo-figure {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+
+  .production-process-collage {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-rows: 1fr 1fr !important;
+  }
+
+  .production-process-card-cuarta {
+    grid-column: 1 / 3 !important;
+    grid-row: 2 / 3 !important;
+  }
+}
+body {
+    background: red !important;
 }
