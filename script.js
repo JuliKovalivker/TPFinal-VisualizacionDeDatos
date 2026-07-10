@@ -2262,6 +2262,7 @@ function updateMalbecProfileState() {
   const shapeProgress = smoothStep((profileProgress - 0.64) / 0.16);
   const shapeFill = smoothStep((profileProgress - 0.72) / 0.1);
   const barProgress = smoothStep((profileProgress - 0.36) / 0.22);
+  const transitionProgress = smoothStep((profileProgress - 0.68) / 0.16);
   const glassScale = window.innerWidth <= 700 ? 0.82 : window.innerWidth <= 980 ? 0.92 : 1;
 
   root.classList.toggle("is-malbec-profile-active", isProfileActive);
@@ -2276,6 +2277,8 @@ function updateMalbecProfileState() {
   root.style.setProperty("--malbec-profile-shape-progress", shapeProgress.toFixed(3));
   root.style.setProperty("--malbec-profile-shape-fill", shapeFill.toFixed(3));
   root.style.setProperty("--malbec-profile-bar-progress", barProgress.toFixed(3));
+  root.style.setProperty("--malbec-profile-transition-opacity", transitionProgress.toFixed(3));
+  root.style.setProperty("--malbec-profile-transition-y", `${(1.2 * (1 - transitionProgress)).toFixed(2)}rem`);
 
   for (let index = 0; index < 5; index += 1) {
     const axisProgress = smoothStep((profileProgress - (0.26 + index * 0.055)) / 0.07);

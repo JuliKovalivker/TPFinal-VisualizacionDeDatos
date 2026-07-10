@@ -189,6 +189,8 @@
   --malbec-profile-shape-progress: 0;
   --malbec-profile-shape-fill: 0;
   --malbec-profile-bar-progress: 0;
+  --malbec-profile-transition-opacity: 0;
+  --malbec-profile-transition-y: 1.2rem;
   --shared-glass-opacity: 1;
   --chemistry-heading-opacity: 0;
   --chemistry-heading-y: 1.2rem;
@@ -10061,6 +10063,23 @@ main > section,
 
 .malbec-radar-chart {
   display: none !important;
+}
+
+.malbec-profile-transition {
+  max-width: 26rem;
+  margin: clamp(2.2rem, 5vh, 3.6rem) 0 0 0;
+  padding-left: clamp(1.05rem, 1.5vw, 1.3rem);
+  border-left: 2px solid rgba(139, 18, 50, 0.32);
+  color: var(--wine-deep);
+  font-family: var(--opener-display-font);
+  font-size: clamp(1.15rem, 1.55vw, 1.5rem);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.45;
+  text-align: left;
+  opacity: var(--malbec-profile-transition-opacity, 0);
+  transform: translateY(var(--malbec-profile-transition-y, 1.2rem));
+  will-change: opacity, transform;
 }
 
 .malbec-sensory-chart .sensory-chart-head h3 {
