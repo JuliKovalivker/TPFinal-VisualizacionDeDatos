@@ -300,8 +300,10 @@ function getCreditsWipeState() {
   const rect = projectCredits.getBoundingClientRect();
   const viewportHeight = window.innerHeight;
   const viewportWidth = window.innerWidth;
-  const isActive = rect.top < viewportHeight && rect.bottom > 0;
-  const wipeProgress = smoothStep((viewportHeight - rect.top) / (viewportHeight * 1.62));
+  const preFreezeLead = Math.min(viewportHeight * 0.12, 96);
+  const wipeStart = viewportHeight + preFreezeLead;
+  const isActive = rect.top < wipeStart && rect.bottom > 0;
+  const wipeProgress = smoothStep((wipeStart - rect.top) / (viewportHeight * 1.62));
   const maxRadius = Math.hypot(viewportWidth, viewportHeight) * 0.54;
   const holeCloseProgress = smoothStep(wipeProgress / 0.94);
   const holeRadius = holeCloseProgress >= 0.998 ? 0 : lerp(maxRadius, 0, holeCloseProgress);
@@ -1924,7 +1926,7 @@ function updateFlourishStoryState() {
     const cardScale = 0.965 + cardOpacity * 0.035;
     let cardRadius = "6px";
     let textOpacity = 1;
-    let cardVisualOpacity = cardOpacity;
+    let cardVisualOpacity = storyFinished || storyProgress >= 0.985 ? 0 : cardOpacity;
 
     cardWidth = clamp(window.innerWidth * 0.18, 230, 290);
     cardHeight = clamp(window.innerHeight * 0.12, 118, 156);
@@ -2316,7 +2318,7 @@ function updateTastingScrollState() {
   const TASTING_EFFECT_START = 0.32;
   const TASTING_GUIDE_END = 0.96;
   const entryProgress = 1;
-  const copyY = creditsWipeState.isActive ? 0 : 12 - tastingProgress * 24;
+  const copyY = 12 - tastingProgress * 24;
   const copyVisible = tastingProgress > 0.025 ? 1 : 0;
   const tastingGlassEntry = smoothStep(tastingProgress / TASTING_GLASS_ENTRY_END);
   const tastingEffectsReady = tastingProgress >= TASTING_EFFECT_START;

@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=IBM+Plex+Mono:wght@500;700&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;550;600;700;800&display=swap"
       rel="stylesheet"
     />
-  <link rel="stylesheet" href="styles.css?v=composition-swap-colors-325" />
+  <link rel="stylesheet" href="styles.css?v=tasting-hand-reuse-346" />
   </head>
   <body>
     <div class="scroll-progress" aria-hidden="true"></div>
@@ -662,21 +662,22 @@
         </div>
       </section>
 
-          <!-- VIDEO: sección en blanco de pantalla completa para insertar el video acá -->
-        <section class="video-placeholder-section" aria-label="Espacio para video" style="height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center; background: #000;">
-      <!-- VIDEO: acá va el video -->
-
-      <div class="video_container reveal" id="video_trigger">
-        <iframe
-          src="https://www.youtube.com/embed/x1kD6-izWtY?controls=1"
-          title="YouTube video player"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen
-        ></iframe>
-      </div>
-    </section>
+      <!-- VIDEO: sección en blanco de pantalla completa para insertar el video acá -->
+      <section class="video-placeholder-section" aria-label="Espacio para video">
+        <!-- VIDEO: acá va el video -->
+        <div class="video-pin">
+          <div class="video_container reveal" id="video_trigger">
+            <iframe
+              src="https://www.youtube.com/embed/x1kD6-izWtY?controls=1"
+              title="YouTube video player"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+      </section>
 
       <section id="historia-produccion" class="wine-calendar production-history-section" aria-label="Evolución histórica de la producción de vino en Argentina">
         <div class="production-history-pin">
@@ -810,13 +811,12 @@
                 <path class="bridge-rim-front-shadow" d="M166 102 C206 117 310 117 350 102 C335 119 302 128 258 128 C214 128 181 119 166 102Z" />
               </g>
             </svg>
+            <img class="tasting-hand" src="assets/intro-hand-reference.png?v=hand-grip-align-98" alt="" aria-hidden="true" />
           </div>
 
           <div class="bottle-lineup">
+            <h3 class="varietal-axis-title">Producci&oacute;n por varietal <span>en litros/a&ntilde;o</span></h3>
             <div class="varietal-production-axis" aria-hidden="true">
-              <span class="varietal-axis-title">
-                <strong>Producci&oacute;n por varietal en litros/a&ntilde;o</strong>
-              </span>
               <span class="varietal-axis-line"></span>
               <span class="varietal-axis-tick varietal-axis-tick-100">260 M</span>
               <span class="varietal-axis-tick varietal-axis-tick-75">195 M</span>
@@ -1144,7 +1144,7 @@
           <div class="malbec-profile-layout">
             <div class="malbec-profile-copy">
               <p class="section-kicker">Escala sensorial</p>
-              <h2 class="chapter-title">Perfil sensorial</h2>
+              <h2 class="chapter-title malbec-profile-title"><span>Perfil sensorial</span><span>del Malbec</span></h2>
               <p class="malbec-profile-intro">
                 La qu&iacute;mica termina apareciendo en el cuerpo: lo que medimos como alcohol,
                 taninos o acidez se vuelve textura, peso y persistencia.
@@ -1155,7 +1155,7 @@
                 <div class="sensory-chart-head">
                   <div>
                     <p class="sensory-chart-kicker">Escala 1-5</p>
-                    <h3 id="malbecSensoryTitle">Perfil del Malbec</h3>
+                    <h3 id="malbecSensoryTitle" class="sr-only">Perfil sensorial del Malbec</h3>
                   </div>
                 </div>
                 <p id="malbecSensoryDesc" class="sr-only">
@@ -1380,6 +1380,6 @@
       </div>
     </footer>
 
-  <script src="script.js?v=varietal-axis-align-319"></script>
+  <script src="script.js?v=tasting-card-freeze-341"></script>
 </body>
 </html>
