@@ -2492,11 +2492,11 @@ p {
 
 .flourish-story-stage {
   position: sticky;
-  top: 66px;
+  top: 96px;
   display: grid;
   place-items: center;
   width: min(100%, 980px);
-  height: calc(100vh - 66px);
+  height: calc(100vh - 96px);
   margin: 0 auto;
   overflow: visible;
   isolation: isolate;
@@ -2504,7 +2504,7 @@ p {
 
 .flourish-story-stage.fl-scrolly-wrapper {
   width: min(100%, 980px);
-  min-height: calc(100vh - 66px);
+  min-height: calc(100vh - 96px);
 }
 
 .flourish-story-stage .flourish-embed {
@@ -2518,6 +2518,36 @@ p {
   transform: translateY(18px) scale(0.92);
   transform-origin: center center;
   will-change: opacity, transform;
+}
+
+.flourish-story-heading {
+  position: absolute;
+  top: clamp(0.5rem, 2vh, 1.5rem);
+  left: 50%;
+  z-index: 4;
+  width: max-content;
+  max-width: min(92vw, 640px);
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.flourish-story-heading .section-kicker {
+  margin: 0 0 0.35rem;
+  color: #4b1720;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: clamp(0.7rem, 0.9vw, 0.82rem);
+}
+
+.flourish-story-heading .flourish-story-title {
+  margin: 0;
+  color: #4b1720;
+  font-family: var(--opener-display-font);
+  font-size: clamp(2.6rem, 5.4vw, 5.4rem);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 0.86;
 }
 
 .flourish-story-stage .flourish-embed iframe {
@@ -2594,6 +2624,15 @@ p {
 
   .flourish-story-stage .flourish-embed {
     transform: translateY(20px) scale(0.88);
+  }
+
+  .flourish-story-heading {
+    top: 0.25rem;
+    max-width: 88vw;
+  }
+
+  .flourish-story-heading .flourish-story-title {
+    font-size: clamp(2rem, 8.5vw, 2.8rem);
   }
 
   .story-card {
@@ -13503,4 +13542,67 @@ main > section,
   .tasting-menu {
     height: clamp(470px, 70svh, 540px) !important;
   }
+}
+
+/* Fermentación: more breathing room under the top nav, and a bigger chart
+   with less dead space around it, on regular-height desktop screens. */
+@media (min-width: 981px) and (min-height: 821px) {
+  .fermentation-heading {
+    top: clamp(8rem, 15svh, 11rem) !important;
+  }
+
+  .fermentation-section .fermentation-copy,
+  :root.is-inside-wine .fermentation-section .fermentation-copy {
+    top: 60% !important;
+    width: min(33vw, 440px) !important;
+  }
+
+  .fermentation-note,
+  :root.is-inside-wine .fermentation-note {
+    font-size: clamp(1.2rem, 1.55vw, 1.6rem) !important;
+    line-height: 1.55 !important;
+  }
+
+  .fermentation-section .fermentation-chart-panel,
+  :root.is-inside-wine .fermentation-section .fermentation-chart-panel {
+    left: clamp(60%, 63vw, 65%) !important;
+    top: 64% !important;
+    width: min(52vw, 900px) !important;
+  }
+
+  .fermentation-section .fermentation-chart-item {
+    height: clamp(520px, 62vh, 620px) !important;
+    min-height: clamp(520px, 62vh, 620px) !important;
+  }
+
+  /* Perfil sensorial del Malbec: pull the whole block left so it doesn't
+     float in the middle of all the empty space, and make the closing
+     italic line bigger/bolder so it's easier to read. */
+  .malbec-profile-layout {
+    margin-left: clamp(0.5rem, 2vw, 1.6rem) !important;
+  }
+
+  .malbec-profile-transition {
+    max-width: 30rem !important;
+    font-size: clamp(1.3rem, 1.75vw, 1.7rem) !important;
+    font-weight: 400 !important;
+    color: #2a1009 !important;
+  }
+}
+.fermentation-subtitle{
+    font-family: "Playfair Display", serif !important;
+    font-style: italic;
+    font-weight: 500;
+
+    font-size: clamp(2rem, 2.3vw, 2.6rem);
+    line-height: 1.15;
+
+    color: #F8EFE5 !important;
+
+    margin: 0 0 1.6rem;
+    padding: 0;
+
+    letter-spacing: -0.01em;
+
+    text-shadow: none;
 }
