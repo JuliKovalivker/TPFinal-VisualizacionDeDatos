@@ -1925,9 +1925,9 @@ p {
 }
 
 .narrative-bridge-production-close {
-  /* Llega directo al texto y suma sólo 45vh de recorrido para sostenerlo
+  /* Llega directo al texto y suma sólo 18vh de recorrido para sostenerlo
      quieto un instante antes de continuar hacia Diversidad. */
-  min-height: 145svh;
+  min-height: 118svh;
   overflow: clip;
 }
 
@@ -1943,20 +1943,6 @@ p {
   max-width: min(88vw, 1180px);
   margin: 0;
   padding-top: clamp(1.6rem, 5vh, 3.2rem);
-}
-
-.narrative-bridge-production-close .narrative-bridge-statement::before {
-  content: "\201C";
-  position: absolute;
-  z-index: -1;
-  top: clamp(-4.4rem, -9vh, -2.2rem);
-  left: clamp(-1.2rem, -2.6vw, -0.4rem);
-  color: rgba(139, 18, 50, 0.1);
-  font-family: var(--opener-display-font);
-  font-size: clamp(9rem, 16vw, 18rem);
-  font-style: normal;
-  line-height: 1;
-  pointer-events: none;
 }
 
 .narrative-bridge-production-close .chapter-title {
@@ -4175,7 +4161,7 @@ p {
 
 .malbec-profile-section {
   position: relative;
-  min-height: 420vh;
+  min-height: 265vh;
   scroll-margin-top: 66px;
   overflow: visible;
   background:
@@ -4548,7 +4534,7 @@ p {
 
 @media (max-width: 700px) {
   .malbec-profile-section {
-    min-height: 430vh;
+    min-height: 280vh;
   }
 
   .malbec-profile-pin {
@@ -5010,14 +4996,14 @@ p {
 }
 
 :root.is-tasting-active[data-tasting-step="4"] {
-  --bridge-glass-rotate: -7deg;
+  --bridge-glass-rotate: 19deg;
 }
 
 :root.is-tasting-active[data-tasting-step="4"] .bridge-wine-fill,
 :root.is-tasting-active[data-tasting-step="4"] .bridge-wine-top {
   transform-box: fill-box;
   transform-origin: 50% 48%;
-  transform: rotate(10deg) translateX(-8px);
+  transform: rotate(-19deg) translateX(14px);
 }
 
 .tasting-section[data-step="3"] .aroma-particles,
@@ -8406,7 +8392,7 @@ main svg text,
   align-items: stretch;
   column-gap: clamp(2rem, 6vw, 7rem);
   row-gap: clamp(0.8rem, 1.7svh, 1.25rem);
-  padding: clamp(5.35rem, 7.4svh, 6.6rem) clamp(1.3rem, 6vw, 6.5rem) clamp(1.65rem, 3.4svh, 2.6rem);
+  padding: clamp(6.4rem, 10svh, 8rem) clamp(1.3rem, 6vw, 6.5rem) clamp(1.65rem, 3.4svh, 2.6rem);
   opacity: 1 !important;
   transform: translate3d(0, var(--history-scene-y), 0) !important;
   will-change: transform;
@@ -13000,7 +12986,9 @@ main > section,
 .video-placeholder-section {
   position: relative;
   width: 100%;
-  min-height: 260vh;
+  /* El video queda apenas sostenido y enseguida entrega el scroll a
+     Producción, sin una pantalla vacía intermedia. */
+  min-height: 128svh;
   background: var(--paper);
 }
 
@@ -13217,11 +13205,11 @@ main > section,
 .tasting-hand {
   position: absolute;
   right: auto;
-  left: 9%;
-  top: 51.5%;
+  left: -6%;
+  top: 46.5%;
   z-index: 5;
   display: block;
-  width: 110%;
+  width: 152%;
   max-width: none;
   height: auto;
   pointer-events: none;
@@ -13845,5 +13833,148 @@ main > section,
 @media (max-width: 700px) {
   .consumption-calendar .month-stain::after {
     font-size: clamp(0.72rem, 3.4vw, 0.95rem);
+  }
+}
+
+/* Perfil sensorial: más aire bajo la navegación. La cita final aparece
+   dentro del mismo sticky y conserva una pausa corta antes de Cata. */
+.malbec-profile-pin {
+  padding-top: calc(var(--header-height, 72px) + clamp(3.4rem, 10svh, 6.2rem)) !important;
+}
+
+@media (max-height: 820px) and (min-width: 701px) {
+  .malbec-profile-pin {
+    padding-top: calc(var(--header-height, 72px) + clamp(1.25rem, 3svh, 1.8rem)) !important;
+  }
+}
+
+/* La conclusión sensorial vive en una pausa propia, no debajo del gráfico. */
+.sensory-quote-bridge {
+  position: relative;
+  min-height: 118svh;
+  overflow: clip;
+  background: var(--paper);
+}
+
+.sensory-quote-pin {
+  position: sticky;
+  top: 0;
+  display: grid;
+  place-items: center;
+  min-height: var(--viewport-safe-height, 100svh);
+  padding: calc(var(--header-height, 72px) + clamp(1.5rem, 4svh, 3rem)) clamp(1.25rem, 7vw, 8rem) clamp(2rem, 6svh, 5rem);
+}
+
+.sensory-quote-pin blockquote {
+  position: relative;
+  width: min(78vw, 1080px);
+  margin: 0;
+  color: var(--wine-deep, #4b1720);
+  font-family: var(--opener-display-font);
+  font-size: clamp(2.85rem, 4.8vw, 5.6rem);
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+@media (max-width: 700px) {
+  .sensory-quote-bridge {
+    min-height: 122svh;
+  }
+
+  .sensory-quote-pin blockquote {
+    width: min(86vw, 580px);
+    font-size: clamp(2.15rem, 9vw, 3.75rem);
+    line-height: 1.02;
+  }
+}
+
+@media (max-width: 980px) {
+  .tasting-hand {
+    left: -6%;
+    top: 46.5%;
+    width: 152%;
+  }
+}
+
+/* Producción por varietal: el tamaño base responde tanto al ancho como a
+   la altura disponible. Esto evita que una notebook baja reciba simplemente
+   una versión comprimida del layout de monitor. */
+@media (min-width: 701px) and (max-width: 1440px) {
+  .argentine-varietals {
+    --varietal-bottle-width: clamp(112px, min(13vw, 21svh), 198px);
+    --varietal-bottle-height: min(74svh, calc(var(--varietal-bottle-width) * 2.96));
+  }
+
+  .varietal-pin {
+    padding: calc(var(--header-height, 72px) + 0.7rem) clamp(0.6rem, 2vw, 1.8rem) clamp(0.45rem, 1.2svh, 0.9rem);
+  }
+
+  .bottle-lineup {
+    --chart-axis-x: clamp(2.7rem, 4.6vw, 4rem);
+    left: clamp(0.35rem, 1vw, 0.9rem);
+    right: clamp(0.35rem, 1vw, 0.9rem);
+    bottom: clamp(0.3rem, 0.8svh, 0.65rem);
+    gap: clamp(0.15rem, 0.75vw, 0.7rem);
+    padding-inline: clamp(3.7rem, 6vw, 5.2rem) clamp(0.65rem, 1.7vw, 1.5rem) !important;
+  }
+
+  .varietal-axis-title {
+    top: clamp(0.75rem, 2.3svh, 1.4rem) !important;
+    right: clamp(0.8rem, 2.4vw, 2rem) !important;
+    width: min(46vw, 34rem);
+    font-size: clamp(2rem, min(4.3vw, 6.2svh), 3.45rem) !important;
+    line-height: 0.9 !important;
+  }
+
+  .varietal-axis-title span {
+    margin-top: 0.18em;
+    font-size: 0.46em;
+  }
+
+  .varietal-value-marker {
+    font-size: clamp(0.62rem, min(0.9vw, 1.6svh), 0.76rem) !important;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 1180px) {
+  .argentine-varietals {
+    --varietal-bottle-width: clamp(96px, min(14.2vw, 19.5svh), 162px);
+    --varietal-bottle-height: min(69svh, calc(var(--varietal-bottle-width) * 2.96));
+  }
+
+  .varietal-axis-title {
+    width: min(50vw, 29rem);
+  }
+}
+
+@media (max-width: 700px) {
+  .argentine-varietals {
+    --varietal-bottle-width: clamp(54px, min(17.2vw, 12.5svh), 78px);
+    --varietal-bottle-height: min(57svh, calc(var(--varietal-bottle-width) * 2.96));
+  }
+
+  .varietal-pin {
+    padding-top: calc(var(--header-height, 58px) + 0.7rem);
+  }
+
+  .bottle-lineup {
+    padding-top: clamp(4.8rem, 13svh, 6.5rem);
+  }
+
+  .varietal-axis-title {
+    left: 0.7rem;
+    right: 0.7rem;
+    top: 0.5rem;
+    width: auto;
+    font-size: clamp(1.65rem, 8vw, 2.45rem);
+    line-height: 0.92;
+    text-align: center;
+  }
+
+  .varietal-value-marker {
+    font-size: clamp(0.5rem, 2.1vw, 0.65rem);
   }
 }

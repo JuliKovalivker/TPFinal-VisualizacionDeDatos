@@ -1212,12 +1212,12 @@ function updateCalendarState() {
   };
   const historyProgress = clamp(-rect.top / travel, 0, 1);
   const HISTORY_REFLECTION_START = 0.82;
-  const HISTORY_SLIDE_OUT_START = 0.91;
-  const HISTORY_SLIDE_OUT_DURATION = 0.09;
-  const sceneIn = smoothStep(historyProgress / chapterMotion.slideIn);
-  const sceneOut = smoothStep((historyProgress - HISTORY_SLIDE_OUT_START) / HISTORY_SLIDE_OUT_DURATION);
-  const sceneY = lerp(56, 0, sceneIn) - sceneOut * 112;
-  const timelineProgress = clamp((historyProgress - 0.27) / 0.55, 0, 1);
+  /* Producción ya está presente al terminar el video. Se conserva un
+     pequeño margen superior y permanece hasta que entra la cita. */
+  const sceneY = 3.5;
+  /* La curva termina casi en el borde de la sección: ya no queda una
+     pantalla vacía entre el último dato y la cita. */
+  const timelineProgress = clamp((historyProgress - 0.27) / 0.7, 0, 1);
   const storyPosition = getProductionHistoryStoryPosition(timelineProgress);
   const activeIndex = clamp(Math.round(storyPosition.index), 0, productionHistoryData.length - 1);
   const activeItem = productionHistoryData[activeIndex] || productionHistoryData[0];
@@ -2261,7 +2261,7 @@ function updateMalbecProfileState() {
   const shapeProgress = smoothStep((profileProgress - 0.64) / 0.16);
   const shapeFill = smoothStep((profileProgress - 0.72) / 0.1);
   const barProgress = smoothStep((profileProgress - 0.36) / 0.22);
-  const transitionProgress = smoothStep((profileProgress - 0.86) / 0.1);
+  const transitionProgress = smoothStep((profileProgress - 0.78) / 0.06);
   const glassScale = window.innerWidth <= 700 ? 0.82 : window.innerWidth <= 980 ? 0.92 : 1;
 
   root.classList.toggle("is-malbec-profile-active", isProfileActive);
@@ -2361,7 +2361,7 @@ function updateTastingScrollState() {
     root.style.setProperty("--bridge-glass-extra-x", `${glassShift.toFixed(2)}vw`);
     root.style.setProperty(
       "--bridge-glass-rotate",
-      `${(-6 * tastingSipProgress).toFixed(2)}deg`,
+      `${(19 * tastingSipProgress).toFixed(2)}deg`,
     );
     root.style.setProperty("--shared-glass-opacity", sharedGlassOpacity.toFixed(3));
   }
