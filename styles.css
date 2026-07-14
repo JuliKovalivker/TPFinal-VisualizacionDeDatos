@@ -1925,11 +1925,15 @@ p {
 }
 
 .narrative-bridge-production-close {
-  min-height: 235vh;
-  overflow: hidden;
+  /* Llega directo al texto y suma sólo 45vh de recorrido para sostenerlo
+     quieto un instante antes de continuar hacia Diversidad. */
+  min-height: 145svh;
+  overflow: clip;
 }
 
 .narrative-bridge-production-close .narrative-bridge-pin {
+  position: sticky;
+  top: 0;
   justify-items: start;
 }
 
@@ -13812,5 +13816,34 @@ main > section,
 @media (max-width: 1300px) {
   .flourish-story-stage .flourish-embed {
     transform: translateY(-8svh) scale(0.68);
+  }
+}
+
+/* Month labels are code-rendered so they remain centered independently of
+   each transparent ring image's intrinsic dimensions. */
+.consumption-calendar .month-stain::after {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  content: attr(data-month);
+  color: #2a1009;
+  font-family: var(--opener-display-font);
+  font-size: clamp(0.9rem, 1.12vw, 1.2rem);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: var(--stain-reveal, 0);
+  transform: translate(-50%, -50%);
+  text-shadow: 0 1px 0 rgba(255, 250, 237, 0.5);
+  transition: opacity 100ms linear;
+}
+
+@media (max-width: 700px) {
+  .consumption-calendar .month-stain::after {
+    font-size: clamp(0.72rem, 3.4vw, 0.95rem);
   }
 }

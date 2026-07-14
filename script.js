@@ -1170,6 +1170,10 @@ function updateNarrativeBridgeState() {
       photoYOffset = sharedOffset;
     }
 
+    if (section.classList.contains("narrative-bridge-production-close")) {
+      statementOffset = "0rem";
+    }
+
     if (section.classList.contains("narrative-bridge-grape")) {
       const sceneIn = smoothStep(progress / chapterMotion.fadeIn);
       const sceneOut = smoothStep((progress - chapterMotion.fadeOutStart) / chapterMotion.fadeOut);
