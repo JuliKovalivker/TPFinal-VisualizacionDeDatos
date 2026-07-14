@@ -6405,9 +6405,9 @@ main > section,
 
 .opener .intro-glass-scene {
   left: auto;
-  right: clamp(2rem, 7vw, 8.2rem);
-  bottom: clamp(9.6rem, 19vh, 12.5rem);
-  width: clamp(330px, 29vw, 520px);
+  right: clamp(1.25rem, 4vw, 5rem);
+  bottom: clamp(5.8rem, 10vh, 7.8rem);
+  width: clamp(440px, 38vw, 720px);
   transform:
     translate3d(
       var(--intro-toast-x),
@@ -6416,6 +6416,11 @@ main > section,
     )
     rotate(var(--intro-toast-rotate))
     scaleX(-1);
+}
+
+.opener .intro-glass-illustration {
+  transform: scale(1.22);
+  transform-origin: 40.3% 74%;
 }
 
 @media (max-width: 1100px) {
@@ -6432,9 +6437,9 @@ main > section,
   }
 
   .opener .intro-glass-scene {
-    right: clamp(1.6rem, 7vw, 4.2rem);
-    bottom: clamp(8.6rem, 18vh, 11rem);
-    width: clamp(300px, 30vw, 420px);
+    right: clamp(1rem, 3.5vw, 2.8rem);
+    bottom: clamp(6.5rem, 12vh, 8.5rem);
+    width: clamp(340px, 39vw, 500px);
   }
 }
 
@@ -6478,6 +6483,10 @@ main > section,
       )
       rotate(var(--intro-toast-rotate))
       scaleX(-1);
+  }
+
+  .opener .intro-glass-illustration {
+    transform: scale(1.14);
   }
 }
 
@@ -13203,39 +13212,146 @@ main > section,
 /* Tasting hand: reuse the opening hand so the gesture stays in the same visual language. */
 .tasting-hand {
   position: absolute;
-  left: -41%;
-  top: 41.5%;
+  right: auto;
+  left: 9%;
+  top: 51.5%;
   z-index: 5;
   display: block;
-  width: 128%;
+  width: 110%;
   max-width: none;
   height: auto;
   pointer-events: none;
   opacity: 0;
-  transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
-  transform-origin: 64% 44%;
-  filter: drop-shadow(0 18px 24px rgba(58, 13, 16, 0.12));
+  transform: translateZ(0) scaleX(-1);
+  transform-origin: 50% 52%;
+  clip-path: none;
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.78) 26%, #000 42%, #000 100%),
+    linear-gradient(to bottom, #000 0%, #000 68%, rgba(0, 0, 0, 0.82) 76%, transparent 100%);
+  mask-image:
+    linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.78) 26%, #000 42%, #000 100%),
+    linear-gradient(to bottom, #000 0%, #000 68%, rgba(0, 0, 0, 0.82) 76%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  filter: none;
   transition:
     opacity 320ms ease,
     transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform, opacity;
 }
 
-:root.is-tasting-active .tasting-hand {
-  opacity: calc(var(--shared-glass-opacity, 1) * 0.94);
-}
-
 :root.is-tasting-active[data-tasting-step="1"] .tasting-hand,
 :root.is-tasting-active[data-tasting-step="3"] .tasting-hand {
-  transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  opacity: 1;
+  transform: translateZ(0) scaleX(-1);
 }
 
 :root.is-tasting-active[data-tasting-step="2"] .tasting-hand {
-  animation: tastingHandSwirl 5.8s ease-in-out infinite;
+  opacity: 1;
+  transform: translateZ(0) scaleX(-1);
 }
 
 :root.is-tasting-active[data-tasting-step="4"] .tasting-hand {
-  animation: tastingHandSip 6.8s ease-in-out infinite;
+  opacity: 1;
+  transform: translateZ(0) scaleX(-1);
+}
+
+.tasting-mouth {
+  position: fixed;
+  top: 8%;
+  right: -12vw;
+  z-index: 63;
+  display: block;
+  width: clamp(520px, 46vw, 820px);
+  height: auto;
+  pointer-events: none;
+  opacity: var(--tasting-mouth-opacity, 0);
+  transform: translate3d(var(--tasting-mouth-x, 18%), 0, 0);
+  transform-origin: 55% 48%;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.82) 14%, #000 25%, #000 70%, rgba(0, 0, 0, 0.72) 82%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.82) 14%, #000 25%, #000 70%, rgba(0, 0, 0, 0.72) 82%, transparent 100%);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  transition:
+    opacity 280ms ease,
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity;
+}
+
+:root.is-credits-wipe-active .tasting-mouth {
+  z-index: 63;
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition:
+    opacity 280ms ease,
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Keep the tasting scene responsive to scroll while filtering small wheel and
+   trackpad jumps between sampled frames. */
+:root.is-tasting-active .bridge-receiving-glass {
+  transition:
+    opacity 320ms ease,
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 320ms ease;
+}
+
+.tasting-menu-step,
+.tasting-menu-step-label,
+.tasting-menu-step-text {
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
+  transition-duration: 380ms !important;
+}
+
+@keyframes tastingMouthSip {
+  0%, 34% {
+    opacity: 0;
+    transform: translate3d(18%, 0, 0);
+  }
+
+  46% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  62% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  76%, 100% {
+    opacity: 0;
+    transform: translate3d(8%, 0, 0);
+  }
+}
+
+@media (max-width: 980px) {
+  .tasting-mouth {
+    top: 23%;
+    right: -2vw;
+    width: clamp(320px, 42vw, 460px);
+  }
+}
+
+@media (max-width: 700px) {
+  .tasting-mouth {
+    top: 27%;
+    right: -17vw;
+    width: min(62vw, 360px);
+  }
+}
+
+@media (max-width: 980px) {
+  .tasting-hand {
+    right: auto;
+    left: 9%;
+    top: 51.5%;
+    width: 110%;
+    transform: translateZ(0) scaleX(-1);
+    clip-path: none;
+  }
 }
 
 :root:not(.is-tasting-active) .tasting-hand {
@@ -13243,48 +13359,43 @@ main > section,
 }
 
 @keyframes tastingHandSwirl {
-  0%,
-  100% {
-    transform: translate3d(-0.8%, 0.2%, 0) rotate(-5deg) scale(1);
+  0%, 100% {
+    transform: translate3d(-0.8%, 0.2%, 0) rotate(-5deg) scaleX(-1);
   }
-
   24% {
-    transform: translate3d(1.2%, -1.2%, 0) rotate(5deg) scale(1.01);
+    transform: translate3d(1.2%, -1.2%, 0) rotate(5deg) scaleX(-1);
   }
-
   50% {
-    transform: translate3d(-1%, 0.5%, 0) rotate(-4deg) scale(1);
+    transform: translate3d(-1%, 0.5%, 0) rotate(-4deg) scaleX(-1);
   }
-
   76% {
-    transform: translate3d(0.9%, -1%, 0) rotate(4deg) scale(1.008);
+    transform: translate3d(0.9%, -1%, 0) rotate(4deg) scaleX(-1);
   }
 }
 
 @keyframes tastingHandSip {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scaleX(-1);
   }
-
   34% {
-    transform: translate3d(-0.5%, -1.6%, 0) rotate(-4deg) scale(1.005);
+    transform: translate3d(-0.5%, -1.6%, 0) rotate(-4deg) scaleX(-1);
   }
-
   58% {
-    transform: translate3d(1.6%, -5.4%, 0) rotate(-12deg) scale(1.012);
+    transform: translate3d(1.6%, -5.4%, 0) rotate(-12deg) scaleX(-1);
   }
-
   78% {
-    transform: translate3d(0.5%, -2.8%, 0) rotate(-7deg) scale(1.006);
+    transform: translate3d(0.5%, -2.8%, 0) rotate(-7deg) scaleX(-1);
   }
 }
 
 @media (max-width: 980px) {
   .tasting-hand {
-    left: -43%;
-    top: 42%;
-    width: 132%;
+    right: auto;
+    left: 9%;
+    top: 51.5%;
+    width: 110%;
+    transform: translateZ(0) scaleX(-1);
+    clip-path: none;
   }
 }
 
@@ -13605,4 +13716,101 @@ main > section,
     letter-spacing: -0.01em;
 
     text-shadow: none;
+}
+
+/* Sensory-profile closing thought: reveal it only after the chart has fully
+   resolved, then let it span toward the glass as the bridge into tasting. */
+.malbec-profile-transition {
+  width: min(68vw, 66rem) !important;
+  max-width: none !important;
+  margin-top: clamp(2.5rem, 5.5svh, 4.2rem) !important;
+  padding-left: clamp(1.25rem, 1.8vw, 1.65rem) !important;
+  font-size: clamp(1.55rem, 2vw, 2.05rem) !important;
+  line-height: 1.34 !important;
+  letter-spacing: -0.012em;
+  transition:
+    opacity 420ms ease,
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (max-width: 980px) {
+  .malbec-profile-transition {
+    width: min(76vw, 48rem) !important;
+    font-size: clamp(1.4rem, 2.8vw, 1.85rem) !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .malbec-profile-transition {
+    width: 88vw !important;
+    margin-top: 2rem !important;
+    font-size: clamp(1.3rem, 5.8vw, 1.65rem) !important;
+    line-height: 1.38 !important;
+  }
+}
+
+/* Responsive QA from review feedback. */
+.story-card {
+  box-sizing: border-box;
+  height: auto !important;
+  overflow: hidden;
+}
+
+.story-card p {
+  width: 100%;
+  max-width: none;
+  overflow-wrap: anywhere;
+}
+
+.fermentation-section .fermentation-flourish-embed,
+:root.is-inside-wine .fermentation-section .fermentation-flourish-embed {
+  --fermentation-flourish-fit: 0.68;
+}
+
+.fermentation-section .fermentation-chart-item {
+  height: clamp(460px, 60svh, 540px) !important;
+  min-height: clamp(460px, 60svh, 540px) !important;
+}
+
+@media (max-width: 980px) {
+  .fermentation-section .fermentation-flourish-embed,
+  :root.is-inside-wine .fermentation-section .fermentation-flourish-embed {
+    --fermentation-flourish-fit: 0.62;
+  }
+
+  .fermentation-section .fermentation-chart-item {
+    height: min(54svh, 470px) !important;
+    min-height: min(54svh, 470px) !important;
+  }
+
+  .varietal-axis-title {
+    left: 50% !important;
+    right: auto !important;
+    top: clamp(1rem, 3svh, 2rem) !important;
+    width: min(88vw, 42rem) !important;
+    max-width: none !important;
+    font-size: clamp(2rem, 6vw, 3.6rem) !important;
+    line-height: 0.9 !important;
+    text-align: center !important;
+    writing-mode: horizontal-tb !important;
+    transform: translateX(-50%) !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .story-card {
+    width: min(88vw, 390px) !important;
+    min-height: 0 !important;
+  }
+
+  .varietal-axis-title {
+    width: 92vw !important;
+    font-size: clamp(1.75rem, 8vw, 2.8rem) !important;
+  }
+}
+
+@media (max-width: 1300px) {
+  .flourish-story-stage .flourish-embed {
+    transform: translateY(-8svh) scale(0.68);
+  }
 }

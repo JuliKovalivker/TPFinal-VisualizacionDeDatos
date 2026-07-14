@@ -1931,20 +1931,13 @@ function updateFlourishStoryState() {
     cardWidth = clamp(window.innerWidth * 0.18, 230, 290);
     cardHeight = clamp(window.innerHeight * 0.12, 118, 156);
 
-    if (window.innerWidth > 760) {
-      if (index === 0) {
-        cardX = Math.min(window.innerWidth * 0.08, 140);
-        cardY = -Math.min(window.innerHeight * 0.16, 132) + entryLift;
-      } else if (index === 1) {
-        cardX = -Math.min(window.innerWidth * 0.2, 300);
-        cardY = Math.min(window.innerHeight * 0.145, 122) + entryLift;
-      } else {
-        cardX = Math.min(window.innerWidth * 0.2, 300);
-        cardY = entryLift;
-      }
+    if (window.innerWidth > 1300) {
+      const sideOffset = Math.min(window.innerWidth * 0.34, 620);
+      cardX = index === 1 ? -sideOffset * 0.86 : sideOffset;
+      cardY = (index === 0 ? -72 : 96) + entryLift;
     } else {
       cardX = 0;
-      cardY = (index === 0 ? -150 : 145) + entryLift;
+      cardY = Math.min(window.innerHeight * 0.38, 285) + entryLift;
       cardWidth = clamp(window.innerWidth * 0.78, 260, 360);
       cardHeight = clamp(window.innerHeight * 0.12, 112, 150);
     }
@@ -1953,7 +1946,7 @@ function updateFlourishStoryState() {
     card.style.setProperty("--story-card-x", `${cardX.toFixed(2)}px`);
     card.style.setProperty("--story-card-y", `${cardY.toFixed(2)}px`);
     card.style.setProperty("--story-card-width", `${cardWidth.toFixed(2)}px`);
-    card.style.setProperty("--story-card-height", `${cardHeight.toFixed(2)}px`);
+    card.style.setProperty("--story-card-height", "auto");
     card.style.setProperty("--story-card-min-height", `${cardHeight.toFixed(2)}px`);
     card.style.setProperty("--story-card-radius", cardRadius);
     card.style.setProperty("--story-card-text-opacity", textOpacity.toFixed(3));
@@ -2264,7 +2257,7 @@ function updateMalbecProfileState() {
   const shapeProgress = smoothStep((profileProgress - 0.64) / 0.16);
   const shapeFill = smoothStep((profileProgress - 0.72) / 0.1);
   const barProgress = smoothStep((profileProgress - 0.36) / 0.22);
-  const transitionProgress = smoothStep((profileProgress - 0.68) / 0.16);
+  const transitionProgress = smoothStep((profileProgress - 0.86) / 0.1);
   const glassScale = window.innerWidth <= 700 ? 0.82 : window.innerWidth <= 980 ? 0.92 : 1;
 
   root.classList.toggle("is-malbec-profile-active", isProfileActive);
@@ -2322,6 +2315,7 @@ function updateTastingScrollState() {
   const copyVisible = tastingProgress > 0.025 ? 1 : 0;
   const tastingGlassEntry = smoothStep(tastingProgress / TASTING_GLASS_ENTRY_END);
   const tastingEffectsReady = tastingProgress >= TASTING_EFFECT_START;
+  const tastingSipProgress = smoothStep((tastingProgress - 0.81) / 0.055);
   const glassCarryShift = getFermentationGlassShift();
   const glassTargetShift = 22;
   const glassShift = isTastingActive
@@ -2348,6 +2342,11 @@ function updateTastingScrollState() {
   root.style.setProperty("--tasting-entry-progress", entryProgress.toFixed(3));
   root.style.setProperty("--tasting-copy-y", `${copyY.toFixed(2)}vh`);
   root.style.setProperty("--tasting-copy-opacity", copyVisible.toFixed(3));
+  root.style.setProperty("--tasting-mouth-opacity", tastingSipProgress.toFixed(3));
+  root.style.setProperty(
+    "--tasting-mouth-x",
+    `${(18 * (1 - tastingSipProgress)).toFixed(2)}%`,
+  );
   root.style.setProperty("--tasting-glass-drop-y", "0vh");
   if (isTastingNear && !varietalBridgeGlassActive) {
     root.classList.remove("is-bridge-glass-zooming");
@@ -2356,7 +2355,10 @@ function updateTastingScrollState() {
     root.style.setProperty("--bridge-glass-scale", "1");
     root.style.setProperty("--bridge-glass-origin-y", "74%");
     root.style.setProperty("--bridge-glass-extra-x", `${glassShift.toFixed(2)}vw`);
-    root.style.setProperty("--bridge-glass-rotate", activeEffectStep === 4 ? "-6deg" : "0deg");
+    root.style.setProperty(
+      "--bridge-glass-rotate",
+      `${(-6 * tastingSipProgress).toFixed(2)}deg`,
+    );
     root.style.setProperty("--shared-glass-opacity", sharedGlassOpacity.toFixed(3));
   }
   tastingCopyPanels.forEach((panel, index) => {
