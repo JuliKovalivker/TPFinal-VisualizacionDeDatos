@@ -414,6 +414,16 @@ function getStoryCardBaseSize() {
 }
 
 function getVarietalBottleMetrics() {
+  // Las dimensiones responsive viven en CSS. Tomarlas de una botella estable
+  // evita que Malbec viaje con la antigua escala JS y salte al alinearse.
+  const referenceBottle = varietalBottles.find((bottle) => bottle !== storyMalbecBottle);
+  if (referenceBottle?.offsetWidth && referenceBottle?.offsetHeight) {
+    return {
+      width: referenceBottle.offsetWidth,
+      height: referenceBottle.offsetHeight,
+    };
+  }
+
   const isMobile = window.innerWidth <= 700;
   const width = isMobile
     ? clamp(window.innerWidth * 0.184, 62, 82)
@@ -1422,7 +1432,7 @@ function updateVarietalState() {
     : 1;
   const productionChartProgress = productionBarInProgress * (1 - productionBottleResetProgress);
   const productionAxisOpacity = productionAxisInProgress * (1 - productionChartExitProgress);
-  const productionAxisY = -2.6 * productionChartProgress;
+  const productionAxisY = 0;
   const transitionProgress = bridgeActive
     ? smoothStep((varietalProgress - OTHER_BOTTLES_EXIT_START) / (OTHER_BOTTLES_EXIT_END - OTHER_BOTTLES_EXIT_START))
     : smoothStep((varietalProgress - 0.54) / 0.14);
@@ -1627,7 +1637,11 @@ function updateVarietalState() {
       );
     } else {
       storyMalbecLineupSettled = true;
+      storyMalbecSlot?.classList.add("is-travel-handoff");
       clearTravelingMalbec();
+      requestAnimationFrame(() => {
+        storyMalbecSlot?.classList.remove("is-travel-handoff");
+      });
     }
   } else if (!bridgeActive) {
     clearTravelingMalbec();
@@ -1707,7 +1721,7 @@ function updateVarietalState() {
       ? productionChartSlotOffsets[index]
       : -distanceFromCenter * window.innerWidth * 0.052;
     const chartSlotX = chartSlotTargetX * bottleChartProgress;
-    const chartSlotY = -2.6 * bottleChartProgress;
+    const chartSlotY = 0;
 
     if (slot) {
       slot.style.setProperty("--slot-chart-x", `${chartSlotX.toFixed(2)}px`);
@@ -1732,7 +1746,13 @@ function updateVarietalState() {
       const serviceLiftY = bottleServiceLiftProgress * 34;
       const serviceLiftScale = bottleServiceLiftProgress * 0.14;
       const heroOpacity = 1 - bottleExitForGlassProgress;
-      const baseHeroScale = 1 + heroProgress * 1.18 - pullbackScale - serviceLiftScale - bottlePourProgress * 0.24;
+      /* Al girar 90°, la altura original de la botella pasa a ocupar ancho.
+         Limitamos el crecimiento por ambas dimensiones para que la fase hero
+         entre completa en cualquier monitor o notebook. */
+      const heroScaleByWidth = (window.innerWidth * 0.68) / Math.max(bottle.offsetHeight, 1);
+      const heroScaleByHeight = (window.innerHeight * 0.66) / Math.max(bottle.offsetWidth, 1);
+      const heroExpandedScale = clamp(Math.min(2.18, heroScaleByWidth, heroScaleByHeight), 1.42, 2.18);
+      const baseHeroScale = lerp(1, heroExpandedScale, heroProgress) - pullbackScale - serviceLiftScale - bottlePourProgress * 0.24;
       const heroScale = baseHeroScale * bottleChartScale;
       const pourCoverY = 4.5 * bottlePourProgress * (1 - bottleLiftProgress);
       bottle.style.setProperty("--hero-x", "0px");

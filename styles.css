@@ -3184,6 +3184,12 @@ p {
   pointer-events: none;
 }
 
+/* El cambio de la botella fija al slot debe ser instantaneo. La transicion
+   normal del slot la hacia reaparecer desde opacity 0 durante un frame. */
+.varietal-slot.is-travel-handoff {
+  transition: none !important;
+}
+
 .landing-mark {
   position: relative;
   width: var(--varietal-bottle-width);
@@ -11588,8 +11594,8 @@ main > section,
 .wine-composition-section {
   --composition-water-color: #d84f68;
   --composition-alcohol-color: #f2dfad;
-  --composition-acids-color: #f7df58;
-  --composition-minors-color: #f3a4ba;
+  --composition-acids-color: #f3a4ba;
+  --composition-minors-color: #f7df58;
 }
 
 .wine-composition-section .composition-slice {
@@ -13976,5 +13982,333 @@ main > section,
 
   .varietal-value-marker {
     font-size: clamp(0.5rem, 2.1vw, 0.65rem);
+  }
+}
+
+/* Desktop responsive pass: notebooks and monitors with reduced usable height. */
+@media (min-width: 901px) and (max-height: 1100px) {
+  .site-header {
+    padding-inline: clamp(1rem, 2.4vw, 2.4rem) !important;
+  }
+
+  .scale-index {
+    width: auto !important;
+    max-width: calc(100vw - 3rem);
+    padding-left: 0 !important;
+    gap: clamp(0.35rem, 0.9vw, 0.8rem) !important;
+    overflow: visible;
+  }
+
+  .scale-index a {
+    padding-inline: clamp(0.3rem, 0.55vw, 0.5rem);
+    font-size: clamp(0.56rem, 0.7vw, 0.7rem) !important;
+  }
+
+  .narrative-bridge-before-history .narrative-bridge-pin {
+    align-content: center !important;
+    width: min(90vw, 1540px) !important;
+    max-width: min(90vw, 1540px) !important;
+    gap: clamp(1rem, 2.5svh, 1.45rem) !important;
+    padding-top: calc(var(--header-height, 72px) + clamp(0.7rem, 1.8svh, 1.15rem)) !important;
+    padding-bottom: clamp(0.8rem, 1.8svh, 1.2rem) !important;
+  }
+
+  .production-essay-visual {
+    grid-template-rows: clamp(315px, 57svh, 520px) !important;
+  }
+
+  .narrative-bridge-before-history .before-history-text-block p {
+    margin-top: 0 !important;
+    font-size: clamp(0.98rem, min(1.24vw, 2.2svh), 1.18rem) !important;
+    line-height: 1.42 !important;
+  }
+
+  .narrative-bridge-before-history .before-history-text-block strong {
+    margin-top: 0.35rem !important;
+    font-size: clamp(1.5rem, min(2.2vw, 4.2svh), 2.35rem) !important;
+  }
+
+  .bottle-transition-title {
+    top: 52%;
+    width: min(50vw, 760px);
+  }
+
+  .bottle-transition-title p {
+    font-size: clamp(2.5rem, min(5vw, 10svh), 5.8rem);
+    line-height: 0.9;
+    text-wrap: balance;
+  }
+
+  .fermentation-heading {
+    top: calc(var(--header-height, 72px) + clamp(0.65rem, 1.7svh, 1rem)) !important;
+  }
+
+  .fermentation-heading h2.chapter-title,
+  :root.is-inside-wine .fermentation-heading h2.chapter-title {
+    font-size: clamp(3.7rem, min(6vw, 10svh), 5.4rem) !important;
+    line-height: 0.88 !important;
+  }
+
+  .fermentation-section .fermentation-copy,
+  :root.is-inside-wine .fermentation-section .fermentation-copy {
+    left: clamp(2rem, 5vw, 5rem) !important;
+    top: 59% !important;
+    width: min(34vw, 430px) !important;
+    transform: translate3d(0, -50%, 0) !important;
+  }
+
+  .fermentation-note,
+  :root.is-inside-wine .fermentation-note {
+    font-size: clamp(1rem, min(1.35vw, 2.3svh), 1.28rem) !important;
+    line-height: 1.45 !important;
+  }
+
+  .fermentation-section .fermentation-chart-panel,
+  :root.is-inside-wine .fermentation-section .fermentation-chart-panel {
+    left: clamp(64%, 67vw, 69%) !important;
+    top: 62% !important;
+    width: min(45vw, 760px) !important;
+  }
+
+  .fermentation-section .fermentation-chart-item {
+    height: min(48svh, 430px) !important;
+    min-height: min(48svh, 430px) !important;
+  }
+
+  .sensory-quote-pin {
+    place-items: center start;
+    padding-left: clamp(4rem, 8vw, 9rem);
+    padding-right: clamp(20rem, 27vw, 32rem);
+  }
+
+  .sensory-quote-pin blockquote {
+    width: min(62vw, 920px);
+    font-size: clamp(2.8rem, min(4.3vw, 8.5svh), 5rem);
+    line-height: 1;
+  }
+}
+
+/* Labels scale with the bottle itself and may wrap only at real spaces. */
+.varietal-bottle {
+  container-type: inline-size;
+}
+
+.varietal-bottle em,
+.varietal-bottle .label-face em {
+  font-size: clamp(0.48rem, 9cqw, 1.55rem);
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+
+.varietal-bottle .label-note {
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+/* En monitores Full HD devolvemos al interrogante la escala editorial
+   original. La reducción anterior sigue activa en notebooks y ventanas
+   angostas, donde ese tamaño sí produciría cortes. */
+/* Un monitor físico 1920×1080 con el escalado habitual de Windows al 125%
+   se presenta al navegador como ~1536×864 y 1.25dppx. */
+@media (min-width: 1450px) and (min-height: 800px) and (min-resolution: 1.15dppx) {
+  .bottle-transition-title {
+    width: min(64vw, 1160px);
+  }
+
+  .bottle-transition-title p {
+    font-size: clamp(6.4rem, 6vw, 7.2rem);
+    line-height: 0.86;
+  }
+
+  /* Full HD conserva la puesta original de Fermentación. */
+  .fermentation-heading {
+    top: clamp(8rem, 16svh, 9.6rem) !important;
+  }
+
+  .fermentation-heading h2.chapter-title,
+  :root.is-inside-wine .fermentation-heading h2.chapter-title {
+    font-size: clamp(3.4rem, 6vw, 6.4rem) !important;
+    line-height: 0.86 !important;
+  }
+
+  .fermentation-section .fermentation-copy,
+  :root.is-inside-wine .fermentation-section .fermentation-copy {
+    left: clamp(2.2rem, 7vw, 5.5rem) !important;
+    top: 57% !important;
+    width: min(32vw, 430px) !important;
+  }
+
+  .fermentation-section .fermentation-chart-panel,
+  :root.is-inside-wine .fermentation-section .fermentation-chart-panel {
+    left: clamp(66%, 68vw, 70%) !important;
+    top: 64% !important;
+    width: min(50vw, 840px) !important;
+  }
+
+  .fermentation-section .fermentation-chart-item {
+    height: min(54svh, 500px) !important;
+    min-height: min(54svh, 500px) !important;
+    aspect-ratio: auto !important;
+  }
+}
+
+/* El mapa comparte la misma identidad visual que los pop-ups varietales. */
+.argentina-world-stage .country-popup {
+  border-color: rgba(141, 112, 82, 0.3);
+  background: rgba(255, 250, 235, 0.98);
+  box-shadow: 0 14px 30px rgba(74, 40, 27, 0.14);
+  color: #3a2118;
+}
+
+.argentina-world-stage .country-popup strong {
+  color: var(--wine) !important;
+}
+
+.argentina-world-stage .country-popup span {
+  color: rgba(112, 82, 60, 0.72) !important;
+}
+
+.argentina-world-stage .country-popup p,
+.argentina-world-stage .country-popup .popup-fact {
+  color: rgba(58, 33, 24, 0.82) !important;
+}
+
+.argentina-map-heading h3 {
+  color: var(--wine) !important;
+}
+
+/* Unifica estos títulos editoriales con el bordó de
+   “El vino aparece una y otra vez”. */
+.wine-builder .builder-intro .chapter-title,
+.argentina-map-heading h3,
+.consumption-calendar .monthly-ritual-copy h2,
+.varietal-axis-title {
+  color: var(--type-burgundy) !important;
+}
+
+/* El interrogante ocupa el cuerpo completo de la botella en cualquier
+   escritorio; tipografía y ancho reducen juntos cuando la pantalla achica. */
+@media (min-width: 901px) {
+  .bottle-transition-title {
+    top: 55.5% !important;
+    width: min(64vw, 1160px) !important;
+    padding-inline: clamp(0.65rem, 1.2vw, 1.4rem) !important;
+  }
+
+  .bottle-transition-title p {
+    font-size: clamp(3.5rem, min(6.8vw, 11svh), 7.4rem) !important;
+    line-height: 0.86 !important;
+    text-wrap: balance;
+  }
+}
+
+/* El mes ya se lee dentro de cada huella; el tooltip aporta solo el dato. */
+.consumption-calendar .month-tooltip strong {
+  display: none;
+}
+
+/* Collage y textos comparten exactamente el mismo eje central. */
+.narrative-bridge-before-history .narrative-bridge-pin {
+  justify-self: center !important;
+  margin-inline: auto !important;
+}
+
+.narrative-bridge-before-history .production-essay-visual,
+.narrative-bridge-before-history .narrative-bridge-copy {
+  margin-inline: auto !important;
+}
+
+/* La frase destacada conserva el bordó, pero pertenece tipográficamente al
+   párrafo: mismo cuerpo y familia, únicamente cambia el peso. */
+.narrative-bridge-before-history .before-history-text-block strong {
+  display: block;
+  margin-top: 0.35rem !important;
+  color: var(--wine) !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+  line-height: inherit !important;
+}
+
+/* Puente hacia varietales: composición centrada y destaque integrado al
+   párrafo, con el mismo tratamiento editorial del puente anterior. */
+.narrative-bridge-grape .narrative-bridge-pin {
+  justify-self: center !important;
+  margin-inline: auto !important;
+}
+
+.narrative-bridge-grape .narrative-bridge-copy,
+.narrative-bridge-grape .narrative-photo-figure {
+  margin-inline: auto !important;
+}
+
+.narrative-bridge-grape .narrative-bridge-copy .grape-text-block > strong {
+  display: block;
+  margin-top: 0.35rem !important;
+  color: var(--wine) !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+  letter-spacing: inherit !important;
+  line-height: inherit !important;
+}
+
+/* Botellas de varietales: recuperan su escala original y aprovechan toda la
+   altura útil del escritorio. El ancho siempre deriva de la misma proporción
+   2.96:1, por lo que el dibujo nunca se deforma. */
+@media (min-width: 901px) {
+  .argentine-varietals {
+    --varietal-bottle-width: min(
+      17vw,
+      calc((100svh - var(--header-height, 72px) - clamp(1.6rem, 3.2svh, 2.2rem)) / 2.96)
+    ) !important;
+    --varietal-bottle-height: calc(var(--varietal-bottle-width) * 2.96) !important;
+  }
+
+  .bottle-lineup {
+    bottom: clamp(0.3rem, 0.8svh, 0.65rem) !important;
+  }
+}
+
+/* Ajuste óptico vertical: estos tres conjuntos estaban levemente altos. Se
+   desplazan como una sola pieza para conservar todas sus distancias internas. */
+@media (min-width: 701px) {
+  .wine-builder .profile-chart-panel {
+    top: calc(55% + clamp(0.8rem, 2.2svh, 1.5rem)) !important;
+  }
+
+  .argentina-map-heading {
+    top: calc(5.9rem + clamp(0.8rem, 2.2svh, 1.5rem)) !important;
+  }
+
+  .argentina-world-stage {
+    transform: translateY(clamp(0.8rem, 2.2svh, 1.5rem));
+  }
+
+  .flourish-story-stage,
+  .flourish-story-stage.fl-scrolly-wrapper {
+    transform: translateY(clamp(0.8rem, 2.2svh, 1.5rem));
+  }
+}
+
+.wine-builder .profile-chart-question {
+  color: var(--type-burgundy) !important;
+}
+
+@media (min-width: 701px) {
+  .wine-composition-section .composition-layout,
+  :root.is-inside-wine .wine-composition-section .composition-layout {
+    transform: translateY(clamp(0.8rem, 2.2svh, 1.5rem));
+  }
+}
+
+@media (min-width: 981px) {
+  .tasting-hand {
+    left: -16% !important;
+    top: 41.5% !important;
+    width: 172% !important;
   }
 }
