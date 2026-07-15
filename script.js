@@ -64,6 +64,13 @@ const fermentationFlourish = document.querySelector("[data-fermentation-flourish
 const malbecProfileSection = document.querySelector(".malbec-profile-section");
 const finalToastSection = document.querySelector(".final-toast-section");
 const projectCredits = document.querySelector(".project-credits");
+const corkPopSound = new Audio("assets/audio/wine-cork-pop.wav");
+const winePourSound = new Audio("assets/audio/pouring-wine.wav");
+
+corkPopSound.preload = "auto";
+corkPopSound.volume = 0.82;
+winePourSound.preload = "auto";
+winePourSound.volume = 0.58;
 
 let corkPopped = false;
 let audioContext = null;
@@ -75,6 +82,10 @@ let flourishStorySlideIndex = -1;
 let fermentationFlourishSlideIndex = -1;
 let storyMalbecLineupSettled = false;
 let varietalBridgeGlassActive = false;
+let previousVarietalAudioProgress = 0;
+let corkSoundPlayed = false;
+let pourSoundPlayed = false;
+let pourSoundTimer = 0;
 const WINE_INTERIOR_GLASS_SCALE = 12;
 const WINE_INTERIOR_GLASS_X = 0;
 const WINE_SETTLED_GLASS_X = 25;
@@ -84,6 +95,44 @@ const tasteProfile = {
   flavor: "",
   age: "",
 };
+
+function playSceneSound(sound) {
+  sound.currentTime = 0;
+  const playback = sound.play();
+  playback?.catch(() => {});
+}
+
+function stopSceneSound(sound) {
+  sound.pause();
+  sound.currentTime = 0;
+}
+
+function playPourAfterCork() {
+  window.clearTimeout(pourSoundTimer);
+  const corkRemaining = Number.isFinite(corkPopSound.duration)
+    ? Math.max(corkPopSound.duration - corkPopSound.currentTime, 0)
+    : 0;
+  const delay = corkPopSound.paused ? 0 : Math.min(corkRemaining * 1000, 900);
+
+  pourSoundTimer = window.setTimeout(() => {
+    playSceneSound(winePourSound);
+  }, delay);
+}
+
+function primeSceneSounds() {
+  [corkPopSound, winePourSound].forEach((sound) => {
+    const volume = sound.volume;
+    sound.volume = 0;
+    const playback = sound.play();
+    playback?.then(() => {
+      sound.pause();
+      sound.currentTime = 0;
+      sound.volume = volume;
+    }).catch(() => {
+      sound.volume = volume;
+    });
+  });
+}
 
 const recommendations = {
   "poco-ocasiones-simple": {
@@ -1185,13 +1234,21 @@ function updateNarrativeBridgeState() {
     }
 
     if (section.classList.contains("narrative-bridge-grape")) {
-      const sceneIn = smoothStep(progress / chapterMotion.fadeIn);
-      const sceneOut = smoothStep((progress - chapterMotion.fadeOutStart) / chapterMotion.fadeOut);
-      const sideEntryDistance = window.innerWidth < 760 ? 24 : 38;
-      const sideExitDistance = window.innerWidth < 760 ? 32 : 48;
-      const photoX = lerp(-sideEntryDistance, 0, sceneIn) - sceneOut * sideExitDistance;
-      const copyX = lerp(sideEntryDistance, 0, sceneIn) + sceneOut * sideExitDistance;
-      const sceneOpacity = Math.max(sceneIn * (1 - sceneOut), 0);
+      // Entrada y salida amplias para que el desplazamiento lateral se perciba
+      // suave, sin perder la pausa de lectura en el centro de la escena.
+      const sceneIn = smoothStep(progress / 0.27);
+      const sceneOut = smoothStep((progress - 0.78) / 0.22);
+      const sideEntryDistance = window.innerWidth < 760 ? 115 : 105;
+      const sideExitDistance = window.innerWidth < 760 ? 115 : 105;
+      // Cada pieza entra y sale por el lado en el que finalmente se ubica:
+      // texto por la izquierda e imagen por la derecha, sin cruzarse.
+      const photoX = lerp(sideEntryDistance, 0, sceneIn) + sceneOut * sideExitDistance;
+      const copyX = lerp(-sideEntryDistance, 0, sceneIn) - sceneOut * sideExitDistance;
+      // La opacidad se conserva mientras atraviesan la pantalla y solo cae
+      // cuando ya completaron practicamente todo el recorrido lateral.
+      const sceneFadeIn = smoothStep(progress / 0.06);
+      const sceneFadeOut = smoothStep((progress - 0.94) / 0.06);
+      const sceneOpacity = sceneFadeIn * (1 - sceneFadeOut);
 
       copyOffset = "0vh";
       statementOffset = "0vh";
@@ -1345,6 +1402,32 @@ function updateVarietalState() {
   const varietalProgress = varietalTimelineCursor >= STILL_BOTTLE_CUT_START
     ? varietalTimelineCursor + STILL_BOTTLE_CUT_SIZE
     : varietalTimelineCursor;
+
+  const crossedCorkStart = previousVarietalAudioProgress < CORK_START && varietalProgress >= CORK_START;
+  const crossedPourStart = previousVarietalAudioProgress < STREAM_START && varietalProgress >= STREAM_START;
+
+  if (crossedCorkStart && !corkSoundPlayed) {
+    playSceneSound(corkPopSound);
+    corkSoundPlayed = true;
+  }
+
+  if (crossedPourStart && !pourSoundPlayed) {
+    playPourAfterCork();
+    pourSoundPlayed = true;
+  }
+
+  if (varietalProgress < CORK_START - 0.004) {
+    corkSoundPlayed = false;
+    pourSoundPlayed = false;
+    window.clearTimeout(pourSoundTimer);
+    stopSceneSound(corkPopSound);
+    stopSceneSound(winePourSound);
+  } else if (!isVarietalSceneInView || varietalProgress >= STREAM_CUT_END) {
+    window.clearTimeout(pourSoundTimer);
+    stopSceneSound(winePourSound);
+  }
+
+  previousVarietalAudioProgress = varietalProgress;
   const TITLE_FADE_IN_START = 0.006;
   const TITLE_FADE_IN_DURATION = 0.018;
   const TEXT_SHRINK_START = 0.025;
@@ -2614,3 +2697,5 @@ document.fonts?.ready.then(() => {
 window.addEventListener("scroll", updateScrollState, { passive: true });
 window.addEventListener("resize", queueLayoutRefresh);
 window.addEventListener("load", queueLayoutRefresh);
+window.addEventListener("pointerdown", primeSceneSounds, { once: true, passive: true });
+window.addEventListener("keydown", primeSceneSounds, { once: true });
