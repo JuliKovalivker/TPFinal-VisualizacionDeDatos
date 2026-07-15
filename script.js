@@ -1433,9 +1433,6 @@ function updateVarietalState() {
     window.clearTimeout(pourSoundTimer);
     stopSceneSound(corkPopSound);
     stopSceneSound(winePourSound);
-  } else if (!isVarietalSceneInView || varietalProgress >= STREAM_CUT_END) {
-    window.clearTimeout(pourSoundTimer);
-    stopSceneSound(winePourSound);
   }
 
   previousVarietalAudioProgress = varietalProgress;
