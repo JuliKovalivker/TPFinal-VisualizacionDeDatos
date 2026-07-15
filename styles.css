@@ -1468,12 +1468,6 @@ p {
   pointer-events: visiblePainted;
 }
 
-.wine-highlight-country:hover {
-  fill: var(--wine);
-  stroke: rgba(58, 13, 16, 0.72);
-  opacity: 1;
-}
-
 .argentina-map-shape {
   position: relative;
   z-index: 3;
@@ -4990,7 +4984,7 @@ p {
   animation: tastingDoubleTone 4.4s ease both;
 }
 
-:root.is-tasting-active[data-tasting-step="2"] .bridge-glass-illustration {
+:root.is-tasting-active[data-tasting-step="2"] .tasting-glass-grip {
   animation: tastingSwirlGlass 5.8s ease-in-out infinite;
 }
 
@@ -9221,7 +9215,7 @@ main > section,
   animation: tastingTurnLines 5.8s ease-in-out infinite;
 }
 
-:root.is-tasting-active[data-tasting-step="4"] .bridge-glass-illustration {
+:root.is-tasting-active[data-tasting-step="4"] .tasting-glass-grip {
   animation: tastingSipGesture 6.8s ease-in-out infinite;
 }
 
@@ -13208,14 +13202,21 @@ main > section,
 }
 
 /* Tasting hand: reuse the opening hand so the gesture stays in the same visual language. */
+.tasting-glass-grip {
+  position: relative;
+  width: 100%;
+  transform-origin: 50% 74%;
+  will-change: transform;
+}
+
 .tasting-hand {
   position: absolute;
   right: auto;
-  left: -6%;
-  top: 46.5%;
+  left: 4%;
+  top: 52%;
   z-index: 5;
   display: block;
-  width: 152%;
+  width: 128%;
   max-width: none;
   height: auto;
   pointer-events: none;
@@ -13899,9 +13900,9 @@ main > section,
 
 @media (max-width: 980px) {
   .tasting-hand {
-    left: -6%;
-    top: 46.5%;
-    width: 152%;
+    left: 4%;
+    top: 52%;
+    width: 128%;
   }
 }
 
@@ -14156,7 +14157,7 @@ main > section,
 /* El mapa comparte la misma identidad visual que los pop-ups varietales. */
 .argentina-world-stage .country-popup {
   border-color: rgba(141, 112, 82, 0.3);
-  background: rgba(255, 250, 235, 0.98);
+  background: var(--paper);
   box-shadow: 0 14px 30px rgba(74, 40, 27, 0.14);
   color: #3a2118;
 }
@@ -14298,6 +14299,11 @@ main > section,
   color: var(--type-burgundy) !important;
 }
 
+/* Los resultados del test comparten el bordó amarronado de los títulos editoriales. */
+.wine-builder .recommendation h3 {
+  color: var(--type-burgundy) !important;
+}
+
 @media (min-width: 701px) {
   .wine-composition-section .composition-layout,
   :root.is-inside-wine .wine-composition-section .composition-layout {
@@ -14307,8 +14313,8 @@ main > section,
 
 @media (min-width: 981px) {
   .tasting-hand {
-    left: -16% !important;
-    top: 41.5% !important;
-    width: 172% !important;
+    left: 4% !important;
+    top: 52% !important;
+    width: 128% !important;
   }
 }
