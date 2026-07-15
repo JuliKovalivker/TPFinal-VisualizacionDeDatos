@@ -54,6 +54,7 @@ const tagBody = document.querySelector("#tagBody");
 const tagFlavor = document.querySelector("#tagFlavor");
 const tagAge = document.querySelector("#tagAge");
 const tastingSection = document.querySelector(".tasting-section");
+const tastingMenu = document.querySelector(".tasting-menu");
 const tastingCopyPanels = [...document.querySelectorAll(".tasting-copy-panel")];
 const compositionSection = document.querySelector(".wine-composition-section");
 const compositionSlices = [...document.querySelectorAll("[data-composition-slice]")];
@@ -78,6 +79,7 @@ let recommendationShown = false;
 let tasteResultResetUntil = 0;
 let tasteCurrentStep = 0;
 let currentTastingStep = 0;
+let tastingMenuLocked = false;
 let flourishStorySlideIndex = -1;
 let fermentationFlourishSlideIndex = -1;
 let storyMalbecLineupSettled = false;
@@ -86,6 +88,7 @@ let previousVarietalAudioProgress = 0;
 let corkSoundPlayed = false;
 let pourSoundPlayed = false;
 let pourSoundTimer = 0;
+let sceneSoundsUnlocked = false;
 const WINE_INTERIOR_GLASS_SCALE = 12;
 const WINE_INTERIOR_GLASS_X = 0;
 const WINE_SETTLED_GLASS_X = 25;
@@ -97,9 +100,10 @@ const tasteProfile = {
 };
 
 function playSceneSound(sound) {
+  sound.muted = false;
   sound.currentTime = 0;
   const playback = sound.play();
-  playback?.catch(() => {});
+  return playback?.then(() => true).catch(() => false) || Promise.resolve(true);
 }
 
 function stopSceneSound(sound) {
@@ -120,18 +124,25 @@ function playPourAfterCork() {
 }
 
 function primeSceneSounds() {
+  if (sceneSoundsUnlocked) return;
+  sceneSoundsUnlocked = true;
+
+  /* Desbloquear audio con copias descartables: nunca silenciar los sonidos reales. */
   [corkPopSound, winePourSound].forEach((sound) => {
-    const volume = sound.volume;
-    sound.volume = 0;
-    const playback = sound.play();
+    const primer = sound.cloneNode();
+    primer.muted = true;
+    primer.volume = 0;
+    const playback = primer.play();
     playback?.then(() => {
-      sound.pause();
-      sound.currentTime = 0;
-      sound.volume = volume;
-    }).catch(() => {
-      sound.volume = volume;
-    });
+      primer.pause();
+      primer.removeAttribute("src");
+      primer.load();
+    }).catch(() => {});
   });
+
+  window.removeEventListener("pointerdown", primeSceneSounds);
+  window.removeEventListener("touchstart", primeSceneSounds);
+  window.removeEventListener("keydown", primeSceneSounds);
 }
 
 const recommendations = {
@@ -2408,6 +2419,24 @@ function updateTastingScrollState() {
   const rect = tastingSection.getBoundingClientRect();
   const creditsWipeState = getCreditsWipeState();
   const rawTastingProgress = clamp(-rect.top / travel, 0, 1);
+  const shouldLockTastingMenu = Boolean(
+    tastingMenu &&
+    (creditsWipeState.isActive || (rawTastingProgress > 0.015 && rect.bottom > 0)),
+  );
+
+  if (shouldLockTastingMenu && !tastingMenuLocked) {
+    const menuRect = tastingMenu.getBoundingClientRect();
+    root.style.setProperty("--tasting-menu-lock-left", `${menuRect.left.toFixed(2)}px`);
+    root.style.setProperty("--tasting-menu-lock-top", `${menuRect.top.toFixed(2)}px`);
+    root.style.setProperty("--tasting-menu-lock-width", `${menuRect.width.toFixed(2)}px`);
+    root.style.setProperty("--tasting-menu-lock-height", `${menuRect.height.toFixed(2)}px`);
+    root.classList.add("is-tasting-menu-locked");
+    tastingMenuLocked = true;
+  } else if (!shouldLockTastingMenu && tastingMenuLocked) {
+    root.classList.remove("is-tasting-menu-locked");
+    tastingMenuLocked = false;
+  }
+
   const creditsTastingFreezeProgress = 0.92;
   const tastingProgress = creditsWipeState.isActive
     ? creditsTastingFreezeProgress
@@ -2561,6 +2590,7 @@ function updateCreditsState() {
     "--credits-content-y",
     `${((1 - contentProgress) * 1.35).toFixed(2)}rem`,
   );
+
 }
 
 function updateScaleIndexState() {
@@ -2697,5 +2727,6 @@ document.fonts?.ready.then(() => {
 window.addEventListener("scroll", updateScrollState, { passive: true });
 window.addEventListener("resize", queueLayoutRefresh);
 window.addEventListener("load", queueLayoutRefresh);
-window.addEventListener("pointerdown", primeSceneSounds, { once: true, passive: true });
-window.addEventListener("keydown", primeSceneSounds, { once: true });
+window.addEventListener("pointerdown", primeSceneSounds, { passive: true });
+window.addEventListener("touchstart", primeSceneSounds, { passive: true });
+window.addEventListener("keydown", primeSceneSounds);

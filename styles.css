@@ -14450,6 +14450,48 @@ main > section,
   }
 }
 
+/* La tarjeta queda anclada a sus coordenadas iniciales durante toda la cata.
+   El scroll puede cambiar el contenido, pero nunca su posición o tamaño. */
+:root.is-tasting-menu-locked .tasting-panel > .tasting-menu {
+  position: fixed !important;
+  left: var(--tasting-menu-lock-left) !important;
+  top: var(--tasting-menu-lock-top) !important;
+  z-index: 64 !important;
+  width: var(--tasting-menu-lock-width) !important;
+  height: var(--tasting-menu-lock-height) !important;
+  margin: 0 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Al sacar la tarjeta del flujo para bloquearla, conservamos su celda original.
+   Así el escenario y los aromas siguen sobre la copa, no sobre el menú. */
+:root.is-tasting-menu-locked .tasting-panel::before {
+  content: "";
+  display: block;
+  grid-column: 1;
+  grid-row: 1;
+  width: var(--tasting-menu-lock-width);
+  height: var(--tasting-menu-lock-height);
+  pointer-events: none;
+}
+
+:root.is-tasting-menu-locked .tasting-panel > .glass-stage {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+@media (max-width: 700px) {
+  :root.is-tasting-menu-locked .tasting-panel::before {
+    display: none;
+  }
+
+  :root.is-tasting-menu-locked .tasting-panel > .glass-stage {
+    grid-column: 1;
+    grid-row: 2;
+  }
+}
+
 @media (min-width: 701px) {
   .argentina-map-heading {
     top: calc(5.9rem + clamp(0.8rem, 1.8svh, 1.2rem)) !important;
